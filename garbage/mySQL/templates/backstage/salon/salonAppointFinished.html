@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IPET 寵物 | 寵物美容專區 | 已完成的預約</title>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" th:href="@{/backstage/plugins/fontawesome-free/css/all.css}">
+  <!-- DataTables -->
+  <link rel="stylesheet" th:href="@{/backstage/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/datatables-buttons/css/buttons.bootstrap4.min.css}">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/datatables-select/css/select.bootstrap4.css}">
+
+  <!-- Theme style -->
+  <link rel="stylesheet" th:href="@{/backstage/css/adminlte.css}">
+  <!-- childTable style -->
+  <style>
+    .childTbody th{
+      background-color: rgb(238, 182, 149, 0.45);
+    }
+
+    .childTbody tr:nth-child(even){
+      background-color: #fffaf082;
+    }
+
+    .childTbody tr:nth-child(odd){
+      background-color: #fffffc !important;
+    }
+
+    td.details-control {
+      background: url("/backstage/img/more.png") no-repeat center;
+      background-size: 25px;
+      cursor: pointer;
+    }
+    tr.shown td.details-control {
+      background: url("/backstage/img/close.png") no-repeat center;
+      background-size: 20px;
+      cursor: pointer;
+    }
+
+  </style>
+
+
+</head>
+
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+
+  <!--  Navbar -->
+  <div th:replace="~{backstage/common/navbor :: navbar}"></div>
+  <!-- /.navbar -->
+
+  <!-- 左邊選單區 Main Sidebar Container -->
+  <div th:replace="~{backstage/common/sidebar :: sidebar}"></div>
+  <!-- /.aside -->
+
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/ipet-back/home">Home</a></li>
+              <li class="breadcrumb-item">美容預約管理</li>
+              <li class="breadcrumb-item active"><a href="${pageContext.request.contextPath}/ipet-back/appoint/appoints">已完成的預約</a></li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+
+          <div class="col-12">
+            <!-- Filter -->
+            <div class="card card-info">
+              <div class="card-header">
+                <h3 class="card-title">預約單 Filter</h3>
+              </div>
+              <div class="card-body">
+                <form>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>預約單編號</label>
+                        <input type="text" class="form-control column_filter" id="col0-search"  data-column="0" placeholder="Enter ...">
+                      </div>
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>會員姓名</label>
+                        <input type="text" class="form-control column_filter" id="col1-search" data-column="1" placeholder="Enter ...">
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>寵物名字</label>
+                        <input type="text" class="form-control column_filter" id="col2-search" data-column="2" placeholder="Enter ...">
+                      </div>
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>預約日期</label>
+                        <input type="text" class="form-control column_filter" id="col3-search" data-column="3" placeholder="Enter ...">
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>預約時段</label>
+                        <input type="text" class="form-control column_filter" id="col4-search" data-column="4" placeholder="Enter ...">
+                      </div>
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>實付金額</label>
+                        <input type="text" class="form-control column_filter" id="col5-search" data-column="5" placeholder="Enter ...">
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>班表編號</label>
+                        <input type="text" class="form-control column_filter" id="col6-search" data-column="6" placeholder="Enter ...">
+                      </div>
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>服務詳情</label>
+                        <input type="text" class="form-control column_filter" id="col7-search" data-column="7" placeholder="Enter ...">
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>顧客備註</label>
+                        <input type="text" class="form-control column_filter" id="col8-search" data-column="8" placeholder="Enter ...">
+                      </div>
+                    </div>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+            <!-- /.filter -->
+
+
+            <!-- table -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"></h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="reserveTable" class="table table-bordered table-striped  display">
+                  <thead>
+                    <tr>
+                      <th>預約單編號</th>
+                      <th>會員姓名</th>
+                      <th>寵物名字</th>
+                      <th>預約日期</th>
+                      <th>預約時段</th>
+                      <th>實付金額</th>
+                      <th>班表編號</th>
+                      <th>服務詳情</th>
+                      <th>顧客備註</th>
+                      <th>預約單狀態</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="appoint : ${appoints}">
+                      <td th:text="${appoint.id}"></td>
+                      <td th:text="${appoint.mem.get('name')}"></td>
+                      <td th:text="${appoint.pet.get('name')}"></td>
+                      <td th:text="${#dates.format(appoint.sch.get('date'), 'yyyy-MM-dd')}"></td>
+                      <td th:text="${appoint.sch.get('period')}"></td>
+                      <td th:text="${appoint.totalPrice}"></td>
+                      <td th:text="${appoint.sch.get('id')}"></td>
+                      <td>
+                        <table  class="childTable" style="display:none">
+                          <tbody class="childTbody">
+                          <tr>
+                            <th>服務編號</th>
+                            <th>服務名稱</th>
+                            <th>服務價格</th>
+                            <th>優惠方案編號</th>
+                            <th>優惠方案名稱</th>
+                            <th>優惠方案價</th>
+                          </tr>
+                          <tr th:each="detail : ${appoint.appointDetail}">
+                            <td th:text="${detail.get('id')}"></td>
+                            <td th:text="${detail.get('svcName')}"></td>
+                            <td th:text="${detail.get('svcPrice')}"></td>
+                            <td th:text="${detail.get('sale') == null ? '無' : detail.get('sale').get('id')}"></td>
+                            <td th:text="${detail.get('sale') == null ? '無' : detail.get('sale').get('saleName')}"></td>
+                            <td th:text="${detail.get('sale') == null ? '無' : detail.get('sale').get('salePrice')}"></td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                      <td th:text="${appoint.customerNote}"></td>
+                      <th:block th:switch="${appoint.apmStatus}">
+                        <td th:case="0">
+                          <button class="btn btn-info">
+                            已支付訂金
+                          </button>
+                        </td>
+                        <td th:case="1">
+                          <button class="btn btn-success">
+                            已完成預約
+                          </button>
+                        </td>
+                        <td th:case="2">
+                          <button class="btn btn-danger">
+                            已取消
+                          </button>
+                        </td>
+                        <td th:case="3">
+                          <button class="btn btn-warning">
+                            逾時未到
+                          </button>
+                        </td>
+                      </th:block>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.table -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Main Footer -->
+  <div th:replace="~{backstage/common/footer :: footer}"></div>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script th:src="@{/backstage/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/backstage/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE -->
+<script th:src="@{/backstage/js/adminlte.js}"></script>
+<!--Axios-->
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<!-- DataTables  & Plugins -->
+<script th:src="@{/backstage/plugins/datatables/jquery.dataTables.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
+<script th:src="@{/backstage/plugins/jszip/jszip.min.js}"></script>
+<script th:src="@{/backstage/plugins/pdfmake/pdfmake.min.js}"></script>
+<script th:src="@{/backstage/plugins/pdfmake/vfs_fonts.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/buttons.html5.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/buttons.print.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-select/js/dataTables.select.js}" ></script>
+
+<!-- sidebar menu Class -->
+<script>
+  $("p:contains(美容預約管理)").closest("li").addClass("menu-open");
+  $("p:contains(已完成的預約)").closest("a").addClass("active");
+</script>
+
+<!-- DataTable show child row -->
+<script>
+  let table = $('#reserveTable').DataTable({
+    autoWidth: false,
+    responsive: true,
+    lengthChange: true,
+    info: true,
+    altEditor: false,     // Enable altEditor
+
+    //  填寫直接顯示的欄位，需要與thead tfoot 對應
+    "columns": [
+      {responsivePriority: 1,  className: "reserveId dt-center"},
+      {responsivePriority: 2,  className: "memberName dt-center"},
+      {className: "petName"},
+      {responsivePriority: 3 , className: "reserveDate dt-center"},
+      {responsivePriority: 4, className: "reservePeriod dt-center"},
+      {className: "totalPrice dt-center" },
+      {className: "jobId dt-center"},
+      { className: 'details-control dt-center',
+        orderable:      false,
+        defaultContent: '',
+        responsivePriority: 5
+      },
+      {className: "customerNote dt-center", orderable: false},
+      {className: "reserveStatus dt-center"},
+    ],
+    select: {
+      style: 'single',
+      toggleable: false
+    },
+    order: [0, 'desc'],
+    fnDrawCallback : function (){}
+  });
+
+  <!-- Add event listener for opening and closing details -->
+  $('#reserveTable tbody').on('click', 'td.details-control', function () {
+    let tr = $(this).closest('tr');
+    let row = table.row( tr );
+    if ( row.child.isShown() ) {
+      // This row is already open - close it
+      row.child.hide();
+      tr.removeClass('shown');
+    } else {
+      // Open this row
+      let chileTable = $(this).find('.childTable').html();
+      row.child(chileTable).show();
+      tr.addClass('shown');
+    }
+  });
+
+  $('input.column_filter').on('keyup click', function () {
+    filterColumn($(this).attr('data-column'));
+  });
+
+  function filterColumn(i) {
+    table.column(i)
+         .search($('#col' + i + '-search').val())
+         .draw();
+  }
+
+</script>
+</body>
+</html>

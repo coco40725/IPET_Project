@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IPET 寵物 | 寵物美容專區 | 服務類別</title>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+  <!-- MultiDatePicker  -->
+  <link rel="stylesheet" th:href="@{/backstage/plugins/jquery-ui/jquery-ui.min.css}">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/jquery-ui-multidatepicker/css/jquery-ui.multidatespicker.css}">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" th:href="@{/backstage/plugins/fontawesome-free/css/all.css}">
+  <!-- DataTables -->
+  <link rel="stylesheet" th:href="@{/backstage/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/datatables-buttons/css/buttons.bootstrap4.min.css}">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/datatables-select/css/select.bootstrap4.css}">
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" th:href="@{/backstage/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+
+  <!-- w3 -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+  <!-- Theme style -->
+  <link rel="stylesheet" th:href="@{/backstage/css/adminlte.css}">
+
+  <!-- childTable style -->
+  <style>
+    .childTbody th{
+      background-color: rgb(238, 182, 149, 0.45);
+    }
+
+    .childTbody tr:nth-child(even){
+      background-color: #fffaf082;
+    }
+
+    .childTbody tr:nth-child(odd){
+      background-color: #fffffc !important;
+    }
+
+    td.details-control {
+      background: url("/backstage/img/more.png") no-repeat center;
+      background-size: 25px;
+      cursor: pointer;
+    }
+    tr.shown td.details-control {
+      background: url("/backstage/img/close.png") no-repeat center;
+      background-size: 20px;
+      cursor: pointer;
+    }
+
+  </style>
+
+
+
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+
+  <!--  Navbar -->
+  <div th:replace="~{backstage/common/navbor :: navbar}"></div>
+  <!-- /.navbar -->
+
+  <!-- 左邊選單區 Main Sidebar Container -->
+  <div th:replace="~{backstage/common/sidebar :: sidebar}"></div>
+  <!-- /.aside -->
+
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/home">Home</a></li>
+              <li class="breadcrumb-item">服務項目管理</li>
+              <li class="breadcrumb-item active"><a href="${pageContext.request.contextPath}/ipet-back/job/jobs_list">班表列表</a></li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Filter -->
+            <div class="card card-info">
+              <div class="card-header">
+                <h3 class="card-title">服務類別 Filter</h3>
+              </div>
+              <div class="card-body">
+                <form>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>服務類別編號</label>
+                        <input type="text" class="form-control column_filter" id="col0-search"  data-column="0" placeholder="Enter ...">
+                      </div>
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>服務類別名稱</label>
+                        <input type="text" class="form-control column_filter" id="col1-search" data-column="1" placeholder="Enter ...">
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <!-- text input -->
+                      <div class="form-group" hidden="hidden">
+                        <label>寵物大小</label>
+                        <input type="text" class="form-control column_filter" id="col2-search" data-column="2" placeholder="Enter ...">
+                      </div>
+                      <!-- text input -->
+                      <div class="form-group" hidden="hidden">
+                        <label>寵物種類</label>
+                        <input type="text" class="form-control column_filter" id="col3-search" data-column="3" placeholder="Enter ...">
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <!-- text input -->
+                      <div class="form-group" hidden="hidden">
+                        <label>服務項目</label>
+                        <input type="text" class="form-control column_filter" id="col4-search" data-column="4" placeholder="Enter ...">
+                      </div>
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>狀態</label>
+                        <input type="text" class="form-control column_filter" id="col5-search" data-column="5" placeholder="Enter ...">
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- /.filter -->
+
+            <!-- table -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"></h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div>
+                  <button type="submit" data-toggle="modal" data-target="#AddModal" class="btn btn-outline-secondary row-add">
+                    <i class="fas fa-solid fa-plus"></i>
+                    新增
+                  </button>
+                   <p></p>
+                </div>
+                <table id="categoryTable" class="table table-bordered table-striped  display">
+                  <thead>
+                  <tr>
+                    <th>服務類別編號</th>
+                    <th>服務類別名稱</th>
+                    <th>圖片</th>
+                    <th>寵物大小</th>
+                    <th>寵物種類</th>
+                    <th>服務項目</th>
+                    <th>狀態</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                      <tr th:each="category : ${categories}">
+                        <td th:text="${category.svcCategoryId}"></td>
+                        <td th:text="${category.svcCategoryName}"></td>
+                        <td>
+                          <div class="w3-container">
+                            <img th:src="'data:image/png;base64,' + ${category.svcCategoryImgBase64}" style="width:25%;cursor:zoom-in"
+                                 th:onclick="document.getElementById('modal[[${category.svcCategoryId}]]').style.display='block'"
+                            alt="image">
+                            <div th:id="modal+${category.svcCategoryId}" class="w3-modal" onclick="this.style.display='none'">
+                              <span class="w3-button w3-hover-red w3-xlarge w3-display-topright">&times;</span>
+                              <div class="w3-modal-content w3-animate-zoom" style="background: rgb(0,0,0,0)">
+                                <img th:src="'data:image/png;base64,' + ${category.svcCategoryImgBase64}"/>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <select class="form-control">
+                            <option th:value="全部">全部</option>
+                            <option th:value="小型犬">小型犬</option>
+                            <option th:value="中型犬">中型犬</option>
+                            <option th:value="大型犬">大型犬</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select class="form-control">
+                            <option th:value="-99" selected>全部</option>
+                          </select>
+                        </td>
+                        <td>
+                          <table class="childTable" style="display:none">
+                            <tbody class="childTbody" >
+                              <tr>
+                                <th>寵物大小</th>
+                                <th>寵物品種</th>
+                                <th>服務編號</th>
+                                <th>服務名稱</th>
+                                <th>服務內容</th>
+                                <th hidden="hidden"></th>
+                              </tr>
+                              <tr th:each="service : ${services}" class="serviceInfo">
+                                <td th:text="${service.pet.get('size')}" class="servicePetSize"></td>
+                                <td th:text="${service.pet.get('name')}" class="servicePetName"></td>
+                                <td th:text="${service.id}" class="serviceSvcId"></td>
+                                <td th:text="${service.svcName}" class="serviceSvcName"></td>
+                                <td th:text="${service.svcContent}" class="serviceSvcContent"></td>
+                                <td hidden="hidden" th:text="${service.svcCategory.get('id')}" class="serviceSvcCategory"></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                        <th:block th:switch="${category.svcCategoryStatus}">
+                          <td th:case="0">
+                            <button class="btn btn-danger dt-center">
+                              前台顯示
+                            </button>
+                          </td>
+                          <td th:case="1">
+                            <button class="btn btn-secondary dt-center">
+                              前台隱藏
+                            </button>
+                          </td>
+                        </th:block>
+                        <td>
+                          <button type="submit" class="btn btn-light row-edit dt-center" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
+                                  th:attr="getCategoryUrl=@{/ipet-back/services/categories/{id}(id=${category.svcCategoryId})}">
+                            <i class="fas fa-solid fa-pen"></i>
+                          </button>
+                        </td>
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.table -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+
+    <!-- Edit Modal content   -->
+    <div th:replace="~{/backstage/salon/modal/ServiceCategoryModal :: serviceCategotyEditModal}"></div>
+    <!-- /. Edit Modal content   -->
+
+    <!--  Add Modal content  -->
+    <div th:replace="~{/backstage/salon/modal/ServiceCategoryModal :: serviceCategotyAddModal}"></div>
+    <!-- /. Add Modal content   -->
+
+
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Main Footer -->
+  <div th:replace="~{backstage/common/footer :: footer}"></div>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script th:src="@{/backstage/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/backstage/plugins/jquery-ui/jquery-ui.min.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/backstage/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE -->
+<script th:src="@{/backstage/js/adminlte.js}"></script>
+<!--Axios-->
+<script th:src="@{/backstage/plugins/axios/axios.min.js}"></script>
+
+
+<!-- DataTables  & Plugins -->
+<script th:src="@{/backstage/plugins/datatables/jquery.dataTables.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
+<script th:src="@{/backstage/plugins/jszip/jszip.min.js}"></script>
+<script th:src="@{/backstage/plugins/pdfmake/pdfmake.min.js}"></script>
+<script th:src="@{/backstage/plugins/pdfmake/vfs_fonts.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/buttons.html5.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/buttons.print.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-select/js/dataTables.select.js}" ></script>
+
+<!-- MultiDatePicker -->
+<script th:src="@{/backstage/plugins/jquery-ui-multidatepicker/js/jquery-ui.multidatespicker.js}"></script>
+
+<!-- sidebar menu Class -->
+<script>
+  $("p:contains(服務項目管理)").closest("li").addClass("menu-open");
+  $("p:contains(班表類別)").closest("a").addClass("active");
+</script>
+
+<!-- Data presentation and operation show -->
+<script th:inline="javascript">
+  let table = $('#categoryTable').DataTable({
+    autoWidth: false,
+    responsive: true,
+    lengthChange: true,
+    info: true,
+    altEditor: true,     // Enable altEditor,
+
+
+    //  填寫直接顯示的欄位，需要與thead tfoot 對應
+    "columns":[
+      {responsivePriority: 1, className: "svcCategoryId dt-center"},
+      {responsivePriority: 2, className: "svcCategoryName dt-center"},
+      {responsivePriority: 3, className: "svcCategoryImgBase64 dt-center"},
+      {responsivePriority: 4, className: "petSize dt-center"},
+      {responsivePriority: 5, className: "typeName dt-center"},
+      {
+        className: 'details-control dt-center',
+        orderable:      false,
+        defaultContent: '',
+        responsivePriority: 6
+      },
+      {className: "svcCategoryStatus dt-center"},
+      {className: 'row-edit dt-center', orderable: false, responsivePriority: 7},
+    ],
+    select: {
+      style: 'single',
+      toggleable: false
+    },
+    order: [0, 'desc'],
+    fnDrawCallback: function (){
+      let groomersList;
+      let asstsList;
+
+
+
+      <!-- Edit data from modal -->
+      let targetDataEdit;
+      let categoryObjectEdit;
+      let editRefresh;
+
+      $('td.row-edit').on('click','button',function (){
+        // get the selected tr
+        targetDataEdit = $(event.target).closest("tr")[0];
+        let getCategoryUrl = $(this).attr("getCategoryUrl");
+        // send the request to server, and response the data on the modal
+        axios({
+          method:"get",
+          url: getCategoryUrl
+        }).then((resp) => {
+          if (resp !== "" ){
+            categoryObjectEdit = resp.data;
+
+            // 載入 svcCategoryId 並 唯讀
+            $('#svcCategoryId-modal-edit').val(categoryObjectEdit.svcCategoryId);
+
+            // 載入 svcCategoryName
+            $('#svcCategoryName-modal-edit').val(categoryObjectEdit.svcCategoryName);
+
+            // 載入 狀態
+            $('#svcCategoryStatus-modal-edit').val(categoryObjectEdit.svcCategoryStatus);
+
+            // 載入 ImgBase64
+            // 如果圖片是 null，src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg"
+            if (categoryObjectEdit.svcCategoryImgBase64 === null){
+              $('#svcCategoryImgPreview-modal-edit').attr("src", "https://mdbootstrap.com/img/Photos/Others/placeholder.jpg")
+            }else{
+              $('#svcCategoryImgPreview-modal-edit').attr("src", "data:image/png;base64, " + categoryObjectEdit.svcCategoryImgBase64);
+            }
+          }else{
+            $("#editModalMessage").html("錯誤: 無法從伺服器抓取該筆資料")
+                    .css("color","red");
+            editRefresh = false;
+          }
+        }).catch((err) => {console.log(err)})
+      });
+
+
+      // 當改動大小時後，顯示種類的可選名單
+      $('td.petSize').on("change",'select',function (){
+        let petVarHTML = `<option th:value="-99">全部</option>`;
+        /*<![CDATA[*/
+        let petObject = /*[[${petTypes}]]*/ null;
+        /*]]>*/
+
+        let petSize = $(this).val();
+        if (petSize === "全部"){
+          for (let pet of petObject){
+            petVarHTML += `<option th:value="${pet.typeId}">${pet.typeName}</option>`;
+          }
+        }else{
+          for (let pet of petObject){
+            if (pet.petSize === petSize){
+              petVarHTML += `<option th:value="${pet.typeId}">${pet.typeName}</option>`;
+            }
+          }
+        }
+        $(this).parent().next().find("select").html(petVarHTML);
+        if ($("td.details-control").parent().hasClass("shown")){
+          renderRowTable($(this).parent().siblings("td.details-control"));
+        }
+
+      });
+
+      // 當點擊 服務詳情時，顯示特定 犬種的服務
+      $('td.typeName').on("change",'select', function (){
+        if ($("td.details-control").parent().hasClass("shown")){
+          renderRowTable($(this).parent().siblings("td.details-control"));
+        }
+      })
+
+      // 當上傳了圖片，svcCategoryImgPreview-modal-edit 要改變成上傳的圖
+      $("#svcCategoryImg-modal-edit").on("change", function (){
+        let file = this.files[0];
+        let reader = new FileReader();
+
+        reader.onloadend = function (){
+          $("#svcCategoryImgPreview-modal-edit").attr("src", reader.result)
+        }
+        reader.readAsDataURL(file);
+      })
+
+
+      $(".btn-edit-confirm").on("click", function (){
+        let editUrl = $(this).attr('editUrl');
+        axios({
+          method: "put",
+          url: editUrl,
+          data: {
+            svcCategoryId: categoryObjectEdit.svcCategoryId,
+            svcCategoryName: $('#svcCategoryName-modal-edit').val(),
+            svcCategoryImg: $("#svcCategoryImgPreview-modal-edit").attr("src"),
+            svcCategoryStatus: $('#svcCategoryStatus-modal-edit').val()
+          }
+        }).then((resp) => {
+
+        }).catch((err) => {
+          $("#editeModalMessage").text("修改失敗，其他原因")
+                  .css("color","red");
+          $(".btn-edit-confirm").addClass("disabled")
+                  .attr("disabled");
+          editRefresh = false;
+        })
+      })
+
+
+
+      $('.btn-edit-confirm').on("click" ,function(){
+        let editUrl = $(this).attr('editUrl');
+        if ($('#ASST_name_2-modal-edit').val() !== null){
+          axios({
+            method:"put",
+            url:editUrl,
+            data:{
+              schID: scheduleObjectEdit.id,
+              schDate: $('#schDate-modal-edit').val(),
+              schPeriod: $('#schPeriod-modal-edit').val(),
+              groomerID: $('#GROOMER_name-modal-edit').val(),
+              asstID1: $('#ASST_name_1-modal-edit').val(),
+              asstID2: $('#ASST_name_2-modal-edit').val(),
+              employeeNote: $('#schNote-edit-modal').val()
+            }
+          })
+                  .then((resp) => {
+                    if (resp !== "") {
+                      if (resp.data === "success"){
+                        $("#editModalMessage").html("修改成功")
+                                .css("color","green");
+                        $(".btn-edit-confirm").addClass("disabled")
+                                .attr("disabled")
+                        editRefresh = true;
+                      }else{
+                        $("#editModalMessage").html(resp.data)
+                                .css("color","red");
+                        editRefresh = false;
+                      }
+                    }else{
+                      $("#editModalMessage").html("錯誤:伺服器無回傳結果")
+                              .css("color","red");
+                    }
+
+                  })
+                  .catch((err) => {
+                    $("#editeModalMessage").text("修改失敗，其他原因")
+                            .css("color","red");
+                    $(".btn-edit-confirm").addClass("disabled")
+                            .attr("disabled");
+                    editRefresh = false;
+                  })
+        }else{
+          $("#editModalMessage").text("請填寫完整資料")
+                  .css("color","red");
+        }
+
+      });
+
+      $('#EditModal').on('hidden.bs.modal', function (){
+        if (editRefresh) {
+          window.location.reload();
+        }
+      });
+      <!-- /. Edit data from modal -->
+
+
+      <!-- Add data from modal -->
+      // let illegalDates;
+      // let periods = [];
+      // // send the request to server, and get the emp
+      // $('.row-add').on('click', function (){
+      //   let getGroomersUrl = $(this).attr("getGroomersUrl");
+      //   let getAsstsUrl = $(this).attr("getAsstsUrl");
+      //
+      //   axios.all([
+      //           axios.get(getGroomersUrl),
+      //           axios.get(getAsstsUrl),
+      //   ]).then(axios.spread((groomers, assts) =>{
+      //     if (groomers !== "" && assts !== ""){
+      //       groomersList = groomers.data;
+      //       asstsList = assts.data;
+      //
+      //       let groomerHTMLAdd = `<option disabled selected>請選擇</option>`;
+      //       for (let i = 0; i < groomersList.length; i ++) {
+      //         groomerHTMLAdd += `<option value="${groomersList[i].staffId}"> ${groomersList[i].staffName}</option>`
+      //       }
+      //       $('#GROOMER_name-modal-add').html(groomerHTMLAdd);
+      //
+      //       let asst1HTMLAdd = `<option disabled selected>請選擇</option>`;
+      //       for (let i = 0; i < asstsList.length; i ++) {
+      //         asst1HTMLAdd += `<option value="${asstsList[i].staffId}"> ${asstsList[i].staffName}</option>`
+      //       }
+      //       $('#ASST_name_1-modal-add').html(asst1HTMLAdd);
+      //     }else {
+      //       $("#addModalMessage").html("無法查詢到美容師與助理，請洽網站管理員")
+      //               .css("color","red")
+      //     }
+      //   })).catch((err) => console.log(err));
+      // });
+      //
+      //
+      // $('.btn-add-confirm').on('click',  function (){
+      //   let addUrl = $(this).attr("addUrl");
+      //   console.log(addUrl);
+      //   if ($('#GROOMER_name-modal-add').val() != null &&
+      //           $('#ASST_name_1-modal-add').val() != null &&
+      //           $('#ASST_name_2-modal-add').val() != null &&
+      //           periods.length !== 0 &&
+      //           $('#schDate-modal-add').val().trim() !== ""
+      //   ) {
+      //     console.log("post addUrl");
+      //     axios({
+      //       method: "post",
+      //       url: addUrl,
+      //       data:{
+      //         groomerID: $('#GROOMER_name-modal-add').val(),
+      //         asstID1: $('#ASST_name_1-modal-add').val(),
+      //         asstID2: $('#ASST_name_2-modal-add').val(),
+      //         periods: periods.join(","),
+      //         dates: $('#schDate-modal-add').val(),
+      //         notes: $('#schNote-add-modal').val()
+      //       }
+      //     }).then((resp) => {
+      //       if (resp !== ""){
+      //         if (resp.data === "success"){
+      //           $("#addModalMessage").html("新增成功")
+      //                   .css("color","green");
+      //           $(".btn-add-confirm").addClass("disabled")
+      //                   .attr("disabled")
+      //         }else{
+      //           $("#addModalMessage").html(resp)
+      //                   .css("color","red");
+      //           $(".btn-add-confirm").addClass("disabled")
+      //                   .attr("disabled")
+      //         }
+      //       }else{
+      //         $("#addModalMessage").html("錯誤:伺服器無回傳結果")
+      //                 .css("color","red");
+      //         $(".btn-add-confirm").addClass("disabled")
+      //                 .attr("disabled")
+      //       }
+      //
+      //     }).catch((err) => {
+      //       console.log(err);
+      //       $("#addModalMessage").text("新增失敗，其他原因")
+      //               .css("color","red");
+      //     })
+      //   } else {
+      //     $("#addModalMessage").html("請填寫完整資料")
+      //             .css("color","red");
+      //   }
+      // })
+      //
+      // $('#AddModal').on("hidden.bs.modal", function (){
+      //   // clean the previous data
+      //   $('#GROOMER_name-modal-add').val("");
+      //   $('#ASST_name_1-modal-add').val("");
+      //   $('#ASST_name_2-modal-add').val("");
+      //   $('#schDate-modal-add').val("");
+      //   $('input.jobPeriod-add').prop("checked", false);
+      //   window.location.reload();
+      // });
+      <!-- /.Add data from modal -->
+    }
+  });
+
+
+  <!-- Add event listener for opening and closing details -->
+  $('#categoryTable tbody').on('click', 'td.details-control', function () {
+    let tr = $(this).closest('tr');
+    let row = table.row( tr );
+    if ( row.child.isShown() ) {
+      // This row is already open - close it
+      row.child.hide();
+      tr.removeClass('shown');
+    } else {
+      // Open this row
+      renderRowTable($(this));
+      // let childTable = $(this).find('.childTable').html();
+      // row.child(childTable).show();
+      tr.addClass('shown');
+    }
+  });
+
+
+  $('input.column_filter').on('keyup click', function () {
+    filterColumn($(this).attr('data-column'));
+  });
+
+  function filterColumn(i) {
+    table.column(i)
+            .search($('#col' + i + '-search').val())
+            .draw();
+  }
+
+  function renderRowTable(e){
+    let tr = e.closest('tr');
+    let row = table.row( tr );
+
+    let selectPetSize = e.siblings("td.petSize").find("select").find(" option:selected").text();
+    let selectPetVar = e.siblings("td.typeName").find("select option:selected").text();
+    let selectCategory = e.siblings("td.svcCategoryId").text();
+
+    e.find('.childTable').find('tr.serviceInfo').each(function (){
+      $(this).show();
+      if ($(this).find("td.serviceSvcCategory").text() !== selectCategory){
+        $(this).remove();
+      } else {
+        if (selectPetSize !== "全部" && selectPetSize !== $(this).find("td.servicePetSize").text()){
+          $(this).hide();
+        }
+        if (selectPetVar !== "全部" && selectPetVar !== $(this).find("td.servicePetName").text()) {
+          $(this).hide();
+        }
+      }
+    });
+
+    let childTable = e.find('.childTable').html();
+    row.child(childTable).show();
+  }
+
+</script>
+</body>
+</html>
