@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
 public interface MemberRepository extends MongoRepository<Member, String> {
     Member findByMemAc(String ac);
     Member findByMemUid(String uid);
-    Member findByPetContaining(String petId);
+    Member findByPetContaining(ObjectId petId);
 }

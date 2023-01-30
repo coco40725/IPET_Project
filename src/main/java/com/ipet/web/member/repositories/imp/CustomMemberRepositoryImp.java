@@ -1,7 +1,8 @@
-package com.ipet.web.member.repositories;
+package com.ipet.web.member.repositories.imp;
 
 import com.ipet.web.member.entities.Member;
-import com.ipet.web.member.entities.result.ResultMember;
+import com.ipet.web.member.entities.unwinded.UnwindedMember;
+import com.ipet.web.member.repositories.CustomMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -17,7 +18,7 @@ import java.util.List;
  * @create 2023-01-29-下午 12:07
  */
 @Repository
-public class CustomMemberRepositoryImp implements CustomMemberRepository{
+public class CustomMemberRepositoryImp implements CustomMemberRepository {
     private MongoTemplate mongoTemplate;
 
     @Autowired
@@ -30,23 +31,23 @@ public class CustomMemberRepositoryImp implements CustomMemberRepository{
     * */
 
     @Override
-    public List<ResultMember> findAll() {
+    public List<UnwindedMember> findAll() {
         TypedAggregation<Member> aggregation = Aggregation.newAggregation(
                 Member.class,
                 Aggregation.lookup("PET", "PET.REF_ID", "_id", "PET_DETAIL") // 這裡以 MongoDB 為主的名稱與語法
         );
-        AggregationResults<ResultMember> results =  mongoTemplate.aggregate(aggregation, ResultMember.class);
+        AggregationResults<UnwindedMember> results =  mongoTemplate.aggregate(aggregation, UnwindedMember.class);
         return results.getMappedResults();
     }
 
     @Override
-    public ResultMember findById(String id) {
+    public UnwindedMember findById(String id) {
         TypedAggregation<Member> aggregation = Aggregation.newAggregation(
                 Member.class,
                 Aggregation.match(Criteria.where("_id").is(id)),
                 Aggregation.lookup("PET", "PET.REF_ID","_id","PET_DETAIL")
         );
-        AggregationResults<ResultMember> results = mongoTemplate.aggregate(aggregation, ResultMember.class);
+        AggregationResults<UnwindedMember> results = mongoTemplate.aggregate(aggregation, UnwindedMember.class);
         return results.getUniqueMappedResult();
     }
 }

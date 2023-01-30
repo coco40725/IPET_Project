@@ -1,17 +1,15 @@
 package com.ipet.web.member.services;
 
 import com.ipet.web.member.entities.Member;
-import com.ipet.web.member.entities.Pet;
+import com.ipet.web.member.entities.unwinded.UnwindedMember;
+import com.ipet.web.member.repositories.CustomMemberRepository;
 import com.ipet.web.member.repositories.MemberRepository;
-import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Yu-Jing
@@ -20,10 +18,15 @@ import java.util.Objects;
 @Service
 public class MemberServices {
     private MemberRepository memberRepository;
+    private CustomMemberRepository customMemberRepository;
 
     @Autowired
     public void setMemberRepository(MemberRepository memberRepository){
         this.memberRepository = memberRepository;
+    }
+    @Autowired
+    public void setCustomMemberRepository(CustomMemberRepository customMemberRepository){
+        this.customMemberRepository = customMemberRepository;
     }
 
     // member add
@@ -58,7 +61,6 @@ public class MemberServices {
             if (!oldMember.getMemUid().equals(member.getMemUid())){
                 return "不可更改身分證";
             }
-
             memberRepository.save(member);
             return "success";
         }
@@ -70,15 +72,15 @@ public class MemberServices {
         return memberRepository.findAll();
     }
     public Member getMemberById(String id){
-        Member member = memberRepository.findById(id).orElse(null);
-        System.out.println(memberRepository.findById(id).orElse(null));
-        List<String> pet = memberRepository.findById(id).orElse(null).getPet();
-        System.out.println(pet);
         return memberRepository.findById(id).orElse(null);
     }
 
     public Member getMemByPetId(String id){
-        return memberRepository.findByPetContaining(id);
+        return memberRepository.findByPetContaining(new ObjectId(id));
+    }
+
+    public List<UnwindedMember> getAllUnwindedMembers(){
+        return customMemberRepository.findAll();
     }
 
 }

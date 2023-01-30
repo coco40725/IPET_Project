@@ -1,0 +1,30 @@
+version: "2"
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: m_mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./dbdata:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=Coco40725@S1225.abc
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: m_phpmyadmin
+    restart: always
+    ports:
+      - "9000:80"
+    environment:
+      PMA_HOST: m_mysql
+
+# how to change password in mysql?
+# sudo docker exec -it m_mysql mysql -u root -p
+# ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'Coco40725@S1225.abc';
+# ALTER USER 'root'@'%' IDENTIFIED WITH caching_sha2_password BY 'Coco40725@S1225.abc';
+# exit;
+# sudo docker exec -it m_mysql mysql -u root -p
+
+

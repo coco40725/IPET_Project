@@ -5,15 +5,15 @@ import com.ipet.core.entities.Core;
 import com.mongodb.lang.NonNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.Transient;
 import java.io.Serial;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Data
-@Document("SALON_SERVICE")
+@Document("SALON_SERVICE_CATEGORY")
 @AllArgsConstructor
 @NoArgsConstructor
 public class SalonServiceCategory extends Core {
@@ -31,9 +31,6 @@ public class SalonServiceCategory extends Core {
   @Field("SVC_CATEGORY_STATUS")
   @NonNull
   private Integer svcCategoryStatus;
-
   @Transient
-  private String base64Img;
-
-
+  private String svcCategoryImgSignedUrl;
 }

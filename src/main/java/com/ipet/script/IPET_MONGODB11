@@ -1,0 +1,1495 @@
+use ipetdb;
+
+db.createCollection("SALON_SCHEDULE", {
+"capped": false,
+"validator": {
+"$jsonSchema": {
+"bsonType": "object",
+"title": "SALON_SCHEDULE",
+"properties": {
+"_id": {
+"bsonType": "objectId"
+},
+"SCH_DATE": {
+"bsonType": "date"
+},
+"SCH_PERIOD": {
+"bsonType": "string"
+},
+"GROOMER_ID": {
+"bsonType": "objectId"
+},
+"ASST1_ID": {
+"bsonType": "objectId"
+},
+"ASST2_ID": {
+"bsonType": "objectId"
+},
+"EMPLOYEE_NOTE": {
+"bsonType": "string"
+}
+},
+"additionalProperties": false
+}
+},
+"validationLevel": "off",
+"validationAction": "warn"
+});
+
+
+
+
+db.createCollection("SALON_APPOINTMENT", {
+"capped": false,
+"validator": {
+"$jsonSchema": {
+"bsonType": "object",
+"title": "SALON_APPOINTMENT",
+"properties": {
+"_id": {
+"bsonType": "objectId"
+},
+"CUSTOMER_NOTE": {
+"bsonType": "string"
+},
+"APM_STATUS": {
+"bsonType": "number"
+},
+"MEM_ID": {
+"bsonType": "objectId"
+},
+"PET_ID": {
+"bsonType": "objectId"
+},
+"SCH_ID": {
+"bsonType": "objectId"
+},
+"TOTAL_PRICE": {
+"bsonType": "number"
+},
+"APM_BUILD_TIME": {
+"bsonType": "date"
+},
+"SALON_APPOINTMENT_DETAIL": {
+"bsonType": "array",
+"additionalItems": true,
+"items": {
+"bsonType": "object",
+"properties": {
+"SVC_ID": {
+"bsonType": "objectId"
+},
+"SVC_PRICE": {
+"bsonType": "number"
+},
+"SALE_ID": {
+"bsonType": "objectId"
+},
+"SALE_PRICE": {
+"bsonType": "number"
+}
+},
+"additionalProperties": false
+}
+}
+},
+"additionalProperties": false
+}
+},
+"validationLevel": "off",
+"validationAction": "warn"
+});
+
+
+
+
+db.createCollection("SALON_SERVICE", {
+"capped": false,
+"validator": {
+"$jsonSchema": {
+"bsonType": "object",
+"title": "SALON_SERVICE",
+"properties": {
+"_id": {
+"bsonType": "objectId"
+},
+"SVC_NAME": {
+"bsonType": "string"
+},
+"SVC_CONTENT": {
+"bsonType": "string"
+},
+"SVC_PRICE": {
+"bsonType": "number"
+},
+"SVC_STATUS": {
+"bsonType": "number"
+},
+"TYPE_NAME": {
+"bsonType": "string"
+},
+"PET_SIZE": {
+"bsonType": "string"
+},
+"SVC_CATEGORY_ID": {
+"bsonType": "objectId"
+},
+}
+},
+"additionalProperties": false
+},
+"validationLevel": "off",
+"validationAction": "warn"
+});
+
+
+
+
+db.createCollection("SALON_SERVICE_CATEGORY", {
+"capped": false,
+"validator": {
+"$jsonSchema": {
+"bsonType": "object",
+"title": "SALON_SERVICE_CATEGORY",
+"properties": {
+"_id": {
+"bsonType": "objectId"
+},
+"SVC_CATEGORY_NAME": {
+"bsonType": "string"
+},
+"SVC_CATEGORY_IMG": {
+"bsonType": "string"
+},
+"SVC_CATEGORY_STATUS": {
+"bsonType": "number"
+}
+},
+"additionalProperties": false
+}
+},
+"validationLevel": "off",
+"validationAction": "warn"
+});
+
+
+
+
+db.createCollection("SALON_SALE", {
+"capped": false,
+"validator": {
+"$jsonSchema": {
+"bsonType": "object",
+"title": "SALON_SALE",
+"properties": {
+"_id": {
+"bsonType": "objectId"
+},
+"SALE_NAME": {
+"bsonType": "string"
+},
+"SALE_CONTENT": {
+"bsonType": "string"
+},
+"START_TIME": {
+"bsonType": "date"
+},
+"END_TIME": {
+"bsonType": "date"
+}
+},
+"additionalProperties": false
+}
+},
+"validationLevel": "off",
+"validationAction": "warn"
+});
+
+
+
+
+db.createCollection("MEMBER", {
+"capped": false,
+"validator": {
+"$jsonSchema": {
+"bsonType": "object",
+"title": "MEMBER",
+"properties": {
+"_id": {
+"bsonType": "objectId"
+},
+"PET": {
+"bsonType": "array",
+"additionalItems": true,
+"items": {
+"bsonType": "objectId"
+}
+},
+"MEM_NAME": {
+"bsonType": "string"
+},
+"MEM_UID": {
+"bsonType": "string"
+},
+"MEM_SEX": {
+"bsonType": "string"
+},
+"MEM_EMAIL": {
+"bsonType": "string"
+},
+"MEM_PHONE": {
+"bsonType": "string"
+},
+"MEM_TEL": {
+"bsonType": "string"
+},
+"MEM_ADD": {
+"bsonType": "string"
+},
+"MEM_AC": {
+"bsonType": "string"
+},
+"MEM_PW": {
+"bsonType": "string"
+},
+"MEM_BTH": {
+"bsonType": "date"
+},
+"MEM_STATUS": {
+"bsonType": "number"
+}
+},
+"additionalProperties": false
+}
+},
+"validationLevel": "off",
+"validationAction": "warn"
+});
+
+
+
+
+db.createCollection("STAFF", {
+"capped": false,
+"validator": {
+"$jsonSchema": {
+"bsonType": "object",
+"title": "STAFF",
+"properties": {
+"_id": {
+"bsonType": "objectId"
+},
+"STAFF_NAME": {
+"bsonType": "string"
+},
+"STAFF_UID": {
+"bsonType": "string"
+},
+"STAFF_SEX": {
+"bsonType": "string"
+},
+"STAFF_EMAIL": {
+"bsonType": "string"
+},
+"STAFF_PHONE": {
+"bsonType": "string"
+},
+"STAFF_TEL": {
+"bsonType": "string"
+},
+"STAFF_ADD": {
+"bsonType": "string"
+},
+"STAFF_AC": {
+"bsonType": "string"
+},
+"STAFF_PW": {
+"bsonType": "string"
+},
+"STAFF_STATUS": {
+"bsonType": "number"
+},
+"STAFF_POSI": {
+"bsonType": "string"
+},
+"STAFF_BIRTH": {
+"bsonType": "date"
+},
+"STAFF_ROLE": {
+"bsonType": "array",
+"additionalItems": true,
+"items": {
+"bsonType": "objectId"
+}
+}
+},
+"additionalProperties": false
+}
+},
+"validationLevel": "off",
+"validationAction": "warn"
+});
+
+
+
+
+db.createCollection("JOB_ROLE", {
+"capped": false,
+"validator": {
+"$jsonSchema": {
+"bsonType": "object",
+"title": "JOB_ROLE",
+"properties": {
+"_id": {
+"bsonType": "objectId"
+},
+"ROLE_NAME": {
+"bsonType": "string"
+},
+"STAFF_PERMISSION": {
+"bsonType": "array",
+"additionalItems": true,
+"items": {
+"bsonType": "objectId"
+}
+}
+},
+"additionalProperties": false
+}
+},
+"validationLevel": "off",
+"validationAction": "warn"
+});
+
+
+
+
+db.createCollection("JOB_PERMISSION", {
+"capped": false,
+"validator": {
+"$jsonSchema": {
+"bsonType": "object",
+"title": "JOB_PERMISSION",
+"properties": {
+"_id": {
+"bsonType": "objectId"
+},
+"PERMISSION_NAME": {
+"bsonType": "string"
+}
+},
+"additionalProperties": false
+}
+},
+"validationLevel": "off",
+"validationAction": "warn"
+});
+
+
+
+
+db.createCollection("PET", {
+"capped": false,
+"validator": {
+"$jsonSchema": {
+"bsonType": "object",
+"title": "PET",
+"properties": {
+"_id": {
+"bsonType": "objectId"
+},
+"PET_NAME": {
+"bsonType": "string"
+},
+"PET_VAR": {
+"bsonType": "string"
+},
+"PET_SIZE": {
+"bsonType": "string"
+},
+"PET_GEN": {
+"bsonType": "string"
+},
+"PET_STATUS": {
+"bsonType": "string"
+},
+"PET_BIRTH": {
+"bsonType": "date"
+}
+},
+"additionalProperties": false
+}
+},
+"validationLevel": "off",
+"validationAction": "warn"
+});
+
+db.createCollection("SALON_SERVICE_PET_TYPE");
+
+
+// insert data
+db.SALON_SCHEDULE.insertMany([
+{
+_id: ObjectId('63d2bbef34af993e06328d3a'),
+SCH_DATE: new Date('2022-12-25'),
+SCH_PERIOD:'上午',
+GROOMER_ID: ObjectId('63d33fcad0e1a72c6180d09d'),
+ASST1_ID: ObjectId('63d2ba526b0543eeace783e2'),
+ASST2_ID: ObjectId('63d2ba5c1e01727e0c9f11cc'),
+EMPLOYEE_NOTE: 'aaa',
+APPPOINT_ID: ObjectId('63d2c5870b1524ec66ec9398')
+},
+{
+_id: ObjectId('63d2bcbfb28dc27f70d1080a'),
+SCH_DATE: new Date('2022-12-25'),
+SCH_PERIOD:'下午',
+GROOMER_ID: ObjectId('63d33fcad0e1a72c6180d09d'),
+ASST1_ID: ObjectId('63d2ba526b0543eeace783e2'),
+ASST2_ID:  ObjectId('63d2bab25e2b19f6863a047f'),
+EMPLOYEE_NOTE: 'bb',
+APPPOINT_ID: ObjectId('63d33c83172bbe6df47e8508')
+},
+{
+_id: ObjectId('63d2bcdba8ae632a30eb5946'),
+SCH_DATE: new Date('2023-01-02'),
+SCH_PERIOD:'上午',
+GROOMER_ID: ObjectId('63d2b9248dc3c75c9526887d'),
+ASST1_ID:  ObjectId('63d2bae1c2bebfcfdbd713f5'),
+ASST2_ID: ObjectId('63d2ba5c1e01727e0c9f11cc'),
+EMPLOYEE_NOTE: 'aaa',
+APPPOINT_ID: ObjectId('63d2c6d4fcd6507a678ad1e5')
+},
+{
+_id: ObjectId('63d2bce27b8abd76d0aed1a3'),
+SCH_DATE: new Date('2023-01-02'),
+SCH_PERIOD:'晚上',
+GROOMER_ID: ObjectId('63d33fcad0e1a72c6180d09d'),
+ASST1_ID: ObjectId('63d2ba526b0543eeace783e2'),
+ASST2_ID: ObjectId('63d2bb24fba28c2f3c532259'),
+EMPLOYEE_NOTE: 'bb'
+},
+{
+_id: ObjectId('63d2bd23b17f6baaba434099'),
+SCH_DATE: new Date('2023-03-14'),
+SCH_PERIOD:'上午',
+GROOMER_ID: ObjectId('63d2b9248dc3c75c9526887d'),
+ASST1_ID: ObjectId('63d2bae1c2bebfcfdbd713f5'),
+ASST2_ID: ObjectId('63d2ba5c1e01727e0c9f11cc'),
+EMPLOYEE_NOTE: 'aaa',
+APPPOINT_ID: ObjectId('63d33ce3e57d299b76b82ef6')
+},
+{
+_id: ObjectId('63d2bd2a8de3b35784137ba5'),
+SCH_DATE: new Date('2023-03-16'),
+SCH_PERIOD:'晚上',
+GROOMER_ID: ObjectId('63d33fcad0e1a72c6180d09d'),
+ASST1_ID: ObjectId('63d2ba526b0543eeace783e2'),
+ASST2_ID: ObjectId('63d2bb24fba28c2f3c532259'),
+EMPLOYEE_NOTE: 'bb',
+APPPOINT_ID: ObjectId('63d32cd47297bdd27921c391')
+
+},
+{
+_id: ObjectId('63d2bd4d68a8a7445a47829e'),
+SCH_DATE: new Date('2023-03-19'),
+SCH_PERIOD:'下午',
+GROOMER_ID: ObjectId('63d2b9248dc3c75c9526887d'),
+ASST1_ID: ObjectId('63d2ba5c1e01727e0c9f11cc'),
+ASST2_ID: ObjectId('63d2ba526b0543eeace783e2'),
+EMPLOYEE_NOTE: 'aaa',
+APPPOINT_ID: ObjectId('63d32db6e8e0523032f15551')
+
+},
+{
+_id: ObjectId('63d2bd52c5269d51d7d385f0'),
+SCH_DATE: new Date('2023-03-21'),
+SCH_PERIOD:'晚上',
+GROOMER_ID: ObjectId('63d33fcad0e1a72c6180d09d'),
+ASST1_ID: ObjectId('63d2ba5c1e01727e0c9f11cc'),
+ASST2_ID: ObjectId('63d2bb24fba28c2f3c532259'),
+EMPLOYEE_NOTE: 'bb'
+}
+])
+
+db.SALON_APPOINTMENT.insertMany([
+{
+_id: ObjectId('63d2c5870b1524ec66ec9398'),
+CUSTOMER_NOTE: '狗狗good',
+APM_STATUS: 1,
+MEM_ID: ObjectId('63d2b1a9f0ed5e8a9abbc590'),
+PET_ID: ObjectId('63d2b2f09cbe234f43af6d4e'),
+SCH_ID: ObjectId('63d2bbef34af993e06328d3a'),
+TOTAL_PRICE: 850,
+APM_BUILD_TIME: new Date("2022-12-21T14:12:10"),
+SALON_APPOINTMENT_DETAIL:[
+{
+SVC_ID: ObjectId('63d2bfb0b75ebec8561fc097'),
+SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
+TYPE_NAME: '中型短毛狗',
+PET_SIZE: '中型犬',
+SVC_NAME: '經典洗澡護理',
+SVC_CONTENT: '洗澡與基本整理',
+SVC_PRICE: 1000,
+SALE_ID: ObjectId('63d33d3dc1a4c86627527129'),
+SALE_NAME: '年年有餘，多項服務享150元折扣',
+SALE_PRICE: 850
+},
+]
+},
+{
+_id: ObjectId('63d2c6d4fcd6507a678ad1e5'),
+CUSTOMER_NOTE: '狗狗good',
+APM_STATUS: 2,
+MEM_ID: ObjectId('63d2b32f9b8bdfe78424ef5c'),
+PET_ID: ObjectId('63d2b335129ed24d706438bb'),
+SCH_ID: ObjectId( '63d2bcdba8ae632a30eb5946'),
+TOTAL_PRICE: 3800,
+APM_BUILD_TIME: new Date("2022-12-21T14:12:10"),
+SALON_APPOINTMENT_DETAIL:[
+{
+SVC_ID: ObjectId('63d2c0a6de4571e30ec4d5fc'),
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+TYPE_NAME: '小型長毛狗',
+PET_SIZE: '小型犬',
+SVC_NAME: '膠原蛋白酵素SPA',
+SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
+SVC_PRICE: 2000,
+SALE_ID: ObjectId('63d2c25931c97f6a5282ee0b'),
+SALE_NAME: '歡慶新年，頂級SPA折100',
+SALE_PRICE: 1900
+},
+{
+SVC_ID: ObjectId('63d2c10e62097d8e1d4ab811'),
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+TYPE_NAME: '小型長毛狗',
+PET_SIZE: '小型犬',
+SVC_NAME: '法國玫瑰活膚泥SPA' ,
+SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
+SVC_PRICE: 2000,
+SALE_ID: ObjectId('63d2c25931c97f6a5282ee0b'),
+SALE_NAME: '歡慶新年，頂級SPA折100',
+SALE_PRICE: 1900
+},
+]
+},
+{
+_id: ObjectId('63d33c83172bbe6df47e8508'),
+CUSTOMER_NOTE: '狗狗good',
+APM_STATUS: 3,
+MEM_ID: ObjectId('63d2b3f69cba68a822a79bbe'),
+PET_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
+SCH_ID: ObjectId('63d2bcbfb28dc27f70d1080a'),
+TOTAL_PRICE: 850,
+APM_BUILD_TIME: new Date("2022-12-17T14:12:10"),
+SALON_APPOINTMENT_DETAIL:[
+{
+SVC_ID: ObjectId('63d2bffcece21429dc0e7da4'),
+SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
+TYPE_NAME: '大型短毛狗',
+PET_SIZE: '大型犬',
+SVC_NAME: '經典洗澡護理',
+SVC_CONTENT: '洗澡與基本整理',
+SVC_PRICE: 1000,
+SALE_ID: ObjectId('63d33d3dc1a4c86627527129'),
+SVC_NAME: '年年有餘，多項服務享150元折扣',
+SALE_PRICE: 850
+},
+]
+},
+{
+_id:  ObjectId('63d33ce3e57d299b76b82ef6'),
+CUSTOMER_NOTE: '狗狗good',
+APM_STATUS: 0,
+MEM_ID: ObjectId('63d2b3f69cba68a822a79bbe'),
+PET_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
+SCH_ID: ObjectId('63d2bd23b17f6baaba434099'),
+TOTAL_PRICE: 850,
+APM_BUILD_TIME: new Date("2022-02-19T14:12:10"),
+SALON_APPOINTMENT_DETAIL:[
+{
+SVC_ID: ObjectId('63d2bfa349897c4de3a88b3a'),
+SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
+TYPE_NAME: '小型長毛狗',
+PET_SIZE: '小型犬',
+SVC_NAME: '經典洗澡護理',
+SVC_CONTENT: '洗澡與基本整理',
+SVC_PRICE: 1000,
+SALE_PRICE: 850
+},
+]
+},
+{
+_id: ObjectId('63d32cd47297bdd27921c391'),
+CUSTOMER_NOTE: '狗狗good',
+APM_STATUS: 0,
+MEM_ID: ObjectId('63d2b3f69cba68a822a79bbe'),
+PET_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
+SCH_ID: ObjectId('63d2bd2a8de3b35784137ba5'),
+TOTAL_PRICE: 7900,
+APM_BUILD_TIME: new Date("2022-02-01T14:12:10"),
+SALON_APPOINTMENT_DETAIL:[
+{
+SVC_ID: ObjectId('63d2c0bc60d45fffb5eba780'),
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+TYPE_NAME: '大型長毛狗',
+PET_SIZE: '大型犬',
+SVC_NAME: '膠原蛋白酵素SPA',
+SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
+SVC_PRICE: 4000,
+SALE_PRICE: 4000
+},
+{
+SVC_ID: ObjectId('63d2c125e3df2c256a1ced8c'),
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+TYPE_NAME: '大型長毛狗',
+PET_SIZE: '大型犬',
+SVC_NAME: '法國玫瑰活膚泥SPA',
+SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
+SVC_PRICE: 4000,
+SALE_ID: ObjectId('63d2c25931c97f6a5282ee0b'),
+SALE_NAME:'歡慶新年，頂級SPA折100',
+SALE_PRICE: 3900
+}
+]
+},
+{
+_id: ObjectId('63d32db6e8e0523032f15551'),
+CUSTOMER_NOTE: '狗狗good',
+APM_STATUS: 0,
+MEM_ID: ObjectId('63d2b32f9b8bdfe78424ef5c'),
+PET_ID: ObjectId('63d2b3cdac65895e0f5b9067'),
+SCH_ID: ObjectId('63d2bd4d68a8a7445a47829e'),
+TOTAL_PRICE: 1000,
+APM_BUILD_TIME: new Date("2022-02-20T14:12:10"),
+SALON_APPOINTMENT_DETAIL:[
+{
+SVC_ID: ObjectId('63d2bffcece21429dc0e7da4'),
+SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
+TYPE_NAME: '大型短毛狗',
+PET_SIZE: '大型犬',
+SVC_NAME: '經典洗澡護理',
+SVC_PRICE: 1000,
+SALE_PRICE: 1000
+}
+]
+},
+])
+
+db.SALON_SERVICE_PET_TYPE.insertMany([
+{
+_id: ObjectId('63d786b952b1abd62edef6ec'),
+PET_SIZE: '小型犬',
+TYPE_NAME: '小型短毛狗'
+},
+{
+_id: ObjectId('63d786c7c806599c882c8d1a'),
+PET_SIZE: '小型犬',
+TYPE_NAME: '小型長毛狗'
+},
+{
+_id: ObjectId('63d786cf01ed8fefc2fff07b'),
+PET_SIZE: '中型犬',
+TYPE_NAME: '中型短毛狗'
+},
+{
+_id: ObjectId('63d786d69931abca01491dee'),
+PET_SIZE: '中型犬',
+TYPE_NAME: '中型長毛狗'
+},
+{
+_id: ObjectId('63d786e1b16e45098d667994'),
+PET_SIZE: '大型犬',
+TYPE_NAME: '大型短毛狗'
+},
+{
+_id: ObjectId('63d786ebd1a608ea398b2da1'),
+PET_SIZE: '大型犬',
+TYPE_NAME: '大型長毛狗'
+}
+
+])
+
+db.SALON_SERVICE.insertMany([
+{
+_id: ObjectId('63d2bf87d66e99f7f23b0698'),
+SVC_NAME: '經典洗澡護理',
+SVC_CONTENT: '洗澡與基本整理',
+SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
+SVC_PRICE: 500,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786b952b1abd62edef6ec')
+},
+{
+_id: ObjectId('63d2bfa349897c4de3a88b3a'),
+SVC_NAME: '經典洗澡護理',
+SVC_CONTENT: '洗澡與基本整理',
+SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
+SVC_PRICE: 1000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786c7c806599c882c8d1a')
+},
+{
+_id: ObjectId('63d2bfb0b75ebec8561fc097'),
+SVC_NAME: '經典洗澡護理',
+SVC_CONTENT: '洗澡與基本整理',
+SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
+SVC_PRICE: 1000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786cf01ed8fefc2fff07b')
+},
+{
+_id: ObjectId('63d2bfb4b24a7a63a764040b'),
+SVC_NAME: '經典洗澡護理',
+SVC_CONTENT: '洗澡與基本整理',
+SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
+SVC_PRICE: 2000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786d69931abca01491dee')
+},
+{
+_id: ObjectId('63d2bffcece21429dc0e7da4'),
+SVC_NAME: '經典洗澡護理',
+SVC_CONTENT: '洗澡與基本整理',
+SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
+SVC_PRICE: 1000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786e1b16e45098d667994')
+},
+{
+_id: ObjectId('63d2c001b58e7099de6430d8'),
+SVC_NAME: '經典洗澡護理',
+SVC_CONTENT: '洗澡與基本整理',
+SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
+SVC_PRICE: 2000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786ebd1a608ea398b2da1')
+
+},
+
+
+
+{
+_id: ObjectId('63d2c04c4cb0e2b2478b53e2'),
+SVC_NAME: '全身造型剪剃',
+SVC_CONTENT: '造型剪毛',
+SVC_CATEGORY_ID:ObjectId('63d2bdf824720a1fa110e049'),
+SVC_PRICE: 600,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786b952b1abd62edef6ec')
+},
+{
+_id: ObjectId('63d33f0314b431b56d470e05'),
+SVC_NAME: '全身造型剪剃',
+SVC_CONTENT: '造型剪毛',
+SVC_CATEGORY_ID: ObjectId('63d2bdf824720a1fa110e049'),
+SVC_PRICE: 1200,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786c7c806599c882c8d1a')
+},
+{
+_id: ObjectId('63d2c052c74cd38932f953f9'),
+SVC_NAME: '全身造型剪剃',
+SVC_CONTENT: '造型剪毛',
+SVC_CATEGORY_ID: ObjectId('63d2bdf824720a1fa110e049'),
+SVC_PRICE: 1200,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786cf01ed8fefc2fff07b')
+},
+{
+_id: ObjectId('63d2c05789db27cafb9e5d9f'),
+SVC_NAME: '全身造型剪剃',
+SVC_CONTENT: '造型剪毛',
+SVC_CATEGORY_ID: ObjectId('63d2bdf824720a1fa110e049'),
+SVC_PRICE: 2400,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786d69931abca01491dee')
+},
+{
+_id: ObjectId('63d33f5cf5e07ceef5f66917'),
+SVC_NAME: '全身造型剪剃',
+SVC_CONTENT: '造型剪毛',
+SVC_CATEGORY_ID: ObjectId('63d2bdf824720a1fa110e049'),
+SVC_PRICE: 1800,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786e1b16e45098d667994')
+},
+{
+_id: ObjectId('63d2c05c95b3bdf7e224d81e'),
+SVC_NAME: '全身造型剪剃',
+SVC_CONTENT: '造型剪毛',
+SVC_CATEGORY_ID:  ObjectId('63d2bdf824720a1fa110e049'),
+SVC_PRICE: 3600,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786ebd1a608ea398b2da1')
+},
+
+
+
+
+{
+_id: ObjectId('63d2c0a248590b38a3312ae5'),
+SVC_NAME: '膠原蛋白酵素SPA',
+SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+SVC_PRICE: 1000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786b952b1abd62edef6ec')
+},
+{
+_id: ObjectId('63d2c0a6de4571e30ec4d5fc'),
+SVC_NAME: '膠原蛋白酵素SPA',
+SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+SVC_PRICE: 2000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786c7c806599c882c8d1a')
+},
+{
+_id: ObjectId('63d2c0aa695fcd7970a52cbb'),
+SVC_NAME: '膠原蛋白酵素SPA',
+SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+SVC_PRICE: 2000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786cf01ed8fefc2fff07b')
+},
+{
+_id: ObjectId('63d2c0af2c7dedfd45349084'),
+SVC_NAME: '膠原蛋白酵素SPA',
+SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+SVC_PRICE: 3000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786d69931abca01491dee')
+},
+{
+_id: ObjectId('63d2c0b3b6a26d52fee86189'),
+SVC_NAME: '膠原蛋白酵素SPA',
+SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+SVC_PRICE: 3000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786e1b16e45098d667994')
+},
+{
+_id: ObjectId('63d2c0bc60d45fffb5eba780'),
+SVC_NAME: '膠原蛋白酵素SPA',
+SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+SVC_PRICE: 4000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786ebd1a608ea398b2da1')
+},
+
+
+
+
+{
+_id: ObjectId('63d2c10afcfdafde77a1f044'),
+SVC_NAME: '法國玫瑰活膚泥SPA',
+SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+SVC_PRICE: 1000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786b952b1abd62edef6ec')
+},
+{
+_id: ObjectId('63d2c10e62097d8e1d4ab811'),
+SVC_NAME: '法國玫瑰活膚泥SPA',
+SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+SVC_PRICE: 2000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786c7c806599c882c8d1a')
+},
+{
+_id: ObjectId('63d2c1159b74a55375bd00b3'),
+SVC_NAME: '法國玫瑰活膚泥SPA',
+SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+SVC_PRICE: 2000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786cf01ed8fefc2fff07b')
+},
+{
+_id: ObjectId('63d2c11aafc93e504d21ea37'),
+SVC_NAME: '法國玫瑰活膚泥SPA',
+SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+SVC_PRICE: 3000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786d69931abca01491dee')
+},
+{
+_id: ObjectId('63d2c12109dc5056049d512f'),
+SVC_NAME: '法國玫瑰活膚泥SPA',
+SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+SVC_PRICE: 3000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786e1b16e45098d667994')
+},
+{
+_id: ObjectId('63d2c125e3df2c256a1ced8c'),
+SVC_NAME: '法國玫瑰活膚泥SPA',
+SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
+SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
+SVC_PRICE: 4000,
+SVC_STATUS: 1,
+SALON_SERVICE_PET_TYPE_ID:  ObjectId('63d786ebd1a608ea398b2da1')
+},
+
+])
+
+db.SALON_SERVICE_CATEGORY.insertMany([
+{
+_id: ObjectId('63d2bddf4c069ebc268828f7'),
+SVC_CATEGORY_NAME: '基礎美容',
+SVC_CATEGORY_IMG: 'ipet-image/salonCategory/salon1.jpg',
+SVC_CATEGORY_STATUS:1
+},    {
+_id: ObjectId('63d2bdf824720a1fa110e049'),
+SVC_CATEGORY_NAME: '造型美容',
+SVC_CATEGORY_IMG: null,
+SVC_CATEGORY_STATUS:1
+},
+{
+_id: ObjectId('63d2bdfd7ade6db6c5742e64'),
+SVC_CATEGORY_NAME: '頂級SPA',
+SVC_CATEGORY_IMG: null,
+SVC_CATEGORY_STATUS:1
+}
+])
+
+db.SALON_SALE.insertMany([
+{
+_id: ObjectId('63d2c25931c97f6a5282ee0b'),
+SALE_NAME: '歡慶新年，頂級SPA折100',
+SALE_CONTENT: '即日起至1/31日預約頂級SPA折100優惠',
+START_TIME: new Date('2022-12-25T00:00:00'),
+END_TIME: new Date('2023-01-31T23:59:59'),
+SVC_DETAIL:[
+{
+REF_ID: ObjectId('63d2c0a248590b38a3312ae5'),
+SALE_PRICE: 900 ,
+},
+{
+REF_ID: ObjectId('63d2c0a6de4571e30ec4d5fc'),
+SALE_PRICE: 1900,
+},
+{
+REF_ID: ObjectId('63d2c0aa695fcd7970a52cbb'),
+
+SALE_PRICE: 1900,
+},
+{
+REF_ID: ObjectId('63d2c0af2c7dedfd45349084'),
+
+SALE_PRICE: 2900,
+},
+{
+REF_ID: ObjectId('63d2c0b3b6a26d52fee86189'),
+
+SALE_PRICE: 2900,
+},
+{
+REF_ID: ObjectId('63d2c0bc60d45fffb5eba780'),
+
+SALE_PRICE: 3900,
+},
+
+
+{
+REF_ID: ObjectId('63d2c10afcfdafde77a1f044'),
+
+SALE_PRICE: 900 ,
+},
+{
+REF_ID: ObjectId('63d2c10e62097d8e1d4ab811'),
+
+SALE_PRICE: 1900,
+},
+{
+REF_ID: ObjectId('63d2c1159b74a55375bd00b3'),
+
+SALE_PRICE: 1900,
+},
+{
+REF_ID: ObjectId('63d2c11aafc93e504d21ea37'),
+
+SALE_PRICE: 2900,
+},
+{
+REF_ID: ObjectId('63d2c12109dc5056049d512f'),
+
+SALE_PRICE: 2900,
+},
+{
+REF_ID: ObjectId('63d2c125e3df2c256a1ced8c'),
+
+SALE_PRICE: 3900,
+}]
+},
+{_id: ObjectId('63d33d3dc1a4c86627527129'),
+SALE_NAME: '年年有餘，多項服務享150元折扣',
+SALE_CONTENT: '即日起至3/31日預約經典洗澡護理折扣150元',
+START_TIME: new Date('2022-12-25T00:00:00'),
+END_TIME: new Date('2023-03-31T23:59:59'),
+SVC_DETAIL:[
+{
+REF_ID: ObjectId('63d2bf87d66e99f7f23b0698'),
+
+SALE_PRICE: 350
+},
+{
+REF_ID: ObjectId('63d2bfa349897c4de3a88b3a'),
+
+SALE_PRICE: 850
+},
+{
+REF_ID: ObjectId('63d2bfb0b75ebec8561fc097'),
+
+SALE_PRICE: 850
+},
+{
+REF_ID: ObjectId('63d2bfb4b24a7a63a764040b'),
+
+SALE_PRICE: 1850
+},
+{
+REF_ID: ObjectId('63d2bffcece21429dc0e7da4'),
+
+SALE_PRICE: 850
+},
+{
+REF_ID: ObjectId('63d2c001b58e7099de6430d8'),
+
+SALE_PRICE: 1850
+},
+]},
+{
+_id: ObjectId('63d33f842228333c081d8b5d'),
+SALE_NAME: '3/23小型犬享100元折扣',
+SALE_CONTENT: '歡慶3/23國際小狗日，當日上線預約小型犬全服務享100元折扣',
+START_TIME: new Date('2022-03-23T00:00:00'),
+END_TIME: new Date('2023-03-23T23:59:59'),
+SVC_DETAIL:[
+{
+REF_ID: ObjectId('63d2bf87d66e99f7f23b0698'),
+
+SALE_PRICE: 400
+},
+{
+REF_ID: ObjectId('63d2bfa349897c4de3a88b3a'),
+
+SALE_PRICE: 900
+},
+{
+REF_ID: ObjectId('63d2c04c4cb0e2b2478b53e2'),
+
+SALE_PRICE: 500
+},
+{
+REF_ID: ObjectId('63d33f0314b431b56d470e05'),
+
+SALE_PRICE: 1100
+},
+{
+REF_ID: ObjectId('63d2c0a248590b38a3312ae5'),
+
+SALE_PRICE: 900
+},
+{
+REF_ID: ObjectId('63d2c0a6de4571e30ec4d5fc'),
+
+SALE_PRICE: 1900
+},
+{
+REF_ID: ObjectId('63d2c10afcfdafde77a1f044'),
+
+SALE_PRICE: 900
+},
+{
+_id: ObjectId('63d2c0af2c7dedfd45349084'),
+
+SALE_PRICE: 1900
+}
+]
+}
+])
+
+db.MEMBER.insertMany([
+{
+_id: ObjectId('63d2b1a9f0ed5e8a9abbc590'),
+MEM_NAME: '連大戰',
+MEM_UID: 'A123443212',
+MEM_SEX: '男',
+MEM_EMAIL: 'ggyy6969@gmail.com',
+MEM_PHONE: '0923432125',
+MEM_TEL: '26654874',
+MEM_ADD: '台北市天龍國',
+MEM_AC: 'ggyy6969',
+MEM_PW: 'Password1',
+MEM_BTH: new Date("1988-03-19"),
+MEM_STATUS: 0,
+PET: [{REF_ID: ObjectId('63d2b2f09cbe234f43af6d4e')}]
+},
+{
+_id: ObjectId('63d2b32f9b8bdfe78424ef5c'),
+MEM_NAME: '蔡筱英',
+MEM_UID: 'A226699778',
+MEM_SEX: '女',
+MEM_EMAIL: 'hahaha3838@gmail.com',
+MEM_PHONE: '0922669977',
+MEM_TEL: null,
+MEM_ADD: '台北市大安區',
+MEM_AC: 'hahaha3838',
+MEM_PW: 'Password3',
+MEM_BTH: new Date('1995-07-11'),
+MEM_STATUS: 0,
+PET:[{REF_ID: ObjectId('63d2b335129ed24d706438bb')},
+{REF_ID: ObjectId('63d2b3cdac65895e0f5b9067')},
+]
+},
+{
+_id: ObjectId('63d2b3f69cba68a822a79bbe'),
+MEM_NAME: '高小安',
+MEM_UID: 'A123321123',
+MEM_SEX: '女',
+MEM_EMAIL: 'thank9527@gmail.com',
+MEM_PHONE: '0912332112',
+MEM_TEL: null,
+MEM_ADD: '苗栗國',
+MEM_AC: 'abc8877',
+MEM_PW: 'Password',
+MEM_BTH: new Date('1994-09-21'),
+MEM_STATUS: 0,
+PET:[{REF_ID: ObjectId('63d2b3feb0e01f4fb2577b3c')},
+{REF_ID:ObjectId('63d2b458823b69280092e37d')}]
+},
+{
+_id: ObjectId('63d2b48ceba643b7ed390a6d'),
+MEM_NAME: '馬小九',
+MEM_UID: 'A126786688',
+MEM_SEX: '男',
+MEM_EMAIL: 'abc8877@gmail.com',
+MEM_PHONE: '0912678668',
+MEM_TEL: null,
+MEM_ADD: '新北市林口區',
+MEM_AC: 'lak14swang',
+MEM_PW: 'Password4',
+MEM_BTH: new Date('1994-09-01'),
+MEM_STATUS: 1,
+PET:null
+}
+])
+
+db.PET.insertMany([
+{
+_id: ObjectId('63d2b2f09cbe234f43af6d4e'),
+PET_NAME: 'Micky',
+PET_VAR: '米格魯',
+PET_SIZE: '中型犬',
+PET_GEN: '公',
+PET_STATUS: 1,
+PET_BIRTH: new Date('2017-01-07')
+},
+{
+_id: ObjectId('63d2b335129ed24d706438bb'),
+PET_NAME: 'LuLu',
+PET_VAR: '貴賓狗',
+PET_SIZE: '小型犬',
+PET_GEN: '母',
+PET_STATUS: 1,
+PET_BIRTH: new Date('2019-08-18')
+},
+{
+_id: ObjectId('63d2b3cdac65895e0f5b9067'),
+PET_NAME: 'Luka',
+PET_VAR: '哈士奇',
+PET_SIZE: '大型犬',
+PET_GEN: '公',
+PET_STATUS: 0,
+PET_BIRTH: new Date('2015-07-07')
+},
+{
+_id: ObjectId('63d2b3feb0e01f4fb2577b3c'),
+PET_NAME: 'JoJo',
+PET_VAR: '黃金獵犬',
+PET_SIZE: '大型犬',
+PET_GEN: '母',
+PET_STATUS: 1,
+PET_BIRTH: new Date('2021-03-08')
+},
+{
+_id: ObjectId('63d2b458823b69280092e37d'),
+PET_NAME: 'Pinky',
+PET_VAR: '馬爾濟斯',
+PET_SIZE: '小型犬',
+PET_GEN: '母',
+PET_STATUS: 1,
+PET_BIRTH: new Date('2018-06-05')
+}
+
+])
+
+db.STAFF.insertMany([
+{
+_id: ObjectId('63d33fcad0e1a72c6180d09d'),
+STAFF_NAME:'王曉明',
+STAFF_UID:'A170952896',
+STAFF_SEX:'男',
+STAFF_EMAIL:'xxxyyy@gmail.com',
+STAFF_PHONE:'0912345678',
+STAFF_TEL:'23456568',
+STAFF_ADD:'台北市天龍國',
+STAFF_AC:'abc1117',
+STAFF_PW:'0000',
+STAFF_STATUS:0,
+STAFF_POSI:'美容師',
+STAFF_BIRTH:new Date('1981-11-17'),
+STAFF_ROLE:[
+{REF_ID:ObjectId('63d2b770731d6c289b3b2717')},
+{REF_ID:ObjectId('63d2b7c55b4677b880555caa')}]
+},
+{
+_id: ObjectId('63d2b9248dc3c75c9526887d'),
+STAFF_NAME:'王小美',
+STAFF_UID:'A264653875',
+STAFF_SEX:'女',
+STAFF_EMAIL:'aaabbb@gmail.com',
+STAFF_PHONE:'0923456789',
+STAFF_TEL: null,
+STAFF_ADD:'桃園市中壢國',
+STAFF_AC:'qazwsx0107',
+STAFF_PW:'00001',
+STAFF_STATUS:0,
+STAFF_POSI:'美容師',
+STAFF_BIRTH:new Date('1997-01-07'),
+STAFF_ROLE:[{REF_ID:ObjectId('63d2b6ccf660b9cc694c8619')},{REF_ID: ObjectId('63d2b770731d6c289b3b2717')}]
+},
+{
+_id: ObjectId('63d2ba526b0543eeace783e2'),
+STAFF_NAME:'陳大壯',
+STAFF_UID:'K167265918',
+STAFF_SEX:'男',
+STAFF_EMAIL:'hihihi@gmail.com',
+STAFF_PHONE:'0934567891',
+STAFF_TEL: null,
+STAFF_ADD:'苗栗國',
+STAFF_AC:'abc0808',
+STAFF_PW:'00002',
+STAFF_STATUS:0,
+STAFF_POSI:'美容助理',
+STAFF_BIRTH:new Date('1997-01-07'),
+STAFF_ROLE:[{REF_ID: ObjectId('63d2b770731d6c289b3b2717')},{REF_ID: ObjectId('63d2b7c55b4677b880555caa')},]
+},
+{
+_id: ObjectId('63d2ba5c1e01727e0c9f11cc'),
+STAFF_NAME:'張小菁',
+STAFF_UID:'A282013860',
+STAFF_SEX:'女',
+STAFF_EMAIL:'yoyoyo@gmail.com',
+STAFF_PHONE:'0945678912',
+STAFF_TEL: null,
+STAFF_ADD:'台北市天龍國',
+STAFF_AC:'abc0530',
+STAFF_PW:'00002',
+STAFF_STATUS:0,
+STAFF_POSI:'美容助理',
+STAFF_BIRTH:new Date('1997-11-07'),
+STAFF_ROLE:[{REF_ID: ObjectId('63d2b770731d6c289b3b2717')}]
+},
+{
+_id: ObjectId('63d2bab25e2b19f6863a047f'),
+STAFF_NAME:'關小婷',
+STAFF_UID:'F207913142',
+STAFF_SEX:'女',
+STAFF_EMAIL:'goodproject@gmail.com',
+STAFF_PHONE:'0956789123',
+STAFF_TEL: null,
+STAFF_ADD:'台北市天龍國',
+STAFF_AC:'abc0606',
+STAFF_PW:'00002',
+STAFF_STATUS:0,
+STAFF_POSI:'美容助理',
+STAFF_BIRTH:new Date('1997-11-07'),
+STAFF_ROLE:[{REF_ID: ObjectId('63d2b770731d6c289b3b2717')}]
+},
+{
+_id: ObjectId('63d2bae1c2bebfcfdbd713f5'),
+STAFF_NAME:'蕭小豪',
+STAFF_UID:'A114586283',
+STAFF_SEX:'男',
+STAFF_EMAIL:'havemanymoney@gmail.com',
+STAFF_PHONE:'0967891230',
+STAFF_TEL: '29954125',
+STAFF_ADD:'台北市天龍國',
+STAFF_AC:'abc05302',
+STAFF_PW:'0000sd',
+STAFF_STATUS:0,
+STAFF_POSI:'美容助理',
+STAFF_BIRTH:new Date('1997-11-27'),
+STAFF_ROLE:[{REF_ID: ObjectId('63d2b770731d6c289b3b2717')}]
+},
+{
+_id: ObjectId('63d2bb24fba28c2f3c532259'),
+STAFF_NAME:'吳小宏',
+STAFF_UID:'A151865958',
+STAFF_SEX:'男',
+STAFF_EMAIL:'wearegood@gmail.com',
+STAFF_PHONE:'0978912345',
+STAFF_TEL: null,
+STAFF_ADD:'台北市天龍國',
+STAFF_AC:'abc0101d',
+STAFF_PW:'0000sd',
+STAFF_STATUS:0,
+STAFF_POSI:'美容助理',
+STAFF_BIRTH:new Date('1997-11-27'),
+STAFF_ROLE:[{REF_ID:  ObjectId('63d2b770731d6c289b3b2717')},
+{REF_ID:  ObjectId('63d2b6ccf660b9cc694c8619')}]
+},
+{
+_id: ObjectId('63d2bb595896b7f180d474d9'),
+STAFF_NAME:'林曉華',
+STAFF_UID:'A226491120',
+STAFF_SEX:'女',
+STAFF_EMAIL:'momo@gmail.com',
+STAFF_PHONE:'0989123456',
+STAFF_TEL: null,
+STAFF_ADD:'台北市天龍國',
+STAFF_AC:'abc0101d',
+STAFF_PW:'0000sd',
+STAFF_STATUS:0,
+STAFF_POSI:'行政人員',
+STAFF_BIRTH:new Date('1997-11-27'),
+STAFF_ROLE:[{REF_ID:ObjectId('63d2b8665f803425bf65ac56')}]
+},
+{
+_id: ObjectId('63d2bbef34af993e06328d3a'),
+STAFF_NAME:'馬雲',
+STAFF_UID:'A199029036',
+STAFF_SEX:'男',
+STAFF_EMAIL:'china@gmail.com',
+STAFF_PHONE:'0990123456',
+STAFF_TEL: null,
+STAFF_ADD:'台北市天龍國',
+STAFF_AC:'abc0102ccc',
+STAFF_PW:'0000sd',
+STAFF_STATUS:0,
+STAFF_POSI:'老闆',
+STAFF_BIRTH:new Date('1997-11-27'),
+STAFF_ROLE:[{REF_ID: ObjectId('63d2b804aa74e16d32cd6a8d')}]
+}
+])
+
+db.JOB_ROLE.insertMany([
+{
+_id: ObjectId('63d2b6ccf660b9cc694c8619'),
+ROLE_NAME: '會員管理員',
+STAFF_PERMISSION:[
+{REF_ID: ObjectId('63d2b5f6c6b8c459b21a77ba')},
+{REF_ID: ObjectId('63d2b5f1a629e1a570c2ec36')}]
+},
+{
+_id: ObjectId('63d2b770731d6c289b3b2717'),
+ROLE_NAME: '美容員工',
+STAFF_PERMISSION:[
+{REF_ID: ObjectId('63d2b5fa7230dd3efe55da9a')},
+{REF_ID: ObjectId('63d2b6031edc7a582375bc5c')},
+{REF_ID: ObjectId('63d2b60c998f51d5dd5e79bc')},
+{REF_ID: ObjectId('63d2b6156cfd2149c7f24ded')}]
+},
+{
+_id: ObjectId('63d2b7c55b4677b880555caa'),
+ROLE_NAME: '美容管理員',
+STAFF_PERMISSION:[
+{REF_ID: ObjectId('63d2b5fa7230dd3efe55da9a')},
+{REF_ID: ObjectId('63d2b6031edc7a582375bc5c')},
+{REF_ID: ObjectId('63d2b60c998f51d5dd5e79bc')},
+{REF_ID: ObjectId('63d2b6156cfd2149c7f24ded')},
+{REF_ID: ObjectId('63d2b5fe26a3f5043ae5bd01')},
+{REF_ID: ObjectId('63d2b60751438dcb09f11e86')},
+{REF_ID: ObjectId('63d2b61043e5a61b8ad8aaa3')},
+{REF_ID: ObjectId('63d2b61908b9747abf714225')}]
+},
+{
+_id: ObjectId('63d2b8665f803425bf65ac56'),
+ROLE_NAME: '行政人事管理員',
+STAFF_PERMISSION:[
+{REF_ID: ObjectId('63d2b5e6664a6da19c4aa96f')},
+{REF_ID: ObjectId('63d2b5ebf72d9e1cc52fa95a')},
+{REF_ID: ObjectId('63d2b5f1a629e1a570c2ec36')},
+{REF_ID: ObjectId('63d2b5f6c6b8c459b21a77ba')}]
+},
+{
+_id: ObjectId('63d2b804aa74e16d32cd6a8d'),
+ROLE_NAME: '負責人',
+STAFF_PERMISSION:[
+{REF_ID: ObjectId('63d2b5e6664a6da19c4aa96f')},
+{REF_ID: ObjectId('63d2b5ebf72d9e1cc52fa95a')},
+{REF_ID: ObjectId('63d2b5f1a629e1a570c2ec36')},
+{REF_ID: ObjectId('63d2b5f6c6b8c459b21a77ba')},
+{REF_ID: ObjectId('63d2b5fa7230dd3efe55da9a')},
+{REF_ID: ObjectId('63d2b6031edc7a582375bc5c')},
+{REF_ID: ObjectId('63d2b60c998f51d5dd5e79bc')},
+{REF_ID: ObjectId('63d2b6156cfd2149c7f24ded')},
+{REF_ID: ObjectId('63d2b5fe26a3f5043ae5bd01')},
+{REF_ID: ObjectId('63d2b60751438dcb09f11e86')},
+{REF_ID: ObjectId('63d2b61043e5a61b8ad8aaa3')},
+{REF_ID: ObjectId('63d2b61908b9747abf714225')}]
+},
+
+])
+
+db.JOB_PERMISSION.insertMany([
+{
+_id: ObjectId('63d2b5e6664a6da19c4aa96f'),
+PERMISSION_NAME: '檢視員工權限資料'
+},
+{
+_id: ObjectId('63d2b5ebf72d9e1cc52fa95a'),
+PERMISSION_NAME: '編輯員工權限資料'
+},
+{
+_id: ObjectId('63d2b5f1a629e1a570c2ec36'),
+PERMISSION_NAME: '檢視會員資料'
+},
+{
+_id: ObjectId('63d2b5f6c6b8c459b21a77ba'),
+PERMISSION_NAME: '編輯會員資料'
+},
+{
+_id: ObjectId('63d2b5fa7230dd3efe55da9a'),
+PERMISSION_NAME: '檢視美容優惠'
+},
+{
+_id: ObjectId('63d2b5fe26a3f5043ae5bd01'),
+PERMISSION_NAME: '編輯美容優惠'
+},
+{
+_id: ObjectId('63d2b6031edc7a582375bc5c'),
+PERMISSION_NAME: '檢視美容服務'
+},
+{
+_id: ObjectId('63d2b60751438dcb09f11e86'),
+PERMISSION_NAME: '編輯美容服務'
+},
+{
+_id: ObjectId('63d2b60c998f51d5dd5e79bc'),
+PERMISSION_NAME: '檢視美容班表'
+},
+{
+_id: ObjectId('63d2b61043e5a61b8ad8aaa3'),
+PERMISSION_NAME: '編輯美容班表'
+},
+{
+_id: ObjectId('63d2b6156cfd2149c7f24ded'),
+PERMISSION_NAME: '檢視美容預約單'
+},
+{
+_id: ObjectId('63d2b61908b9747abf714225'),
+PERMISSION_NAME: '編輯美容預約單'
+}
+])
+

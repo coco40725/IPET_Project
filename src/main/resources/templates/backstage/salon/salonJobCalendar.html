@@ -1,22 +1,20 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IPET 寵物 | 美容專區 | 班表管理</title>
+  <title>IPET 寵物 | 寵物美容專區 | 班表瀏覽</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/backstage/plugins/fontawesome-free/css/all.css">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/fontawesome-free/css/all.css}">
   <!-- fullCalendar -->
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/backstage/plugins/fullcalendar/main.css">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/fullcalendar/main.css}">
   <!-- iCheck for checkboxes and radio inputs -->
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/backstage/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
   <!-- Theme style -->
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/backstage/css/adminlte.css">
+  <link rel="stylesheet" th:href="@{/backstage/css/adminlte.css}">
 
   <!--  美容員工 event style-->
   <style>
@@ -36,33 +34,20 @@
       margin-left: 4px;
     }
 
-    .event-circle {
-      border: 1px solid gainsboro;
-      display: inline-block;
-      position: relative;
-      margin-left: 10px;
-      /*background: #f56954;*/
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-    }
-
     .event-body{
         padding: 10px;
     }
-
-
   </style>
 </head>
 <body class="hold-transition sidebar-mini">
 
 <div class="wrapper">
   <!--  Navbar -->
-  <%@ include file="/templates/backstage/common/navbar.jsp" %>
+  <div th:replace="~{backstage/common/navbor :: navbar}"></div>
   <!-- /.navbar -->
 
   <!-- 左邊選單區 Main Sidebar Container -->
-  <%@ include file="/templates/backstage/common/sidebar.jsp" %>
+  <div th:replace="~{backstage/common/sidebar :: sidebar}"></div>
   <!-- /.aside -->
 
   <!-- Content Wrapper. Contains page content -->
@@ -100,34 +85,33 @@
                   <button type="button" id="btn-event-chooseall" class="btn btn-block btn-default btn-sm" onclick="">全選</button>
                   <p></p>
                   <div id="external-events" class="accordion">
-                   <%--  Groomer --%>
-                    <c:forEach var="i" begin="0" end="${groomerIds.size() - 1}">
-                      <!--員工 -->
-                      <div class="event-item">
+
+                      <!--美容員工 -->
+                      <div class="event-item" th:each="groomer : ${groomers}">
                         <h6 class="event-head">
-                          <img src= "${pageContext.request.contextPath}/static/backstage/img/dog1.png" alt="em_img" class="img-circle elevation-2 event-img"/>
-                            ${groomNames[i]}
+                          <img th:src= "@{/backstage/img/dog1.png}" alt="em_img" class="img-circle elevation-2 event-img"/>
+                          [[${groomer.staffName}]]
                         </h6>
                         <!-- 員工上班時段 -->
                         <div class="event-body">
                           <div class="icheck-primary d-inline">
-                            <input type="checkbox" id="${groomerIds[i]}_上午" value="${groomerIds[i]}_上午" class="filter-event" checked>
-                            <label for="${groomerIds[i]}_上午">
-                              (上午) ${groomNames[i]}
+                            <input type="checkbox" th:id="${groomer.id} + '_上午'" th:value="${groomer.id} + '_上午'" class="filter-event" checked>
+                            <label th:for="${groomer.id} + '_上午'">
+                              (上午) [[${groomer.staffName}]]
                             </label>
                           </div>
                           <p></p>
                           <div class="icheck-primary d-inline">
-                            <input type="checkbox" id="${groomerIds[i]}_下午" value="${groomerIds[i]}_下午" class="filter-event" checked>
-                            <label for="${groomerIds[i]}_下午">
-                              (下午) ${groomNames[i]}
+                            <input type="checkbox" th:id="${groomer.id} + '_下午'" th:value="${groomer.id} + '_下午'" class="filter-event" checked>
+                            <label th:for="${groomer.id} + '_下午'">
+                              (下午) [[${groomer.staffName}]]
                             </label>
                           </div>
                           <p></p>
                           <div class="icheck-primary d-inline">
-                            <input type="checkbox" id="${groomerIds[i]}_晚上" value="${groomerIds[i]}_晚上" class="filter-event" checked>
-                            <label for="${groomerIds[i]}_晚上">
-                              (晚上) ${groomNames[i]}
+                            <input type="checkbox" th:id="${groomer.id} + '_晚上'" th:value="${groomer.id} + '_晚上'" class="filter-event" checked>
+                            <label th:for="${groomer.id} + '_晚上'">
+                              (晚上) [[${groomer.staffName}]]
                             </label>
                           </div>
                         </div>
@@ -135,36 +119,33 @@
                         <!-- /員工上班時段 -->
                       </div>
                       <!-- /.員工 -->
-                    </c:forEach>
 
-                     <%--  Asst --%>
-                     <c:forEach var="i" begin="0" end="${asstIds.size() - 1}">
                        <!--員工 -->
-                       <div class="event-item">
+                       <div class="event-item" th:each="asst : ${assts}">
                          <h6 class="event-head">
-                           <img src= "${pageContext.request.contextPath}/static/backstage/img/dog2.png" alt="em_img" class="img-circle elevation-2 event-img"/>
-                             ${asstNames[i]}
+                           <img th:src= "@{/backstage/img/dog2.png}" alt="em_img" class="img-circle elevation-2 event-img"/>
+                             [[${asst.staffName}]]
                          </h6>
                          <!-- 員工上班時段 -->
                          <div class="event-body">
                            <div class="icheck-primary d-inline">
-                             <input type="checkbox" id="${asstIds[i]}_上午" value="${asstIds[i]}_上午" class="filter-event" checked>
-                             <label for="${asstIds[i]}_上午">
-                               (上午) ${asstNames[i]}
+                             <input type="checkbox" th:id="${asst.id} + '_上午'" th:value="${asst.id}+ '_上午'" class="filter-event" checked>
+                             <label th:for="${asst.id} + '_上午'">
+                               (上午)  [[${asst.staffName}]]
                              </label>
                            </div>
                            <p></p>
                            <div class="icheck-primary d-inline">
-                             <input type="checkbox" id="${asstIds[i]}_下午" value="${asstIds[i]}_下午" class="filter-event" checked>
-                             <label for="${asstIds[i]}_下午">
-                               (下午) ${asstNames[i]}
+                             <input type="checkbox" th:id="${asst.id} + '_下午'" th:value="${asst.id} + '_下午'" class="filter-event" checked>
+                             <label th:for="${asst.id} + '_下午'">
+                               (下午)  [[${asst.staffName}]]
                              </label>
                            </div>
                            <p></p>
                            <div class="icheck-primary d-inline">
-                             <input type="checkbox" id="${asstIds[i]}_晚上" value="${asstIds[i]}_晚上" class="filter-event" checked>
-                             <label for="${asstIds[i]}_晚上">
-                               (晚上) ${asstNames[i]}
+                             <input type="checkbox" th:id="${asst.id} + '_晚上'" th:value="${asst.id} + '_晚上'" class="filter-event" checked>
+                             <label th:for="${asst.id} + '_晚上'">
+                               (晚上)  [[${asst.staffName}]]
                              </label>
                            </div>
                          </div>
@@ -201,7 +182,7 @@
   <!-- /.content-wrapper -->
 
   <!-- Main Footer -->
-  <%@ include file="/templates/backstage/common/footer.jsp" %>
+  <div th:replace="~{backstage/common/footer :: footer}"></div>
 
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
@@ -212,16 +193,16 @@
 <!-- ./wrapper -->
 
 <!-- jQuery -->
-<script src="${pageContext.request.contextPath}/static/backstage/plugins/jquery/jquery.min.js"></script>
+<script th:src="@{/backstage/plugins/jquery/jquery.min.js}"></script>
 <!-- Bootstrap -->
-<script src="${pageContext.request.contextPath}/static/backstage/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/backstage/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <!-- jQuery UI -->
-<script src="${pageContext.request.contextPath}/static/backstage/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script th:src="@{/backstage/plugins/jquery-ui/jquery-ui.min.js}"></script>
 <!-- AdminLTE App -->
-<script src="${pageContext.request.contextPath}/static/backstage/js/adminlte.min.js"></script>
+<script th:src="@{/backstage/js/adminlte.min.js}"></script>
 <!-- fullCalendar 2.2.5 -->
-<script src="${pageContext.request.contextPath}/static/backstage/plugins/moment/moment.min.js"></script>
-<script src="${pageContext.request.contextPath}/static/backstage/plugins/fullcalendar/main.js"></script>
+<script th:src="@{/backstage/plugins/moment/moment.min.js}"></script>
+<script th:src="@{/backstage/plugins/fullcalendar/main.js}"></script>
 
 
 <!-- sidebar menu Class -->
@@ -230,10 +211,16 @@
   $("p:contains(班表瀏覽)").closest("a").addClass("active");
 </script>
 <!-- Page specific script -->
-<script>
+<script th:inline="javascript">
   $(function () {
     let jobEvent = [];
-    for (let job of ${allJobs}){
+    // 參考 https://www.thymeleaf.org/doc/tutorials/2.1/usingthymeleaf.html#script-inlining-javascript-and-dart
+    /*<![CDATA[*/
+    let scheduleObject= /*[[${schedules}]]*/ null;
+    /*]]>*/
+
+    console.log(scheduleObject);
+    for (let job of scheduleObject){
       let periodColorIndex = function (period){
         if (period === "上午") {
           return "#f56954";
@@ -244,15 +231,15 @@
         }
       }
       jobEvent.push({
-        title: "(" + job.schPeriod + ") " +  job.groomerName + ", " + job.asstID1Name + ", " + job.asstID2Name,
-        employee: [job.groomerName, job.asstID1Name, job.asstID2Name],
+        title: "(" + job.schPeriod + ") " +  job.groomer[0].staffName + ", " + job.asst1[0].staffName + ", " + job.asst2[0].staffName,
+        employee: [job.groomer[0].staffName, job.asst1[0].staffName, job.asst2[0].staffName],
         allDay: true,
         start: job.schDate,
         borderColor: periodColorIndex(job.schPeriod),
         backgroundColor: periodColorIndex(job.schPeriod),
-        employee_period: [job.groomerID + "_" + job.schPeriod,
-          job.asstID1 + "_" + job.schPeriod,
-          job.asstID2 + "_" + job.schPeriod]
+        employee_period: [job.groomer.id + "_" + job.schPeriod,
+          job.asst1[0].id + "_" + job.schPeriod,
+          job.asst2[0].id + "_" + job.schPeriod]
       })
     }
 

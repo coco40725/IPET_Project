@@ -1,22 +1,19 @@
 package com.ipet.web.salon.entities;
 
 import com.ipet.core.entities.Core;
-import com.ipet.web.member.entities.Member;
-import com.ipet.web.member.entities.Pet;
+import com.ipet.web.salon.entities.sub_entities.SalonAppointDetail;
 import com.mongodb.lang.NonNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.io.Serial;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Data
 @Document("SALON_APPOINTMENT")
 @AllArgsConstructor
@@ -36,22 +33,18 @@ public class SalonAppointment extends Core {
   private Integer apmStatus;
   @Field("CUSTOMER_NOTE")
   private String customerNote;
-  @Field("MEM")
-  @DBRef
+  @Field(name = "MEM_ID", targetType = FieldType.OBJECT_ID)
   @NonNull
-  private Member mem;
-  @Field("PET")
-  @DBRef
+  private String memId;
+  @Field(name = "PET_ID", targetType = FieldType.OBJECT_ID)
   @NonNull
-  private Pet pet;
-  @Field("SCH")
-  @DBRef
+  private String petId;
+  @Field(name = "SCH_ID", targetType = FieldType.OBJECT_ID)
   @NonNull
-  private SalonSchedule sch;
+  private String schId;
   @Field("SALON_APPOINTMENT_DETAIL")
-  @DBRef
   @NonNull
-  private List<Map<String, String>> salonAppointmentDetail;
+  private List<SalonAppointDetail> salonAppointDetail;
   @Field("TOTAL_PRICE")
   @NonNull
   private Integer totalPrice;

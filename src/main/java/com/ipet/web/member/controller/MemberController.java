@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ipet.web.member.entities.Member;
 import com.ipet.web.member.services.MemberServices;
-import jdk.swing.interop.SwingInterOpUtils;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,7 +41,6 @@ public class MemberController {
     public String editMember(@RequestBody Map<String, String> map) {
         Gson gson = builder.serializeNulls().create();
         Member member = gson.fromJson(map.get("jsonFile"), Member.class);
-        System.out.println(member);
         return memberServices.editMember(member);
     }
 
@@ -60,4 +57,12 @@ public class MemberController {
         Gson gson = builder.serializeNulls().setDateFormat("yyyy-MM-dd").create();
         return gson.toJson(memberServices.getMemberById(id));
     }
+
+    @GetMapping("/ipet-back/memberPets")
+    @ResponseBody
+    public String getAllMembersPets() {
+        Gson gson = builder.serializeNulls().setDateFormat("yyyy-MM-dd").create();
+        return gson.toJson( memberServices.getAllUnwindedMembers());
+    }
+
 }

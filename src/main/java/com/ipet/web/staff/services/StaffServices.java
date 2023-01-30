@@ -28,7 +28,10 @@ public class StaffServices {
     // staff edit
 
     // staff query
-    public List<Staff> findAllStaffByPosi(String posi){
+    public List<Staff> getAllStaffByPosi(String posi){
         return staffRepository.findAllByStaffPosi(posi);
+    }
+    public Staff getStaffById(String id){
+        return staffRepository.findById(id).orElse(null);
     }
 }

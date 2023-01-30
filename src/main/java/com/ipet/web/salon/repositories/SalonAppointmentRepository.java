@@ -1,7 +1,10 @@
 package com.ipet.web.salon.repositories;
 
 import com.ipet.web.salon.entities.SalonAppointment;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

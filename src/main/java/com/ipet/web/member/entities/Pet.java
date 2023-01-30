@@ -8,11 +8,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.io.Serial;
 import java.util.Date;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Data
 @Document("PET")
 @AllArgsConstructor
@@ -42,8 +43,4 @@ public class Pet extends Core {
   @Field("PET_VAR")
   @NonNull
   private String petVar;
-  @Transient
-  private String memId;
-  @Transient
-  private String memName;
 }

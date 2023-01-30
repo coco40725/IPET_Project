@@ -1,6 +1,7 @@
 package com.ipet.web.salon.entities;
 
 import com.ipet.core.entities.Core;
+import com.ipet.web.salon.entities.sub_entities.SalonSaleServiceDetail;
 import com.mongodb.lang.NonNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -12,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Data
 @Document("SALON_SALE")
 @AllArgsConstructor
@@ -38,7 +39,7 @@ public class SalonSale extends Core {
   private Date startTime;
   @Field("SVC_DETAIL")
   @NonNull
-  private List<Map<String,String>> svcDetail;
+  private List<SalonSaleServiceDetail> svcDetail;
 
 
 }

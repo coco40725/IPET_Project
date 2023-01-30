@@ -3,6 +3,7 @@ package com.ipet.web.member.controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ipet.web.member.entities.Pet;
+import com.ipet.web.member.services.MemberServices;
 import com.ipet.web.member.services.PetServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import java.util.Map;
 @Controller
 public class PetController {
     private PetServices petServices;
+    private MemberServices memberServices;
     private GsonBuilder builder;
 
     @Autowired
@@ -28,6 +30,10 @@ public class PetController {
     @Autowired
     public void setBuilder(GsonBuilder builder){
         this.builder = builder;
+    }
+    @Autowired
+    public void setMemberServices(MemberServices memberServices){
+        this.memberServices = memberServices;
     }
 
     // pet add
@@ -44,7 +50,7 @@ public class PetController {
     // pet query
     @GetMapping("/ipet-back/pets")
     public String getAllPets(Model model){
-        model.addAttribute("pets", petServices.getAllPets());
+        model.addAttribute("members", memberServices.getAllUnwindedMembers());
         return "backstage/member/petList";
     }
 

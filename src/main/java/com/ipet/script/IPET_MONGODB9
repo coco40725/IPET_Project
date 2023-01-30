@@ -434,7 +434,8 @@ db.SALON_SCHEDULE.insertMany([
         GROOMER_ID: ObjectId('63d33fcad0e1a72c6180d09d'),
         ASST1_ID: ObjectId('63d2ba526b0543eeace783e2'),
         ASST2_ID: ObjectId('63d2ba5c1e01727e0c9f11cc'),
-        EMPLOYEE_NOTE: 'aaa'
+        EMPLOYEE_NOTE: 'aaa',
+        APPPOINT_ID: ObjectId('63d2c5870b1524ec66ec9398')
     },
     {
         _id: ObjectId('63d2bcbfb28dc27f70d1080a'),
@@ -443,7 +444,8 @@ db.SALON_SCHEDULE.insertMany([
         GROOMER_ID: ObjectId('63d33fcad0e1a72c6180d09d'),
         ASST1_ID: ObjectId('63d2ba526b0543eeace783e2'),
         ASST2_ID:  ObjectId('63d2bab25e2b19f6863a047f'),
-        EMPLOYEE_NOTE: 'bb'
+        EMPLOYEE_NOTE: 'bb',
+        APPPOINT_ID: ObjectId('63d33c83172bbe6df47e8508')
     },
     {
         _id: ObjectId('63d2bcdba8ae632a30eb5946'),
@@ -452,7 +454,8 @@ db.SALON_SCHEDULE.insertMany([
         GROOMER_ID: ObjectId('63d2b9248dc3c75c9526887d'),
         ASST1_ID:  ObjectId('63d2bae1c2bebfcfdbd713f5'),
         ASST2_ID: ObjectId('63d2ba5c1e01727e0c9f11cc'),
-        EMPLOYEE_NOTE: 'aaa'
+        EMPLOYEE_NOTE: 'aaa',
+        APPPOINT_ID: ObjectId('63d2c6d4fcd6507a678ad1e5')
     },
     {
         _id: ObjectId('63d2bce27b8abd76d0aed1a3'),
@@ -470,7 +473,8 @@ db.SALON_SCHEDULE.insertMany([
         GROOMER_ID: ObjectId('63d2b9248dc3c75c9526887d'),
         ASST1_ID: ObjectId('63d2bae1c2bebfcfdbd713f5'),
         ASST2_ID: ObjectId('63d2ba5c1e01727e0c9f11cc'),
-        EMPLOYEE_NOTE: 'aaa'
+        EMPLOYEE_NOTE: 'aaa',
+        APPPOINT_ID: ObjectId('63d33ce3e57d299b76b82ef6')
     },
     {
         _id: ObjectId('63d2bd2a8de3b35784137ba5'),
@@ -479,7 +483,9 @@ db.SALON_SCHEDULE.insertMany([
         GROOMER_ID: ObjectId('63d33fcad0e1a72c6180d09d'),
         ASST1_ID: ObjectId('63d2ba526b0543eeace783e2'),
         ASST2_ID: ObjectId('63d2bb24fba28c2f3c532259'),
-        EMPLOYEE_NOTE: 'bb'
+        EMPLOYEE_NOTE: 'bb',
+        APPPOINT_ID: ObjectId('63d32cd47297bdd27921c391')
+
     },
     {
         _id: ObjectId('63d2bd4d68a8a7445a47829e'),
@@ -488,7 +494,9 @@ db.SALON_SCHEDULE.insertMany([
         GROOMER_ID: ObjectId('63d2b9248dc3c75c9526887d'),
         ASST1_ID: ObjectId('63d2ba5c1e01727e0c9f11cc'),
         ASST2_ID: ObjectId('63d2ba526b0543eeace783e2'),
-        EMPLOYEE_NOTE: 'aaa'
+        EMPLOYEE_NOTE: 'aaa',
+        APPPOINT_ID: ObjectId('63d32db6e8e0523032f15551')
+
     },
     {
         _id: ObjectId('63d2bd52c5269d51d7d385f0'),
@@ -507,7 +515,7 @@ db.SALON_APPOINTMENT.insertMany([
         CUSTOMER_NOTE: '狗狗good',
         APM_STATUS: 1,
         MEM_ID: ObjectId('63d2b1a9f0ed5e8a9abbc590'),
-        REF_ID: ObjectId('63d2b2f09cbe234f43af6d4e'),
+        PET_ID: ObjectId('63d2b2f09cbe234f43af6d4e'),
         SCH_ID: ObjectId('63d2bbef34af993e06328d3a'),
         TOTAL_PRICE: 850,
         APM_BUILD_TIME: new Date("2022-12-21T14:12:10"),
@@ -525,7 +533,7 @@ db.SALON_APPOINTMENT.insertMany([
         CUSTOMER_NOTE: '狗狗good',
         APM_STATUS: 2,
         MEM_ID: ObjectId('63d2b32f9b8bdfe78424ef5c'),
-        REF_ID: ObjectId('63d2b335129ed24d706438bb'),
+        PET_ID: ObjectId('63d2b335129ed24d706438bb'),
         SCH_ID: ObjectId( '63d2bcdba8ae632a30eb5946'),
         TOTAL_PRICE: 3800,
         APM_BUILD_TIME: new Date("2022-12-21T14:12:10"),
@@ -549,7 +557,7 @@ db.SALON_APPOINTMENT.insertMany([
         CUSTOMER_NOTE: '狗狗good',
         APM_STATUS: 3,
         MEM_ID: ObjectId('63d2b3f69cba68a822a79bbe'),
-        REF_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
+        PET_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
         SCH_ID: ObjectId('63d2bcbfb28dc27f70d1080a'),
         TOTAL_PRICE: 850,
         APM_BUILD_TIME: new Date("2022-12-17T14:12:10"),
@@ -567,7 +575,7 @@ db.SALON_APPOINTMENT.insertMany([
         CUSTOMER_NOTE: '狗狗good',
         APM_STATUS: 0,
         MEM_ID: ObjectId('63d2b3f69cba68a822a79bbe'),
-        REF_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
+        PET_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
         SCH_ID: ObjectId('63d2bd23b17f6baaba434099'),
         TOTAL_PRICE: 850,
         APM_BUILD_TIME: new Date("2022-02-19T14:12:10"),
@@ -585,9 +593,9 @@ db.SALON_APPOINTMENT.insertMany([
         CUSTOMER_NOTE: '狗狗good',
         APM_STATUS: 0,
         MEM_ID: ObjectId('63d2b3f69cba68a822a79bbe'),
-        REF_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
+        PET_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
         SCH_ID: ObjectId('63d2bd2a8de3b35784137ba5'),
-        TOTAL_PRICE: 8000,
+        TOTAL_PRICE: 7900,
         APM_BUILD_TIME: new Date("2022-02-01T14:12:10"),
         SALON_APPOINTMENT_DETAIL:[
             {
@@ -598,9 +606,9 @@ db.SALON_APPOINTMENT.insertMany([
             },
             {
                 SVC_ID: ObjectId('63d2c125e3df2c256a1ced8c'),
-                SALE_ID: '',
+                SALE_ID: ObjectId('63d2c25931c97f6a5282ee0b'),
                 SVC_PRICE: 4000,
-                SALE_PRICE: 4000
+                SALE_PRICE: 3900
             }
         ]
     },
@@ -609,7 +617,7 @@ db.SALON_APPOINTMENT.insertMany([
         CUSTOMER_NOTE: '狗狗good',
         APM_STATUS: 0,
         MEM_ID: ObjectId('63d2b32f9b8bdfe78424ef5c'),
-        REF_ID: ObjectId('63d2b3cdac65895e0f5b9067'),
+        PET_ID: ObjectId('63d2b3cdac65895e0f5b9067'),
         SCH_ID: ObjectId('63d2bd4d68a8a7445a47829e'),
         TOTAL_PRICE: 1000,
         APM_BUILD_TIME: new Date("2022-02-20T14:12:10"),

@@ -2,13 +2,12 @@ package com.ipet.web.salon.services;
 
 
 import com.ipet.web.salon.entities.*;
+import com.ipet.web.salon.entities.unwinded.UnwindedSalonSchedule;
 import com.ipet.web.salon.repositories.*;
-import com.ipet.web.salon.utils.SalonUtils;
 import com.ipet.web.staff.repositories.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 
 import java.util.*;
@@ -21,9 +20,9 @@ import java.util.*;
 public class SalonScheduleServices {
     private SalonAppointmentRepository salonAppointmentRepository;
     private SalonScheduleRepository salonScheduleRepository;
+    private CustomSalonScheduleRepository customSalonScheduleRepository;
     private StaffRepository staffRepository;
 
-    private SalonUtils salonUtils;
 
     @Autowired
     public void setSalonAppointmentRepository(SalonAppointmentRepository salonAppointmentRepository) {
@@ -39,22 +38,19 @@ public class SalonScheduleServices {
     }
 
     @Autowired
-    public void setSalonUtils(SalonUtils salonUtils){
-        this.salonUtils = salonUtils;
+    public void setCustomSalonScheduleRepository(CustomSalonScheduleRepository customSalonScheduleRepository){
+        this.customSalonScheduleRepository = customSalonScheduleRepository;
     }
 
     // job add
     @Transactional
     public String addSchedule(List<SalonSchedule> salonSchedules){
-
-        // 先執行 mysql事務，再執行 mongodb 事務
         for (SalonSchedule job : salonSchedules) {
             Date schDate = job.getSchDate();
             String schPeriod = job.getSchPeriod();
-            String groomerID = job.getGroomer().getId();
-            String asstID1 = job.getAsst1().getId();
-            String asstID2 = job.getAsst2().getId();
-            System.out.println(job);
+            String groomerID = job.getGroomerId();
+            String asstID1 = job.getAsst1Id();
+            String asstID2 = job.getAsst2Id();
 
             List<SalonSchedule> schByDatePeriod = salonScheduleRepository.findAllBySchDateAndSchPeriod(schDate, schPeriod);
             Set<String> empsByDatePeriod = findEmpsByDatePeriod(schDate, schPeriod);
@@ -80,32 +76,28 @@ public class SalonScheduleServices {
         return "success";
     }
 
-
     // job delete
     @Transactional
     public String deleteSchedule(String id){
-        // 必須沒有預約單才可以刪除
-        // 先執行 mysql事務，再執行 mongodb 事務
-        SalonAppointment appointBySchId = salonAppointmentRepository.findBySchId(id);
-        if (appointBySchId != null){
+        if (salonScheduleRepository.findById(id).orElse(null).getAppointId() != null){
             return "該班表已被預約，不可刪除!";
         }
         salonScheduleRepository.deleteById(id);
         return "success";
     }
 
-
     // job edit
     @Transactional
     public String editSchedule(SalonSchedule newJobSchedule){
 
-        // 只可以更動 美容師 助理 以及 備註
+        // 只可以更動 美容師 助理 預約單 以及 備註
         String schID = newJobSchedule.getId();
-        String groomerID = newJobSchedule.getGroomer().getId();
-        String asstID1 = newJobSchedule.getAsst1().getId();
-        String asstID2 = newJobSchedule.getAsst2().getId();
+        String groomerID = newJobSchedule.getGroomerId();
+        String asstID1 = newJobSchedule.getAsst1Id();
+        String asstID2 = newJobSchedule.getAsst2Id();
         Date newSchDate = newJobSchedule.getSchDate();
         String newSchPeriod = newJobSchedule.getSchPeriod();
+
         Set<String> empsByDatePeriodExcludedSchID = findEmpsByDatePeriod(newSchDate, newSchPeriod, schID);
 
 
@@ -123,26 +115,27 @@ public class SalonScheduleServices {
         }
 
         salonScheduleRepository.save(newJobSchedule);
-
         return "success";
     }
 
+
     // job query
-    public List<SalonSchedule> getAllSchedule(){
-        System.out.println(salonUtils.joinSchedule(salonScheduleRepository.findAll()));
-        return salonUtils.joinSchedule(salonScheduleRepository.findAll());
+    public List<UnwindedSalonSchedule> getAllUnwindedSchedule(){
+        return customSalonScheduleRepository.findAll();
+    }
+    public UnwindedSalonSchedule getUnwindedScheduleById(String id){
+        return customSalonScheduleRepository.findById(id);
     }
     public SalonSchedule getScheduleById(String id){
-        List<SalonSchedule> salonSchedules = new ArrayList<>();
-        salonSchedules.add(salonScheduleRepository.findById(id).orElse(null));
-        return salonUtils.joinSchedule(salonSchedules).get(0);
+        return salonScheduleRepository.findById(id).orElse(null);
     }
     public List<SalonSchedule> findAvailableJobsToAddAppoint() {
         List<SalonSchedule> all = new ArrayList<>();
         Date today = new Date(System.currentTimeMillis());
-        for (SalonSchedule job : salonUtils.joinSchedule(salonScheduleRepository.findAll())){
-            if (job.getSalonAppointment() == null && (job.getSchDate().after(today) || job.getSchDate().equals(today))){
-                all.add(job);
+        List<SalonSchedule> allBySchDateAfter = salonScheduleRepository.findAllBySchDateAfter(today);
+        for (SalonSchedule schedule : allBySchDateAfter){
+            if (salonAppointmentRepository.findBySchId(schedule.getId()) == null) {
+                all.add(schedule);
             }
         }
         return all;
@@ -157,11 +150,11 @@ public class SalonScheduleServices {
         Map<Date, Integer> map = new HashMap<>();
         List<SalonSchedule> allBySchDateAfterAndSchPeriod = salonScheduleRepository.findAllBySchDateAfterAndSchPeriod(new Date(), period);
         for (SalonSchedule salonSchedule : allBySchDateAfterAndSchPeriod) {
-            if (salonSchedule.getGroomer().getId().equals(groomerID) ||
-                    salonSchedule.getAsst1().getId().equals(asstID1) ||
-                    salonSchedule.getAsst1().getId().equals(asstID2) ||
-                    salonSchedule.getAsst2().getId().equals(asstID1) ||
-                    salonSchedule.getAsst2().getId().equals(asstID2)){
+            if (salonSchedule.getGroomerId().equals(groomerID) ||
+                    salonSchedule.getAsst1Id().equals(asstID1) ||
+                    salonSchedule.getAsst1Id().equals(asstID2) ||
+                    salonSchedule.getAsst2Id().equals(asstID1) ||
+                    salonSchedule.getAsst2Id().equals(asstID2)){
                 illegalDates.add(salonSchedule.getSchDate());
             }
             map.put(salonSchedule.getSchDate(), map.getOrDefault(salonSchedule.getSchDate(), 1) + 1);
@@ -180,9 +173,9 @@ public class SalonScheduleServices {
         Set<String> emps = new HashSet<>();
         List<SalonSchedule> list = salonScheduleRepository.findAllBySchDateAndSchPeriodAndIdNot(date, period, excludedschID);
         for (SalonSchedule job : list){
-            emps.add(job.getGroomer().getId());
-            emps.add(job.getAsst1().getId());
-            emps.add(job.getAsst2().getId());
+            emps.add(job.getGroomerId());
+            emps.add(job.getAsst1Id());
+            emps.add(job.getAsst2Id());
         }
         return emps;
     }
@@ -190,9 +183,9 @@ public class SalonScheduleServices {
         Set<String> emps = new HashSet<>();
         List<SalonSchedule> list = salonScheduleRepository.findAllBySchDateAndSchPeriod(date, period);
         for (SalonSchedule job : list){
-            emps.add(job.getGroomer().getId());
-            emps.add(job.getAsst1().getId());
-            emps.add(job.getAsst2().getId());
+            emps.add(job.getGroomerId());
+            emps.add(job.getAsst1Id());
+            emps.add(job.getAsst2Id());
         }
         return emps;
     }

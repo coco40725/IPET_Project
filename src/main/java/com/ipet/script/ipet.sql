@@ -201,7 +201,6 @@ values
     ('5','JoJo','黃金獵犬','大型犬','母','2021-03-08','1');
 
 
-
 -- 建立 美容服務類別 表格 --
 create table IPETDB.SALON_SERVICE_CATEGORY (
                                                SVC_CATEGORY_ID		int (10)		Not Null primary key auto_increment,
@@ -362,6 +361,7 @@ values
     (3, 22, 1177),
     (3, 23, 1277),
     (3, 24, 1177);
+
 
 -- 育菁的部分 --
 -- 建立 美容員工班表 表格 --

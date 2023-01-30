@@ -40,20 +40,20 @@ public class SalonAppointController {
     public String editAppoint(@RequestBody Map<String, String> map){
         Gson gson = builder.serializeNulls().create();
         SalonAppointment appointment = gson.fromJson(map.get("jsonFile"), SalonAppointment.class);
-        return null;
+        return salonAppointServices.editAppointment(appointment);
     }
 
     // Appointment query
     @GetMapping("/ipet-back/appoints")
     public String getAllAppoints(Model model){
-        model.addAttribute("appoints", salonAppointServices.getAllAppointment());
+        model.addAttribute("appoints", salonAppointServices.getAllUnwindedAppointment());
         return "backstage/salon/salonAppointAll";
     }
 
     @GetMapping("/ipet-back/appoints/{status}")
     public String getAppointsByStatus(@PathVariable("status") Integer status, Model model){
         String template = null;
-        model.addAttribute("appoints", salonAppointServices.getAppointByApmStatus(status));
+        model.addAttribute("appoints", salonAppointServices.getUnwindedAppointByApmStatus(status));
         switch (status) {
             case 0 :
                 return  "backstage/salon/salonAppointPayed";
@@ -72,7 +72,6 @@ public class SalonAppointController {
     @ResponseBody
     public String  getAppointById(@PathVariable("id") String id){
         Gson gson = builder.serializeNulls().setDateFormat("yyyy-MM-dd").create();
-        System.out.println(gson.toJson(salonAppointServices.getAppointmentById(id)));
-        return gson.toJson(salonAppointServices.getAppointmentById(id));
+        return gson.toJson(salonAppointServices.getUnwindedAppointmentById(id));
     }
 }

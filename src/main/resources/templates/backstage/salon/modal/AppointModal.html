@@ -50,30 +50,7 @@
           <div>
             <p id="editModalMessage"></p>
           </div>
-          <!-- Edit Confirm Modal content   -->
-          <div th:fragment="appointEditConfirmModal" class="modal fade" id="EditConfirmModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">確認修改</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  確認要修改此筆資料? <br>
-                  <p style="color: red">注意! 若更改狀態為 "已取消"、"已完成預約" 或 "逾時未到"，該筆資料後續將無法再被更改。</p>
-                  <br>
-                  <p id="editConfirmModalMessage"></p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
-                  <button type="submit" class="btn btn-danger btn-edit-confirm-confirm" th:attr="editUrl=@{/ipet-back/appoint}">確認修改</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- /.Edit Confirm Modal content   -->
+
         </form>
       </div>
       <div class="modal-footer">
@@ -85,5 +62,110 @@
 </div>
 <!-- /. Edit Modal content   -->
 
+<!-- Edit Confirm Modal content   -->
+<div th:fragment="appointEditConfirmModal" class="modal fade" id="EditConfirmModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">確認修改</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        確認要修改此筆資料? <br>
+        <p style="color: red">注意! 若更改狀態為 "已取消"、"已完成預約" 或 "逾時未到"，該筆資料後續將無法再被更改。</p>
+        <br>
+        <p id="editConfirmModalMessage"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
+        <button type="submit" class="btn btn-danger btn-edit-confirm-confirm" th:attr="editUrl=@{/ipet-back/appoint}">確認修改</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /.Edit Confirm Modal content   -->
+
+<!--  Add Modal content  -->
+<div th:fragment="appointAddModal" class="modal fade" id="AddModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">資料新增</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="period-modal-add" class="col-form-label">預約時段</label>
+            <select id="period-modal-add" class="form-control">
+              <option value="上午">上午</option>
+              <option value="下午">下午</option>
+              <option value="晚上">晚上</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="date-modal-add" class="col-form-label">預約日期</label>
+            <select id="date-modal-add" class="form-control">
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="member_name-modal-add" class="col-form-label">會員姓名</label>
+            <select id="member_name-modal-add" class="form-control">
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pet_name-modal-add" class="col-form-label">寵物姓名</label>
+            <select id="pet_name-modal-add" class="form-control">
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pet_size-modal-add" class="col-form-label">寵物大小</label>
+            <select id="pet_size-modal-add" class="form-control">
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pet_var-modal-add" class="col-form-label">寵物類型</label>
+            <select id="pet_var-modal-add" class="form-control">
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="service_category-modal-add" class="col-form-label">服務類型</label>
+            <select id="service_category-modal-add" class="form-control">
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="col-form-label">服務細項</label>
+          </div>
+
+          <div class="form-group">
+            <label class="col-form-label">搭配優惠</label>
+          </div>
+
+          <div>
+            <label for="client_note-add-modal" class="col-form-label">備註</label>
+            <textarea id="client_note-add-modal" class="form-control"></textarea>
+          </div>
+
+          <div>
+            <p id="addModalMessage"></p>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
+        <button type="submit" class="btn btn-primary btn-add-confirm" th:attr="addUrl=@{/ipet-back/appoint}">確認新增</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /. Add Modal content   -->
 </body>
 </html>

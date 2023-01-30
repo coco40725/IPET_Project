@@ -1,21 +1,30 @@
 package com.ipet.web.salon.services;
 
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.ipet.core.utils.GenerateV4GetObjectSignedUrl;
 import com.ipet.web.salon.entities.SalonService;
 import com.ipet.web.salon.entities.SalonServiceCategory;
+import com.ipet.web.salon.entities.SalonServicePetType;
+import com.ipet.web.salon.entities.unwinded.UnwindedSalonServices;
+import com.ipet.web.salon.repositories.CustomSalonServiceRepository;
 import com.ipet.web.salon.repositories.SalonServiceCategoryRepository;
+import com.ipet.web.salon.repositories.SalonServicePetTypeRepository;
 import com.ipet.web.salon.repositories.SalonServiceRepository;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Base64;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Yu-Jing
@@ -25,6 +34,10 @@ import java.util.Objects;
 public class SalonServiceServices {
     private SalonServiceCategoryRepository salonServiceCategoryRepository;
     private SalonServiceRepository salonServiceRepository;
+    private SalonServicePetTypeRepository salonServicePetTypeRepository;
+    private CustomSalonServiceRepository customSalonServiceRepository;
+    private GenerateV4GetObjectSignedUrl generateV4GetObjectSignedUrl;
+    private Storage storage;
 
     @Autowired
     public void setSalonServiceCategoryRepository(SalonServiceCategoryRepository salonServiceCategoryRepository) {
@@ -34,44 +47,88 @@ public class SalonServiceServices {
     public void setSalonServiceRepository(SalonServiceRepository salonServiceRepository) {
         this.salonServiceRepository = salonServiceRepository;
     }
+    @Autowired
+    public void setCustomSalonServiceRepository(CustomSalonServiceRepository customSalonServiceRepository){
+        this.customSalonServiceRepository = customSalonServiceRepository;
+    }
+
+    @Autowired
+    public void setGenerateV4GetObjectSignedUrl(GenerateV4GetObjectSignedUrl generateV4GetObjectSignedUrl){
+        this.generateV4GetObjectSignedUrl = generateV4GetObjectSignedUrl;
+    }
+    @Autowired
+    public void setSalonServicePetTypeRepository(SalonServicePetTypeRepository salonServicePetTypeRepository){
+        this.salonServicePetTypeRepository = salonServicePetTypeRepository;
+    }
+
+    @Autowired
+    public void setStorage(Storage storage){
+        this.storage = storage;
+    }
+
+    @Value("${gcp.bucketName}")
+    private String bucketName;
+    @Value("${spring.cloud.gcp.project-id}")
+    private String projectId;
+
+
 
     // add service
     // delete service
     // edit service
+    @Transactional
+    public String editServiceCategory(SalonServiceCategory serviceCategory, byte[] imageFile){
+        if (imageFile != null && imageFile.length != 0){
+            String fileName = "ipet-image/salonCategory/" + serviceCategory.getId() + ".jpg";
+            BlobId blobId = BlobId.of(bucketName ,fileName);
+            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+            serviceCategory.setSvcCategoryImg(fileName);
+            storage.create(blobInfo, imageFile);
+        }
+        salonServiceCategoryRepository.save(serviceCategory);
+        return "success";
+    }
 
 
     // query service
-    public List<SalonServiceCategory> getAllServicesCategory(){
-        // 將圖片編碼成 base64
+    public List<UnwindedSalonServices> getAllUnwindedServices(){
+        return customSalonServiceRepository.findAll();
+    }
+
+    public UnwindedSalonServices getUnwindedServicesById(String id){
+        return customSalonServiceRepository.findById(id);
+    }
+
+    public List<SalonService> getAllServices(){
+        return salonServiceRepository.findAll();
+    }
+
+    public SalonService getServiceById(String id){
+        return salonServiceRepository.findById(id).orElse(null);
+    }
+
+    public List<SalonServiceCategory> getAllServiceCategory(){
+        // Generate SignedUrl
         List<SalonServiceCategory> all = salonServiceCategoryRepository.findAll();
-        byte[] data = null;
-        for (SalonServiceCategory serviceCategory : all){
-            try (InputStream is = new FileInputStream(serviceCategory.getSvcCategoryImg())){
-                data = new byte[is.available()];
-                is.read(data);
-                serviceCategory.setBase64Img(Base64.getEncoder().encodeToString(IOUtils.toByteArray(is)));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        for (SalonServiceCategory category : all){
+            if (category.getSvcCategoryImg() != null){
+                URL url = generateV4GetObjectSignedUrl.generateV4GetObjectSignedUrl(projectId, bucketName, category.getSvcCategoryImg());
+                category.setSvcCategoryImgSignedUrl(String.valueOf(url));
             }
         }
         return all;
     }
 
-    public List<SalonService> getAllServicesQuery(){
-        return salonServiceRepository.findAll();
+    public SalonServiceCategory getServiceCategoryById(String id){
+        SalonServiceCategory category = salonServiceCategoryRepository.findById(id).orElse(null);
+        if (category != null && category.getSvcCategoryImg() != null){
+            URL url = generateV4GetObjectSignedUrl.generateV4GetObjectSignedUrl(projectId, bucketName, category.getSvcCategoryImg());
+            category.setSvcCategoryImgSignedUrl(String.valueOf(url));
+        }
+        return category;
     }
 
-    public SalonServiceCategory getServicesCategoryById(String id){
-        // 將圖片編碼成 base64
-        SalonServiceCategory serviceCategory = salonServiceCategoryRepository.findById(id).orElse(null);
-        byte[] data = null;
-        try (InputStream is = new FileInputStream(serviceCategory.getSvcCategoryImg())){
-            data = new byte[is.available()];
-            is.read(data);
-            serviceCategory.setBase64Img(Base64.getEncoder().encodeToString(IOUtils.toByteArray(is)));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return salonServiceCategoryRepository.findById(id).orElse(null);
+    public List<SalonServicePetType> getAllServicePetType(){
+        return salonServicePetTypeRepository.findAll();
     }
 }

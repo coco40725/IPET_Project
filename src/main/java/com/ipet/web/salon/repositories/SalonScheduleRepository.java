@@ -15,4 +15,5 @@ public interface SalonScheduleRepository extends MongoRepository<SalonSchedule, 
     List<SalonSchedule> findAllBySchDateAndSchPeriodAndIdNot(Date schDate, String schPeriod, String id);
     List<SalonSchedule> findAllBySchDateAndSchPeriod(Date schDate, String schPeriod);
     List<SalonSchedule> findAllBySchDateAfterAndSchPeriod(Date date, String schPeriod);
+    List<SalonSchedule> findAllBySchDateAfter(Date date);
 }

@@ -1,20 +1,18 @@
 package com.ipet.web.member.entities;
 
 import com.ipet.core.entities.Core;
+import com.ipet.core.entities.sub_entities.RefEntity;
 import com.mongodb.lang.NonNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.ReadOnlyProperty;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serial;
 import java.util.Date;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Data
 @Document("MEMBER")
 @AllArgsConstructor
@@ -58,6 +56,7 @@ public class Member extends Core {
   @Field("MEM_UID")
   @NonNull
   private String memUid;
-  @Field(value = "PET")
-  private List<String> pet;
+  @Field("PET")
+  private List<RefEntity> pet;
+
 }

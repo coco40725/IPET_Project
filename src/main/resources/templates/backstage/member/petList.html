@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IPET 寵物 | 會員專區 | 會員列表</title>
+  <title>IPET 寵物 | 會員專區 | 寵物列表</title>
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
@@ -24,6 +24,10 @@
   <link rel="stylesheet" th:href="@{/backstage/css/adminlte.css}">
 
   <style>
+    .error{
+      color: red;
+    }
+
     .childTbody th{
       background-color: rgb(238, 182, 149, 0.45);
     }
@@ -91,7 +95,7 @@
               <!-- Filter -->
               <div class="card card-info">
                 <div class="card-header">
-                  <h3 class="card-title">會員資料 Filter</h3>
+                  <h3 class="card-title">寵物資料 Filter</h3>
                 </div>
                 <div class="card-body">
                   <form>
@@ -99,55 +103,54 @@
                       <div class="col-sm-3">
                         <!-- text input -->
                         <div class="form-group">
-                          <label>會員編號</label>
+                          <label>寵物編號</label>
                           <input type="text" class="form-control column_filter" id="col0-search"  data-column="0" placeholder="Enter ...">
                         </div>
                         <!-- text input -->
                         <div class="form-group">
-                          <label>會員姓名</label>
+                          <label>寵物名字</label>
                           <input type="text" class="form-control column_filter" id="col1-search" data-column="1" placeholder="Enter ...">
                         </div>
                       </div>
                       <div class="col-sm-3">
                         <!-- text input -->
                         <div class="form-group">
-                          <label>會員性別</label>
+                          <label>寵物品種</label>
                           <input type="text" class="form-control column_filter" id="col2-search" data-column="2" placeholder="Enter ...">
                         </div>
                         <!-- text input -->
                         <div class="form-group">
-                          <label>會員生日</label>
+                          <label>寵物大小</label>
                           <input type="text" class="form-control column_filter" id="col3-search" data-column="3" placeholder="Enter ...">
                         </div>
                       </div>
                       <div class="col-sm-3">
                         <!-- text input -->
                         <div class="form-group">
-                          <label>會員Email</label>
+                          <label>寵物性別</label>
                           <input type="text" class="form-control column_filter" id="col4-search" data-column="4" placeholder="Enter ...">
                         </div>
                         <!-- text input -->
                         <div class="form-group">
-                          <label>會員手機</label>
+                          <label>寵物生日</label>
                           <input type="text" class="form-control column_filter" id="col5-search" data-column="5" placeholder="Enter ...">
                         </div>
                       </div>
                       <div class="col-sm-3">
                         <!-- text input -->
                         <div class="form-group">
-                          <label>會員帳號</label>
+                          <label>會員編號</label>
                           <input type="text" class="form-control column_filter" id="col6-search" data-column="6" placeholder="Enter ...">
                         </div>
-                        <!-- text input -->
                         <div class="form-group">
-                          <label>會員密碼</label>
+                          <label>會員姓名</label>
                           <input type="text" class="form-control column_filter" id="col7-search" data-column="7" placeholder="Enter ...">
                         </div>
                       </div>
                       <div class="col-sm-3">
                         <!-- text input -->
                         <div class="form-group">
-                          <label>會員狀態</label>
+                          <label>寵物狀態</label>
                           <input type="text" class="form-control column_filter" id="col8-search" data-column="8" placeholder="Enter ...">
                         </div>
                       </div>
@@ -169,56 +172,49 @@
                   <table id="memberTable" class="table table-bordered table-striped  display">
                     <thead>
                     <tr>
+                      <th>寵物編號</th>
+                      <th>寵物名字</th>
+                      <th>寵物品種</th>
+                      <th>寵物大小</th>
+                      <th>寵物性別</th>
+                      <th>寵物生日</th>
                       <th>會員編號</th>
                       <th>會員姓名</th>
-                      <th>會員性別</th>
-                      <th>會員生日</th>
-                      <th>會員Email</th>
-                      <th>會員手機</th>
-                      <th>會員帳號</th>
-                      <th>會員密碼</th>
-                      <th>會員狀態</th>
-                      <th>其他訊息</th>
+                      <th>寵物狀態</th>
                       <th></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="member : ${members}">
-                      <td th:text="${member.memId}"></td>
-                      <td th:text="${member.memName}"></td>
-                      <td th:text="${member.memSex}"></td>
-                      <td th:text="${member.memBirth}"></td>
-                      <td th:text="${member.memEmail}"></td>
-                      <td th:text="${member.memPhone}"></td>
-                      <td th:text="${member.memAc}"></td>
-                      <td th:text="${member.memPw}"></td>
-                      <th:block th:switch="${member.memStatus}">
-                        <td th:case="0" th:text="正常"></td>
-                        <td th:case="1" th:text="停權"></td>
-                      </th:block>
-                      <td>
-                        <table  class="childTable" style="display:none">
-                          <tbody class="childTbody">
-                          <tr>
-                            <th>會員身分證</th>
-                            <th>會員電話</th>
-                            <th>會員住址</th>
-                          </tr>
-                          <tr>
-                            <td th:text="${member.memUid}"></td>
-                            <td th:text="${member.memTel}"></td>
-                            <td th:text="${member.memAdd}"></td>
-                          </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                      <td>
-                        <button type="submit" class="btn btn-light" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
-                                th:attr="getMemberUrl=@{/ipet-back/member/{id}(id=${member.memId})}">
-                          <i class="fas fa-solid fa-pen"></i>
-                        </button>
-                      </td>
-                    </tr>
+                    <th:block th:each="member : ${members}" th:if="${member.petDetail.size() != 0}">
+                      <tr th:each="pet : ${member.petDetail}">
+                            <td th:text="${pet.id}"></td>
+                            <td th:text="${pet.petName}"></td>
+                            <td th:text="${pet.petVar}"></td>
+                            <td th:text="${pet.petSize}"></td>
+                            <td th:text="${pet.petGen}"></td>
+                            <td th:text="${#dates.format(pet.petBirth,'yyyy-MM-dd')}"></td>
+                            <td th:text="${member.id}"></td>
+                            <td th:text="${member.memName}"></td>
+                        <th:block th:switch="${pet.petStatus}">
+                          <td th:case="0">
+                            <button class="btn btn-danger dt-center">
+                              死亡或不使用
+                            </button>
+                          </td>
+                          <td th:case="1">
+                            <button class="btn btn-success dt-center">
+                              在世
+                            </button>
+                          </td>
+                        </th:block>
+                        <td>
+                          <button type="submit" class="btn btn-light" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
+                                  th:attr="getPetUrl=@{/ipet-back/pet/{id}(id=${pet.id})}">
+                            <i class="fas fa-solid fa-pen"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </th:block>
                     </tbody>
                   </table>
                 </div>
@@ -238,7 +234,7 @@
 
 
     <!-- Edit Modal content   -->
-    <div th:replace="~{/backstage/member/modal/MemberModal :: memberEditModal}"></div>
+    <div th:replace="~{/backstage/member/modal/PetModal :: petEditModal}"></div>
     <!-- /. Edit Modal content   -->
 
 
@@ -289,7 +285,7 @@
 <!-- sidebar menu Class -->
 <script>
   $("p:contains(會員資料管理)").closest("li").addClass("menu-open");
-  $("p:contains(會員列表)").closest("a").addClass("active");
+  $("p:contains(寵物列表)").closest("a").addClass("active");
 </script>
 
 <!-- Data presentation and operation show -->
@@ -304,19 +300,15 @@
 
     //  填寫直接顯示的欄位，需要與thead tfoot 對應
     "columns":[
-      {responsivePriority: 1, className: "memId"},
-      {responsivePriority: 2, className: "memName"},
-      {className: "memSex"},
-      {className: "memBirth"},
-      {className: "memEmail"},
-      {responsivePriority: 3, className: "memPhone"},
-      {responsivePriority: 4, className: "memAc"},
-      {responsivePriority: 5, className: "memPw"},
-      {className: "memStatus"},
-      {className: 'details-control',
-        orderable:      false,
-        defaultContent: '',
-        responsivePriority: 6},
+      {responsivePriority: 1, className: "petId dt-center"},
+      {responsivePriority: 2, className: "petName dt-center"},
+      {responsivePriority: 3, className: "petVarId dt-center"},
+      {className: "petSize dt-center"},
+      {className: "petGen dt-center"},
+      {className: "petBirth dt-center"},
+      {responsivePriority: 6, className: "memId dt-center"},
+      {responsivePriority: 5,className: "memName dt-center"},
+      {responsivePriority: 4, className: "petStatus dt-center"},
       {className: 'row-edit dt-center', orderable: false, responsivePriority: 7},
     ],
     select: {
@@ -329,36 +321,35 @@
 
       <!-- Edit data from modal -->
       let targetDataEdit;
-      let memberObjectEdit;
+      let petObjectEdit;
       let editRefresh;
 
       $('td.row-edit').on('click','button',function (){
         // get the selected tr
         targetDataEdit = $(event.target).closest("tr")[0];
-        let getMemberUrl = $(this).attr("getMemberUrl");
+        let getPetUrl = $(this).attr("getPetUrl");
+        let memId = $(event.target).closest("td").siblings("td.memId").text();
+        let memName = $(event.target).closest("td").siblings("td.memName").text();
         // send the request to server, and response the data on the modal
-        console.log(getMemberUrl);
         axios({
           method:"get",
-          url:getMemberUrl,
+          url:getPetUrl,
         }).then((resp) => {
-          if (resp !== ""){
-            memberObjectEdit = resp.data;
-            $("#memAc-modal-edit").val(memberObjectEdit.memAc);
-            $("#memUid-modal-edit").val(memberObjectEdit.memUid);
-            $("#memBirth-modal-edit").val(memberObjectEdit.memBirth);
-            $("#memName-modal-edit").val(memberObjectEdit.memName);
-            $("#memSex-modal-edit").val(memberObjectEdit.memSex);
-            $("#memEmail-modal-edit").val(memberObjectEdit.memEmail);
-            $("#memPhone-modal-edit").val(memberObjectEdit.memPhone);
-            $("#memTel-modal-edit").val(memberObjectEdit.memTel);
-            $("#memAdd-edit-modal").val(memberObjectEdit.memAdd);
-            $("#memPw-edit-modal").val(memberObjectEdit.memPw);
-            $("#memStatus-edit-modal").val(memberObjectEdit.memStatus);
-          }else{
-            $("#editModalMessage").html("錯誤: 無法從伺服器抓取該筆資料")
-                    .css("color","red");
-            editRefresh = false;
+            if (resp !== ""){
+              petObjectEdit = resp.data;
+              $("#petId-modal-edit").val(petObjectEdit.id);
+              $("#memId-modal-edit").val(memId);
+              $("#petName-modal-edit").val(petObjectEdit.petName);
+              $("#memName-modal-edit").val(memName);
+              $("#petVarId-modal-edit").val(petObjectEdit.petVar);
+              $("#petSize-modal-edit").val(petObjectEdit.petSize);
+              $("#petGen-modal-edit").val(petObjectEdit.petGen);
+              $("#petBirth-modal-edit").val(petObjectEdit.petBirth);
+              $("#petStatus-modal-edit").val(petObjectEdit.petStatus);
+            } else{
+              $("#editModalMessage").html("錯誤: 無法從伺服器抓取該筆資料")
+                      .css("color","red");
+              editRefresh = false;
           }
         }).catch((err) => {console.log(err)})
       });
@@ -371,67 +362,55 @@
           $(element).val(value);
         },
         rules:{
-          memAc:{
+          petId:{
             required: true,
           },
-          memUid:{
-            required: true,
-          },
-          memBirth:{
+          memId:{
             required: true,
           },
           memName:{
             required: true,
           },
-          memSex: {
+          petName:{
             required: true,
           },
-          memEmail:{
-            required: true,
-            email: true
-          },
-          memPhone:{
-            required: true,
-            number: true
-          },
-          memTel:{
-            number: true
-          },
-          memAdd:{
+          petVarId: {
             required: true,
           },
-          memPw:{
+          petSize:{
             required: true,
           },
-          memStatus:{
+          petGen:{
+            required: true,
+          },
+          petBirth:{
+            required: true,
+          },
+          petStatus:{
             required: true,
           }
-        },
-        submitHandler: function(form) {
-          form.submit();
         }
       })
 
+      // 停止送出表單並刷新頁面
+      $('#EditModalForm').on("submit", function (e){
+        e.preventDefault();
+      })
 
+      // 送出編輯
       $('.btn-edit-confirm').on("click" ,function(e){
         let editUrl = $(this).attr('editUrl');
         let EditData = {
-          memId: memberObjectEdit.memId,
-          memName: $("#memName-modal-edit").val(),
-          memUid: $("#memUid-modal-edit").val(),
-          memBirth: $('#memBirth-modal-edit').val(),
-          memSex: $('#memSex-modal-edit').val(),
-          memEmail: $('#memEmail-modal-edit').val(),
-          memPhone: $('#memPhone-modal-edit').val(),
-          memTel: $('#memTel-modal-edit').val(),
-          memAdd: $('#memAdd-edit-modal').val(),
-          memAc: $('#memAc-modal-edit').val(),
-          memPw: $('#memPw-edit-modal').val(),
-          memStatus: $('#memStatus-edit-modal').val()
+          id: petObjectEdit.id,
+          petName: $("#petName-modal-edit").val(),
+          petVar: $('#petVarId-modal-edit').val(),
+          petSize: $('#petSize-modal-edit').val(),
+          petGen: $('#petGen-modal-edit').val(),
+          petBirth: $('#petBirth-modal-edit').val(),
+          petStatus: $('#petStatus-modal-edit').val(),
         }
 
         if ($("#EditModalForm").valid()){
-          console.log(editUrl);
           axios({
             method:"put",
             url:editUrl,
@@ -463,10 +442,9 @@
               editRefresh = false;
             })
         }else{
-          $("#editModalMessage").text("請填寫完整資料")
+          $("#editModalMessage").text("請填寫完整且正確的資料")
                   .css("color","red");
         }
-        e.preventDefault();
       });
 
       $('#EditModal').on('hidden.bs.modal', function (){

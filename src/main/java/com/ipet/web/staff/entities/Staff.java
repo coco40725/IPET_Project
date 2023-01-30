@@ -2,6 +2,7 @@ package com.ipet.web.staff.entities;
 
 
 import com.ipet.core.entities.Core;
+import com.ipet.core.entities.sub_entities.RefEntity;
 import com.mongodb.lang.NonNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -13,7 +14,7 @@ import java.io.Serial;
 import java.util.Date;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Data
 @Document("STAFF")
 @AllArgsConstructor
@@ -53,7 +54,7 @@ public class Staff extends Core {
   @Field("STAFF_ROLE")
   @DBRef
   @NonNull
-  private List<String> staffRole;
+  private List<RefEntity> staffRole;
   @Field("STAFF_SEX")
   @NonNull
   private String staffSex;

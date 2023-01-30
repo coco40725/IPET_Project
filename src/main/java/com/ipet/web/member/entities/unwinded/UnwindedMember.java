@@ -3,6 +3,7 @@ package com.ipet.web.member.entities.unwinded;
 import com.ipet.web.member.entities.Pet;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -41,8 +42,8 @@ If you try your query in robomongo or some other tools, you can see your return 
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
-public class LookUpMember {
-
+public class UnwindedMember {
+    @Field (name = "_id", targetType = FieldType.OBJECT_ID)
     private String id;
     @Field("MEM_AC")
     private String memAc;
@@ -66,5 +67,6 @@ public class LookUpMember {
     private String memTel;
     @Field("MEM_UID")
     private String memUid;
+    @Field("PET_DETAIL")
     private List<Pet> petDetail;
 }

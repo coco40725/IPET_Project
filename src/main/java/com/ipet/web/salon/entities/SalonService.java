@@ -8,10 +8,11 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.io.Serial;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Data
 @Document("SALON_SERVICE")
 @AllArgsConstructor
@@ -23,13 +24,11 @@ public class SalonService extends Core {
   @Id
   @NonNull
   private String id;
-  @Field("PET_SIZE")
+  @Field(name = "SVC_CATEGORY_ID", targetType = FieldType.OBJECT_ID)
   @NonNull
-  private String petSize;
-  @Field("SVC_CATEGORY")
-  @NonNull
-  @DBRef
-  private SalonServiceCategory svcCategory;
+  private String svcCategoryId;
+  @Field(name = "SALON_SERVICE_PET_TYPE_ID", targetType = FieldType.OBJECT_ID)
+  private String salonServicePetTypeId;
   @Field("SVC_CONTENT")
   @NonNull
   private String svcContent;
@@ -45,7 +44,4 @@ public class SalonService extends Core {
   @Field("TYPE_NAME")
   @NonNull
   private String typeName;
-
-
-
 }

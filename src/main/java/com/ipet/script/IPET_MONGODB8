@@ -17,40 +17,13 @@ db.createCollection("SALON_SCHEDULE", {
                     "bsonType": "string"
                 },
                 "GROOMER_ID": {
-                    "bsonType": "object",
-                    "properties": {
-                        "$id": {
-                            "bsonType": "objectId"
-                        },
-                        "$ref": {
-                            "bsonType": "string"
-                        }
-                    },
-                    "additionalProperties": false
+                    "bsonType": "objectId"
                 },
                 "ASST1_ID": {
-                    "bsonType": "object",
-                    "properties": {
-                        "$id": {
-                            "bsonType": "objectId"
-                        },
-                        "$ref": {
-                            "bsonType": "string"
-                        }
-                    },
-                    "additionalProperties": false
+                    "bsonType": "objectId"
                 },
                 "ASST2_ID": {
-                    "bsonType": "object",
-                    "properties": {
-                        "$id": {
-                            "bsonType": "objectId"
-                        },
-                        "$ref": {
-                            "bsonType": "string"
-                        }
-                    },
-                    "additionalProperties": false
+                    "bsonType": "objectId"
                 },
                 "EMPLOYEE_NOTE": {
                     "bsonType": "string"
@@ -82,41 +55,14 @@ db.createCollection("SALON_APPOINTMENT", {
                 "APM_STATUS": {
                     "bsonType": "number"
                 },
-                "MEM": {
-                    "bsonType": "object",
-                    "properties": {
-                        "$id": {
-                            "bsonType": "objectId"
-                        },
-                        "$ref": {
-                            "bsonType": "string"
-                        }
-                    },
-                    "additionalProperties": false
+                "MEM_ID": {
+                    "bsonType": "objectId"
                 },
-                "PET": {
-                    "bsonType": "object",
-                    "properties": {
-                        "$id": {
-                            "bsonType": "objectId"
-                        },
-                        "$ref": {
-                            "bsonType": "string"
-                        }
-                    },
-                    "additionalProperties": false
+                "PET_ID": {
+                    "bsonType": "objectId"
                 },
-                "SCH": {
-                    "bsonType": "object",
-                    "properties": {
-                        "$id": {
-                            "bsonType": "objectId"
-                        },
-                        "$ref": {
-                            "bsonType": "string"
-                        }
-                    },
-                    "additionalProperties": false
+                "SCH_ID": {
+                    "bsonType": "objectId"
                 },
                 "TOTAL_PRICE": {
                     "bsonType": "number"
@@ -130,14 +76,14 @@ db.createCollection("SALON_APPOINTMENT", {
                     "items": {
                         "bsonType": "object",
                         "properties": {
-                            "SVCI_D": {
-                                "bsonType": "string"
+                            "SVC_ID": {
+                                "bsonType": "objectId"
                             },
                             "SVC_PRICE": {
                                 "bsonType": "number"
                             },
                             "SALE_ID": {
-                                "bsonType": "string"
+                                "bsonType": "objectId"
                             },
                             "SALE_PRICE": {
                                 "bsonType": "number"
@@ -185,21 +131,12 @@ db.createCollection("SALON_SERVICE", {
                 "PET_SIZE": {
                     "bsonType": "string"
                 },
-                "SVC_CATEGORY": {
-                    "bsonType": "object",
-                    "properties": {
-                        "$id": {
-                            "bsonType": "objectId"
-                        },
-                        "$ref": {
-                            "bsonType": "string"
-                        }
-                    },
-                    "additionalProperties": false
-                }
-            },
-            "additionalProperties": false
-        }
+                "SVC_CATEGORY_ID": {
+                    "bsonType": "objectId"
+                },
+            }
+        },
+        "additionalProperties": false
     },
     "validationLevel": "off",
     "validationAction": "warn"
@@ -259,22 +196,6 @@ db.createCollection("SALON_SALE", {
                 },
                 "END_TIME": {
                     "bsonType": "date"
-                },
-                "SVC_DETAIL": {
-                    "bsonType": "array",
-                    "additionalItems": true,
-                    "items": {
-                        "bsonType": "object",
-                        "properties": {
-                            "_id": {
-                                "bsonType": "string"
-                            },
-                            "SALE_PRICE": {
-                                "bsonType": "number"
-                            }
-                        },
-                        "additionalProperties": false
-                    }
                 }
             },
             "additionalProperties": false
@@ -398,7 +319,7 @@ db.createCollection("STAFF", {
                     "bsonType": "array",
                     "additionalItems": true,
                     "items": {
-                        "bsonType": "string"
+                        "bsonType": "objectId"
                     }
                 }
             },
@@ -429,7 +350,7 @@ db.createCollection("JOB_ROLE", {
                     "bsonType": "array",
                     "additionalItems": true,
                     "items": {
-                        "bsonType": "string"
+                        "bsonType": "objectId"
                     }
                 }
             },
@@ -586,7 +507,7 @@ db.SALON_APPOINTMENT.insertMany([
         CUSTOMER_NOTE: '狗狗good',
         APM_STATUS: 1,
         MEM_ID: ObjectId('63d2b1a9f0ed5e8a9abbc590'),
-        PET_ID: ObjectId('63d2b2f09cbe234f43af6d4e'),
+        REF_ID: ObjectId('63d2b2f09cbe234f43af6d4e'),
         SCH_ID: ObjectId('63d2bbef34af993e06328d3a'),
         TOTAL_PRICE: 850,
         APM_BUILD_TIME: new Date("2022-12-21T14:12:10"),
@@ -604,7 +525,7 @@ db.SALON_APPOINTMENT.insertMany([
         CUSTOMER_NOTE: '狗狗good',
         APM_STATUS: 2,
         MEM_ID: ObjectId('63d2b32f9b8bdfe78424ef5c'),
-        PET_ID: ObjectId('63d2b335129ed24d706438bb'),
+        REF_ID: ObjectId('63d2b335129ed24d706438bb'),
         SCH_ID: ObjectId( '63d2bcdba8ae632a30eb5946'),
         TOTAL_PRICE: 3800,
         APM_BUILD_TIME: new Date("2022-12-21T14:12:10"),
@@ -628,7 +549,7 @@ db.SALON_APPOINTMENT.insertMany([
         CUSTOMER_NOTE: '狗狗good',
         APM_STATUS: 3,
         MEM_ID: ObjectId('63d2b3f69cba68a822a79bbe'),
-        PET_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
+        REF_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
         SCH_ID: ObjectId('63d2bcbfb28dc27f70d1080a'),
         TOTAL_PRICE: 850,
         APM_BUILD_TIME: new Date("2022-12-17T14:12:10"),
@@ -646,7 +567,7 @@ db.SALON_APPOINTMENT.insertMany([
         CUSTOMER_NOTE: '狗狗good',
         APM_STATUS: 0,
         MEM_ID: ObjectId('63d2b3f69cba68a822a79bbe'),
-        PET_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
+        REF_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
         SCH_ID: ObjectId('63d2bd23b17f6baaba434099'),
         TOTAL_PRICE: 850,
         APM_BUILD_TIME: new Date("2022-02-19T14:12:10"),
@@ -664,7 +585,7 @@ db.SALON_APPOINTMENT.insertMany([
         CUSTOMER_NOTE: '狗狗good',
         APM_STATUS: 0,
         MEM_ID: ObjectId('63d2b3f69cba68a822a79bbe'),
-        PET_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
+        REF_ID: ObjectId('63d2b3feb0e01f4fb2577b3c'),
         SCH_ID: ObjectId('63d2bd2a8de3b35784137ba5'),
         TOTAL_PRICE: 8000,
         APM_BUILD_TIME: new Date("2022-02-01T14:12:10"),
@@ -688,7 +609,7 @@ db.SALON_APPOINTMENT.insertMany([
         CUSTOMER_NOTE: '狗狗good',
         APM_STATUS: 0,
         MEM_ID: ObjectId('63d2b32f9b8bdfe78424ef5c'),
-        PET_ID: ObjectId('63d2b3cdac65895e0f5b9067'),
+        REF_ID: ObjectId('63d2b3cdac65895e0f5b9067'),
         SCH_ID: ObjectId('63d2bd4d68a8a7445a47829e'),
         TOTAL_PRICE: 1000,
         APM_BUILD_TIME: new Date("2022-02-20T14:12:10"),
@@ -708,7 +629,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2bf87d66e99f7f23b0698'),
         SVC_NAME: '經典洗澡護理',
         SVC_CONTENT: '洗澡與基本整理',
-        SVC_CATEGORY: ObjectId('63d2bddf4c069ebc268828f7'),
+        SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
         SVC_PRICE: 500,
         SVC_STATUS: 1,
         TYPE_NAME: '小型短毛狗',
@@ -718,7 +639,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2bfa349897c4de3a88b3a'),
         SVC_NAME: '經典洗澡護理',
         SVC_CONTENT: '洗澡與基本整理',
-        SVC_CATEGORY: ObjectId('63d2bddf4c069ebc268828f7'),
+        SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
         SVC_PRICE: 1000,
         SVC_STATUS: 1,
         TYPE_NAME: '小型長毛狗',
@@ -728,7 +649,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2bfb0b75ebec8561fc097'),
         SVC_NAME: '經典洗澡護理',
         SVC_CONTENT: '洗澡與基本整理',
-        SVC_CATEGORY: ObjectId('63d2bddf4c069ebc268828f7'),
+        SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
         SVC_PRICE: 1000,
         SVC_STATUS: 1,
         TYPE_NAME: '中型短毛狗',
@@ -738,7 +659,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2bfb4b24a7a63a764040b'),
         SVC_NAME: '經典洗澡護理',
         SVC_CONTENT: '洗澡與基本整理',
-        SVC_CATEGORY: ObjectId('63d2bddf4c069ebc268828f7'),
+        SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
         SVC_PRICE: 2000,
         SVC_STATUS: 1,
         TYPE_NAME: '中型長毛狗',
@@ -748,7 +669,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2bffcece21429dc0e7da4'),
         SVC_NAME: '經典洗澡護理',
         SVC_CONTENT: '洗澡與基本整理',
-        SVC_CATEGORY: ObjectId('63d2bddf4c069ebc268828f7'),
+        SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
         SVC_PRICE: 1000,
         SVC_STATUS: 1,
         TYPE_NAME: '大型短毛狗',
@@ -758,7 +679,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c001b58e7099de6430d8'),
         SVC_NAME: '經典洗澡護理',
         SVC_CONTENT: '洗澡與基本整理',
-        SVC_CATEGORY: ObjectId('63d2bddf4c069ebc268828f7'),
+        SVC_CATEGORY_ID: ObjectId('63d2bddf4c069ebc268828f7'),
         SVC_PRICE: 2000,
         SVC_STATUS: 1,
         TYPE_NAME: '大型長毛狗',
@@ -771,7 +692,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c04c4cb0e2b2478b53e2'),
         SVC_NAME: '全身造型剪剃',
         SVC_CONTENT: '造型剪毛',
-        SVC_CATEGORY:ObjectId('63d2bdf824720a1fa110e049'),
+        SVC_CATEGORY_ID:ObjectId('63d2bdf824720a1fa110e049'),
         SVC_PRICE: 600,
         SVC_STATUS: 1,
         TYPE_NAME: '小型短毛狗',
@@ -781,7 +702,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d33f0314b431b56d470e05'),
         SVC_NAME: '全身造型剪剃',
         SVC_CONTENT: '造型剪毛',
-        SVC_CATEGORY: ObjectId('63d2bdf824720a1fa110e049'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdf824720a1fa110e049'),
         SVC_PRICE: 1200,
         SVC_STATUS: 1,
         TYPE_NAME: '小型長毛狗',
@@ -791,7 +712,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c052c74cd38932f953f9'),
         SVC_NAME: '全身造型剪剃',
         SVC_CONTENT: '造型剪毛',
-        SVC_CATEGORY: ObjectId('63d2bdf824720a1fa110e049'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdf824720a1fa110e049'),
         SVC_PRICE: 1200,
         SVC_STATUS: 1,
         TYPE_NAME: '中型短毛狗',
@@ -801,7 +722,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c05789db27cafb9e5d9f'),
         SVC_NAME: '全身造型剪剃',
         SVC_CONTENT: '造型剪毛',
-        SVC_CATEGORY: ObjectId('63d2bdf824720a1fa110e049'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdf824720a1fa110e049'),
         SVC_PRICE: 2400,
         SVC_STATUS: 1,
         TYPE_NAME: '中型長毛狗',
@@ -811,7 +732,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d33f5cf5e07ceef5f66917'),
         SVC_NAME: '全身造型剪剃',
         SVC_CONTENT: '造型剪毛',
-        SVC_CATEGORY: ObjectId('63d2bdf824720a1fa110e049'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdf824720a1fa110e049'),
         SVC_PRICE: 1800,
         SVC_STATUS: 1,
         TYPE_NAME: '大型短毛狗',
@@ -821,7 +742,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c05c95b3bdf7e224d81e'),
         SVC_NAME: '全身造型剪剃',
         SVC_CONTENT: '造型剪毛',
-        SVC_CATEGORY:  ObjectId('63d2bdf824720a1fa110e049'),
+        SVC_CATEGORY_ID:  ObjectId('63d2bdf824720a1fa110e049'),
         SVC_PRICE: 3600,
         SVC_STATUS: 1,
         TYPE_NAME: '大型長毛狗',
@@ -835,7 +756,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c0a248590b38a3312ae5'),
         SVC_NAME: '膠原蛋白酵素SPA',
         SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
-        SVC_CATEGORY: ObjectId('63d2bdfd7ade6db6c5742e64'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
         SVC_PRICE: 1000,
         SVC_STATUS: 1,
         TYPE_NAME: '小型短毛狗',
@@ -845,7 +766,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c0a6de4571e30ec4d5fc'),
         SVC_NAME: '膠原蛋白酵素SPA',
         SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
-        SVC_CATEGORY: ObjectId('63d2bdfd7ade6db6c5742e64'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
         SVC_PRICE: 2000,
         SVC_STATUS: 1,
         TYPE_NAME: '小型長毛狗',
@@ -855,7 +776,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c0aa695fcd7970a52cbb'),
         SVC_NAME: '膠原蛋白酵素SPA',
         SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
-        SVC_CATEGORY: ObjectId('63d2bdfd7ade6db6c5742e64'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
         SVC_PRICE: 2000,
         SVC_STATUS: 1,
         TYPE_NAME: '中型短毛狗',
@@ -865,7 +786,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c0af2c7dedfd45349084'),
         SVC_NAME: '膠原蛋白酵素SPA',
         SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
-        SVC_CATEGORY: ObjectId('63d2bdfd7ade6db6c5742e64'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
         SVC_PRICE: 3000,
         SVC_STATUS: 1,
         TYPE_NAME: '中型長毛狗',
@@ -875,7 +796,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c0b3b6a26d52fee86189'),
         SVC_NAME: '膠原蛋白酵素SPA',
         SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
-        SVC_CATEGORY: ObjectId('63d2bdfd7ade6db6c5742e64'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
         SVC_PRICE: 3000,
         SVC_STATUS: 1,
         TYPE_NAME: '大型短毛狗',
@@ -885,7 +806,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c0bc60d45fffb5eba780'),
         SVC_NAME: '膠原蛋白酵素SPA',
         SVC_CONTENT: '洗澡護理+膠原蛋白酵素SPA 油脂平衡，去角質保濕',
-        SVC_CATEGORY: ObjectId('63d2bdfd7ade6db6c5742e64'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
         SVC_PRICE: 4000,
         SVC_STATUS: 1,
         TYPE_NAME: '大型長毛狗',
@@ -899,7 +820,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c10afcfdafde77a1f044'),
         SVC_NAME: '法國玫瑰活膚泥SPA',
         SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
-        SVC_CATEGORY: ObjectId('63d2bdfd7ade6db6c5742e64'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
         SVC_PRICE: 1000,
         SVC_STATUS: 1,
         TYPE_NAME: '小型短毛狗',
@@ -909,7 +830,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c10e62097d8e1d4ab811'),
         SVC_NAME: '法國玫瑰活膚泥SPA',
         SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
-        SVC_CATEGORY: ObjectId('63d2bdfd7ade6db6c5742e64'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
         SVC_PRICE: 2000,
         SVC_STATUS: 1,
         TYPE_NAME: '小型長毛狗',
@@ -919,7 +840,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c1159b74a55375bd00b3'),
         SVC_NAME: '法國玫瑰活膚泥SPA',
         SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
-        SVC_CATEGORY: ObjectId('63d2bdfd7ade6db6c5742e64'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
         SVC_PRICE: 2000,
         SVC_STATUS: 1,
         TYPE_NAME: '中型短毛狗',
@@ -929,7 +850,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c11aafc93e504d21ea37'),
         SVC_NAME: '法國玫瑰活膚泥SPA',
         SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
-        SVC_CATEGORY: ObjectId('63d2bdfd7ade6db6c5742e64'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
         SVC_PRICE: 3000,
         SVC_STATUS: 1,
         TYPE_NAME: '中型長毛狗',
@@ -939,7 +860,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c12109dc5056049d512f'),
         SVC_NAME: '法國玫瑰活膚泥SPA',
         SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
-        SVC_CATEGORY: ObjectId('63d2bdfd7ade6db6c5742e64'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
         SVC_PRICE: 3000,
         SVC_STATUS: 1,
         TYPE_NAME: '大型短毛狗',
@@ -949,7 +870,7 @@ db.SALON_SERVICE.insertMany([
         _id: ObjectId('63d2c125e3df2c256a1ced8c'),
         SVC_NAME: '法國玫瑰活膚泥SPA',
         SVC_CONTENT: '洗澡護理+法國玫瑰活膚泥SPA 緩敏去濕，皮毛保護',
-        SVC_CATEGORY: ObjectId('63d2bdfd7ade6db6c5742e64'),
+        SVC_CATEGORY_ID: ObjectId('63d2bdfd7ade6db6c5742e64'),
         SVC_PRICE: 4000,
         SVC_STATUS: 1,
         TYPE_NAME: '大型長毛狗',
@@ -988,62 +909,62 @@ db.SALON_SALE.insertMany([
         END_TIME: new Date('2023-01-31T23:59:59'),
         SVC_DETAIL:[
             {
-                SVC_ID: ObjectId('63d2c0a248590b38a3312ae5'),
+                REF_ID: ObjectId('63d2c0a248590b38a3312ae5'),
                 SALE_PRICE: 900 ,
             },
             {
-                SVC_ID: ObjectId('63d2c0a6de4571e30ec4d5fc'),
+                REF_ID: ObjectId('63d2c0a6de4571e30ec4d5fc'),
                 SALE_PRICE: 1900,
             },
             {
-                SVC_ID: ObjectId('63d2c0aa695fcd7970a52cbb'),
+                REF_ID: ObjectId('63d2c0aa695fcd7970a52cbb'),
 
                 SALE_PRICE: 1900,
             },
             {
-                SVC_ID: ObjectId('63d2c0af2c7dedfd45349084'),
+                REF_ID: ObjectId('63d2c0af2c7dedfd45349084'),
 
                 SALE_PRICE: 2900,
             },
             {
-                SVC_ID: ObjectId('63d2c0b3b6a26d52fee86189'),
+                REF_ID: ObjectId('63d2c0b3b6a26d52fee86189'),
 
                 SALE_PRICE: 2900,
             },
             {
-                SVC_ID: ObjectId('63d2c0bc60d45fffb5eba780'),
+                REF_ID: ObjectId('63d2c0bc60d45fffb5eba780'),
 
                 SALE_PRICE: 3900,
             },
 
 
             {
-                SVC_ID: ObjectId('63d2c10afcfdafde77a1f044'),
+                REF_ID: ObjectId('63d2c10afcfdafde77a1f044'),
 
                 SALE_PRICE: 900 ,
             },
             {
-                SVC_ID: ObjectId('63d2c10e62097d8e1d4ab811'),
+                REF_ID: ObjectId('63d2c10e62097d8e1d4ab811'),
 
                 SALE_PRICE: 1900,
             },
             {
-                SVC_ID: ObjectId('63d2c1159b74a55375bd00b3'),
+                REF_ID: ObjectId('63d2c1159b74a55375bd00b3'),
 
                 SALE_PRICE: 1900,
             },
             {
-                SVC_ID: ObjectId('63d2c11aafc93e504d21ea37'),
+                REF_ID: ObjectId('63d2c11aafc93e504d21ea37'),
 
                 SALE_PRICE: 2900,
             },
             {
-                SVC_ID: ObjectId('63d2c12109dc5056049d512f'),
+                REF_ID: ObjectId('63d2c12109dc5056049d512f'),
 
                 SALE_PRICE: 2900,
             },
             {
-                SVC_ID: ObjectId('63d2c125e3df2c256a1ced8c'),
+                REF_ID: ObjectId('63d2c125e3df2c256a1ced8c'),
 
                 SALE_PRICE: 3900,
             }]
@@ -1055,32 +976,32 @@ db.SALON_SALE.insertMany([
         END_TIME: new Date('2023-03-31T23:59:59'),
         SVC_DETAIL:[
             {
-                SVC_ID: ObjectId('63d2bf87d66e99f7f23b0698'),
+                REF_ID: ObjectId('63d2bf87d66e99f7f23b0698'),
 
                 SALE_PRICE: 350
             },
             {
-                SVC_ID: ObjectId('63d2bfa349897c4de3a88b3a'),
+                REF_ID: ObjectId('63d2bfa349897c4de3a88b3a'),
 
                 SALE_PRICE: 850
             },
             {
-                SVC_ID: ObjectId('63d2bfb0b75ebec8561fc097'),
+                REF_ID: ObjectId('63d2bfb0b75ebec8561fc097'),
 
                 SALE_PRICE: 850
             },
             {
-                SVC_ID: ObjectId('63d2bfb4b24a7a63a764040b'),
+                REF_ID: ObjectId('63d2bfb4b24a7a63a764040b'),
 
                 SALE_PRICE: 1850
             },
             {
-                SVC_ID: ObjectId('63d2bffcece21429dc0e7da4'),
+                REF_ID: ObjectId('63d2bffcece21429dc0e7da4'),
 
                 SALE_PRICE: 850
             },
             {
-                SVC_ID: ObjectId('63d2c001b58e7099de6430d8'),
+                REF_ID: ObjectId('63d2c001b58e7099de6430d8'),
 
                 SALE_PRICE: 1850
             },
@@ -1093,37 +1014,37 @@ db.SALON_SALE.insertMany([
         END_TIME: new Date('2023-03-23T23:59:59'),
         SVC_DETAIL:[
             {
-                SVC_ID: ObjectId('63d2bf87d66e99f7f23b0698'),
+                REF_ID: ObjectId('63d2bf87d66e99f7f23b0698'),
 
                 SALE_PRICE: 400
             },
             {
-                SVC_ID: ObjectId('63d2bfa349897c4de3a88b3a'),
+                REF_ID: ObjectId('63d2bfa349897c4de3a88b3a'),
 
                 SALE_PRICE: 900
             },
             {
-                SVC_ID: ObjectId('63d2c04c4cb0e2b2478b53e2'),
+                REF_ID: ObjectId('63d2c04c4cb0e2b2478b53e2'),
 
                 SALE_PRICE: 500
             },
             {
-                SVC_ID: ObjectId('63d33f0314b431b56d470e05'),
+                REF_ID: ObjectId('63d33f0314b431b56d470e05'),
 
                 SALE_PRICE: 1100
             },
             {
-                SVC_ID: ObjectId('63d2c0a248590b38a3312ae5'),
+                REF_ID: ObjectId('63d2c0a248590b38a3312ae5'),
 
                 SALE_PRICE: 900
             },
             {
-                SVC_ID: ObjectId('63d2c0a6de4571e30ec4d5fc'),
+                REF_ID: ObjectId('63d2c0a6de4571e30ec4d5fc'),
 
                 SALE_PRICE: 1900
             },
             {
-                SVC_ID: ObjectId('63d2c10afcfdafde77a1f044'),
+                REF_ID: ObjectId('63d2c10afcfdafde77a1f044'),
 
                 SALE_PRICE: 900
             },
@@ -1150,7 +1071,7 @@ db.MEMBER.insertMany([
         MEM_PW: 'Password1',
         MEM_BTH: new Date("1988-03-19"),
         MEM_STATUS: 0,
-        PET: [{PET_ID: ObjectId('63d2b2f09cbe234f43af6d4e')}]
+        PET: [{REF_ID: ObjectId('63d2b2f09cbe234f43af6d4e')}]
     },
     {
         _id: ObjectId('63d2b32f9b8bdfe78424ef5c'),
@@ -1165,8 +1086,8 @@ db.MEMBER.insertMany([
         MEM_PW: 'Password3',
         MEM_BTH: new Date('1995-07-11'),
         MEM_STATUS: 0,
-        PET:[{PET_ID: ObjectId('63d2b335129ed24d706438bb')},
-            {PET_ID: ObjectId('63d2b3cdac65895e0f5b9067')},
+        PET:[{REF_ID: ObjectId('63d2b335129ed24d706438bb')},
+            {REF_ID: ObjectId('63d2b3cdac65895e0f5b9067')},
             ]
     },
     {
@@ -1182,8 +1103,8 @@ db.MEMBER.insertMany([
         MEM_PW: 'Password',
         MEM_BTH: new Date('1994-09-21'),
         MEM_STATUS: 0,
-        PET:[{PET_ID: ObjectId('63d2b3feb0e01f4fb2577b3c')},
-            {PET_ID:ObjectId('63d2b458823b69280092e37d')}]
+        PET:[{REF_ID: ObjectId('63d2b3feb0e01f4fb2577b3c')},
+            {REF_ID:ObjectId('63d2b458823b69280092e37d')}]
     },
     {
         _id: ObjectId('63d2b48ceba643b7ed390a6d'),
@@ -1267,8 +1188,8 @@ db.STAFF.insertMany([
         STAFF_POSI:'美容師',
         STAFF_BIRTH:new Date('1981-11-17'),
         STAFF_ROLE:[
-            '63d2b770731d6c289b3b2717',
-            '63d2b7c55b4677b880555caa']
+            {REF_ID:ObjectId('63d2b770731d6c289b3b2717')},
+            {REF_ID:ObjectId('63d2b7c55b4677b880555caa')}]
     },
     {
         _id: ObjectId('63d2b9248dc3c75c9526887d'),
@@ -1284,7 +1205,7 @@ db.STAFF.insertMany([
         STAFF_STATUS:0,
         STAFF_POSI:'美容師',
         STAFF_BIRTH:new Date('1997-01-07'),
-        STAFF_ROLE:[{ROLE_ID:ObjectId('63d2b6ccf660b9cc694c8619')},{ROLE_ID: ObjectId('63d2b770731d6c289b3b2717')}]
+        STAFF_ROLE:[{REF_ID:ObjectId('63d2b6ccf660b9cc694c8619')},{REF_ID: ObjectId('63d2b770731d6c289b3b2717')}]
     },
     {
         _id: ObjectId('63d2ba526b0543eeace783e2'),
@@ -1300,7 +1221,7 @@ db.STAFF.insertMany([
         STAFF_STATUS:0,
         STAFF_POSI:'美容助理',
         STAFF_BIRTH:new Date('1997-01-07'),
-        STAFF_ROLE:[{ROLE_ID: ObjectId('63d2b770731d6c289b3b2717')},{ROLE_ID: ObjectId('63d2b7c55b4677b880555caa')},]
+        STAFF_ROLE:[{REF_ID: ObjectId('63d2b770731d6c289b3b2717')},{REF_ID: ObjectId('63d2b7c55b4677b880555caa')},]
     },
     {
         _id: ObjectId('63d2ba5c1e01727e0c9f11cc'),
@@ -1316,7 +1237,7 @@ db.STAFF.insertMany([
         STAFF_STATUS:0,
         STAFF_POSI:'美容助理',
         STAFF_BIRTH:new Date('1997-11-07'),
-        STAFF_ROLE:[{ROLE_ID: ObjectId('63d2b770731d6c289b3b2717')}]
+        STAFF_ROLE:[{REF_ID: ObjectId('63d2b770731d6c289b3b2717')}]
     },
     {
         _id: ObjectId('63d2bab25e2b19f6863a047f'),
@@ -1332,7 +1253,7 @@ db.STAFF.insertMany([
         STAFF_STATUS:0,
         STAFF_POSI:'美容助理',
         STAFF_BIRTH:new Date('1997-11-07'),
-        STAFF_ROLE:[{ROLE_ID: ObjectId('63d2b770731d6c289b3b2717')}]
+        STAFF_ROLE:[{REF_ID: ObjectId('63d2b770731d6c289b3b2717')}]
     },
     {
         _id: ObjectId('63d2bae1c2bebfcfdbd713f5'),
@@ -1348,7 +1269,7 @@ db.STAFF.insertMany([
         STAFF_STATUS:0,
         STAFF_POSI:'美容助理',
         STAFF_BIRTH:new Date('1997-11-27'),
-        STAFF_ROLE:[{ROLE_ID: ObjectId('63d2b770731d6c289b3b2717')}]
+        STAFF_ROLE:[{REF_ID: ObjectId('63d2b770731d6c289b3b2717')}]
     },
     {
         _id: ObjectId('63d2bb24fba28c2f3c532259'),
@@ -1364,8 +1285,8 @@ db.STAFF.insertMany([
         STAFF_STATUS:0,
         STAFF_POSI:'美容助理',
         STAFF_BIRTH:new Date('1997-11-27'),
-        STAFF_ROLE:[{ROLE_ID:  ObjectId('63d2b770731d6c289b3b2717')},
-            {ROLE_ID:  ObjectId('63d2b6ccf660b9cc694c8619')}]
+        STAFF_ROLE:[{REF_ID:  ObjectId('63d2b770731d6c289b3b2717')},
+            {REF_ID:  ObjectId('63d2b6ccf660b9cc694c8619')}]
     },
     {
         _id: ObjectId('63d2bb595896b7f180d474d9'),
@@ -1381,7 +1302,7 @@ db.STAFF.insertMany([
         STAFF_STATUS:0,
         STAFF_POSI:'行政人員',
         STAFF_BIRTH:new Date('1997-11-27'),
-        STAFF_ROLE:[{ROLE_ID:ObjectId('63d2b8665f803425bf65ac56')}]
+        STAFF_ROLE:[{REF_ID:ObjectId('63d2b8665f803425bf65ac56')}]
     },
     {
         _id: ObjectId('63d2bbef34af993e06328d3a'),
@@ -1397,7 +1318,7 @@ db.STAFF.insertMany([
         STAFF_STATUS:0,
         STAFF_POSI:'老闆',
         STAFF_BIRTH:new Date('1997-11-27'),
-        STAFF_ROLE:[{ROLE_ID: ObjectId('63d2b804aa74e16d32cd6a8d')}]
+        STAFF_ROLE:[{REF_ID: ObjectId('63d2b804aa74e16d32cd6a8d')}]
     }
 ])
 
@@ -1406,56 +1327,56 @@ db.JOB_ROLE.insertMany([
         _id: ObjectId('63d2b6ccf660b9cc694c8619'),
         ROLE_NAME: '會員管理員',
         STAFF_PERMISSION:[
-            {PERMISSION_ID: ObjectId('63d2b5f6c6b8c459b21a77ba')},
-            {PERMISSION_ID: ObjectId('63d2b5f1a629e1a570c2ec36')}]
+            {REF_ID: ObjectId('63d2b5f6c6b8c459b21a77ba')},
+            {REF_ID: ObjectId('63d2b5f1a629e1a570c2ec36')}]
     },
     {
         _id: ObjectId('63d2b770731d6c289b3b2717'),
         ROLE_NAME: '美容員工',
         STAFF_PERMISSION:[
-            {PERMISSION_ID: ObjectId('63d2b5fa7230dd3efe55da9a')},
-            {PERMISSION_ID: ObjectId('63d2b6031edc7a582375bc5c')},
-            {PERMISSION_ID: ObjectId('63d2b60c998f51d5dd5e79bc')},
-            {PERMISSION_ID: ObjectId('63d2b6156cfd2149c7f24ded')}]
+            {REF_ID: ObjectId('63d2b5fa7230dd3efe55da9a')},
+            {REF_ID: ObjectId('63d2b6031edc7a582375bc5c')},
+            {REF_ID: ObjectId('63d2b60c998f51d5dd5e79bc')},
+            {REF_ID: ObjectId('63d2b6156cfd2149c7f24ded')}]
     },
     {
         _id: ObjectId('63d2b7c55b4677b880555caa'),
         ROLE_NAME: '美容管理員',
         STAFF_PERMISSION:[
-            {PERMISSION_ID: ObjectId('63d2b5fa7230dd3efe55da9a')},
-            {PERMISSION_ID: ObjectId('63d2b6031edc7a582375bc5c')},
-            {PERMISSION_ID: ObjectId('63d2b60c998f51d5dd5e79bc')},
-            {PERMISSION_ID: ObjectId('63d2b6156cfd2149c7f24ded')},
-            {PERMISSION_ID: ObjectId('63d2b5fe26a3f5043ae5bd01')},
-            {PERMISSION_ID: ObjectId('63d2b60751438dcb09f11e86')},
-            {PERMISSION_ID: ObjectId('63d2b61043e5a61b8ad8aaa3')},
-            {PERMISSION_ID: ObjectId('63d2b61908b9747abf714225')}]
+            {REF_ID: ObjectId('63d2b5fa7230dd3efe55da9a')},
+            {REF_ID: ObjectId('63d2b6031edc7a582375bc5c')},
+            {REF_ID: ObjectId('63d2b60c998f51d5dd5e79bc')},
+            {REF_ID: ObjectId('63d2b6156cfd2149c7f24ded')},
+            {REF_ID: ObjectId('63d2b5fe26a3f5043ae5bd01')},
+            {REF_ID: ObjectId('63d2b60751438dcb09f11e86')},
+            {REF_ID: ObjectId('63d2b61043e5a61b8ad8aaa3')},
+            {REF_ID: ObjectId('63d2b61908b9747abf714225')}]
     },
     {
         _id: ObjectId('63d2b8665f803425bf65ac56'),
         ROLE_NAME: '行政人事管理員',
         STAFF_PERMISSION:[
-            {PERMISSION_ID: ObjectId('63d2b5e6664a6da19c4aa96f')},
-            {PERMISSION_ID: ObjectId('63d2b5ebf72d9e1cc52fa95a')},
-            {PERMISSION_ID: ObjectId('63d2b5f1a629e1a570c2ec36')},
-            {PERMISSION_ID: ObjectId('63d2b5f6c6b8c459b21a77ba')}]
+            {REF_ID: ObjectId('63d2b5e6664a6da19c4aa96f')},
+            {REF_ID: ObjectId('63d2b5ebf72d9e1cc52fa95a')},
+            {REF_ID: ObjectId('63d2b5f1a629e1a570c2ec36')},
+            {REF_ID: ObjectId('63d2b5f6c6b8c459b21a77ba')}]
     },
     {
         _id: ObjectId('63d2b804aa74e16d32cd6a8d'),
         ROLE_NAME: '負責人',
         STAFF_PERMISSION:[
-            {PERMISSION_ID: ObjectId('63d2b5e6664a6da19c4aa96f')},
-            {PERMISSION_ID: ObjectId('63d2b5ebf72d9e1cc52fa95a')},
-            {PERMISSION_ID: ObjectId('63d2b5f1a629e1a570c2ec36')},
-            {PERMISSION_ID: ObjectId('63d2b5f6c6b8c459b21a77ba')},
-            {PERMISSION_ID: ObjectId('63d2b5fa7230dd3efe55da9a')},
-            {PERMISSION_ID: ObjectId('63d2b6031edc7a582375bc5c')},
-            {PERMISSION_ID: ObjectId('63d2b60c998f51d5dd5e79bc')},
-            {PERMISSION_ID: ObjectId('63d2b6156cfd2149c7f24ded')},
-            {PERMISSION_ID: ObjectId('63d2b5fe26a3f5043ae5bd01')},
-            {PERMISSION_ID: ObjectId('63d2b60751438dcb09f11e86')},
-            {PERMISSION_ID: ObjectId('63d2b61043e5a61b8ad8aaa3')},
-            {PERMISSION_ID: ObjectId('63d2b61908b9747abf714225')}]
+            {REF_ID: ObjectId('63d2b5e6664a6da19c4aa96f')},
+            {REF_ID: ObjectId('63d2b5ebf72d9e1cc52fa95a')},
+            {REF_ID: ObjectId('63d2b5f1a629e1a570c2ec36')},
+            {REF_ID: ObjectId('63d2b5f6c6b8c459b21a77ba')},
+            {REF_ID: ObjectId('63d2b5fa7230dd3efe55da9a')},
+            {REF_ID: ObjectId('63d2b6031edc7a582375bc5c')},
+            {REF_ID: ObjectId('63d2b60c998f51d5dd5e79bc')},
+            {REF_ID: ObjectId('63d2b6156cfd2149c7f24ded')},
+            {REF_ID: ObjectId('63d2b5fe26a3f5043ae5bd01')},
+            {REF_ID: ObjectId('63d2b60751438dcb09f11e86')},
+            {REF_ID: ObjectId('63d2b61043e5a61b8ad8aaa3')},
+            {REF_ID: ObjectId('63d2b61908b9747abf714225')}]
     },
 
 ])

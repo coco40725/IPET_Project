@@ -36,7 +36,7 @@ public class StaffController {
     @GetMapping("/ipet-back/staffs/{posi}")
     @ResponseBody
     public String getStaffsByPosi(@PathVariable("posi") String posi){
-        List<Staff> allStaffByPosi = staffServices.findAllStaffByPosi(posi);
+        List<Staff> allStaffByPosi = staffServices.getAllStaffByPosi(posi);
         Gson gson = builder.serializeNulls().setDateFormat("yyyy-MM-dd").create();
         return gson.toJson(allStaffByPosi);
     }

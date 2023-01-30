@@ -4,6 +4,7 @@ import com.ipet.web.member.entities.Member;
 import com.ipet.web.member.entities.Pet;
 import com.ipet.web.member.repositories.MemberRepository;
 import com.ipet.web.member.repositories.PetRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,21 +50,10 @@ public class PetServices {
 
     // pet query
     public List<Pet> getAllPets(){
-        List<Pet> all = petRepository.findAll();
-        for (Pet pet : all) {
-            Member member = memberRepository.findByPetContaining(pet.getId());
-            pet.setMemName(member.getMemName());
-            pet.setMemId(member.getId());
-        }
-        return all;
+        return petRepository.findAll();
     }
 
     public Pet getPetById(String id){
-        Pet pet = Objects.requireNonNull(petRepository.findById(id).orElse(null));
-        Member member = memberRepository.findByPetContaining(id);
-        pet.setMemName(member.getMemName());
-        pet.setMemId(member.getId());
-        return pet;
+        return petRepository.findById(id).orElse(null);
     }
-
 }

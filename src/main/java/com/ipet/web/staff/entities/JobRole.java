@@ -12,7 +12,7 @@ import java.io.Serial;
 import java.util.List;
 import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Data
 @Document("JOB_ROLE")
 @AllArgsConstructor

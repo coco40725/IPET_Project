@@ -1,8 +1,8 @@
-package com.ipet.web.salon.repositories;
+package com.ipet.web.salon.repositories.imp;
 
 import com.ipet.web.salon.entities.SalonSchedule;
-import com.ipet.web.salon.entities.result.ResultSalonAppointment;
-import com.ipet.web.salon.entities.result.ResultSalonSchedule;
+import com.ipet.web.salon.entities.unwinded.UnwindedSalonSchedule;
+import com.ipet.web.salon.repositories.CustomSalonScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -18,26 +18,26 @@ import java.util.List;
  * @create 2023-01-29-上午 10:33
  */
 @Repository
-public class CustomSalonScheduleRepositoryImp implements CustomSalonScheduleRepository{
+public class CustomSalonScheduleRepositoryImp implements CustomSalonScheduleRepository {
     private MongoTemplate mongoTemplate;
     @Autowired
     public void setMongoTemplate(MongoTemplate mongoTemplate){
         this.mongoTemplate = mongoTemplate;
     }
     @Override
-    public List<ResultSalonSchedule> findAll() {
+    public List<UnwindedSalonSchedule> findAll() {
         TypedAggregation<SalonSchedule> aggregation = Aggregation.newAggregation(
                 SalonSchedule.class,
                 Aggregation.lookup("STAFF", "GROOMER_ID", "_id", "GROOMER"),
                 Aggregation.lookup("STAFF", "ASST1_ID", "_id", "ASST1"),
                 Aggregation.lookup("STAFF", "ASST2_ID", "_id", "ASST2")
         );
-        AggregationResults<ResultSalonSchedule> aggregate = mongoTemplate.aggregate(aggregation, ResultSalonSchedule.class);
+        AggregationResults<UnwindedSalonSchedule> aggregate = mongoTemplate.aggregate(aggregation, UnwindedSalonSchedule.class);
         return aggregate.getMappedResults();
     }
 
     @Override
-    public ResultSalonSchedule findById(String id) {
+    public UnwindedSalonSchedule findById(String id) {
         TypedAggregation<SalonSchedule> aggregation = Aggregation.newAggregation(
                 SalonSchedule.class,
                 Aggregation.match(Criteria.where("_id").is(id)),
@@ -45,7 +45,7 @@ public class CustomSalonScheduleRepositoryImp implements CustomSalonScheduleRepo
                 Aggregation.lookup("STAFF", "ASST1_ID", "_id", "ASST1"),
                 Aggregation.lookup("STAFF", "ASST2_ID", "_id", "ASST2")
         );
-        AggregationResults<ResultSalonSchedule> aggregate = mongoTemplate.aggregate(aggregation, ResultSalonSchedule.class);
+        AggregationResults<UnwindedSalonSchedule> aggregate = mongoTemplate.aggregate(aggregation, UnwindedSalonSchedule.class);
         return aggregate.getUniqueMappedResult();
     }
 }

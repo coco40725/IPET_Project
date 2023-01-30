@@ -1,7 +1,7 @@
 package com.ipet.web.salon.repositories.imp;
 
 import com.ipet.web.salon.entities.SalonAppointment;
-import com.ipet.web.salon.entities.result.ResultSalonAppointment;
+import com.ipet.web.salon.entities.unwinded.UnwindedSalonAppointment;
 import com.ipet.web.salon.repositories.CustomAppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -18,7 +18,7 @@ import java.util.List;
  * @create 2023-01-29-下午 03:44
  */
 @Repository
-public class CustomAppointmentRepositpryImp implements CustomAppointmentRepository {
+public class CustomAppointmentRepositoryImp implements CustomAppointmentRepository {
     private MongoTemplate mongoTemplate;
     @Autowired
     public void setMongoTemplate(MongoTemplate mongoTemplate){
@@ -26,36 +26,40 @@ public class CustomAppointmentRepositpryImp implements CustomAppointmentReposito
     }
 
     @Override
-    public List<ResultSalonAppointment> findAll() {
+    public List<UnwindedSalonAppointment> findAll() {
         TypedAggregation<SalonAppointment> aggregation = Aggregation.newAggregation(
                 SalonAppointment.class,
                 Aggregation.lookup("MEMBER", "MEM_ID", "_id", "MEM"),
                 Aggregation.lookup("PET","PET_ID", "_id", "PET"),
                 Aggregation.lookup("SALON_SCHEDULE","SCH_ID", "_id", "SCH")
         );
-        AggregationResults<ResultSalonAppointment> aggregate = mongoTemplate.aggregate(aggregation, ResultSalonAppointment.class);
-        System.out.println(aggregate.getMappedResults());
+        AggregationResults<UnwindedSalonAppointment> aggregate = mongoTemplate.aggregate(aggregation, UnwindedSalonAppointment.class);
         return aggregate.getMappedResults();
     }
 
     @Override
-    public List<ResultSalonAppointment> findAllByApmStatus(Integer apmStatus) {
+    public List<UnwindedSalonAppointment> findAllByApmStatus(Integer apmStatus) {
         TypedAggregation<SalonAppointment> aggregation = Aggregation.newAggregation(
                 SalonAppointment.class,
                 Aggregation.match(Criteria.where("APM_STATUS").is(apmStatus)),
                 Aggregation.lookup("MEMBER", "MEM_ID", "_id", "MEM"),
                 Aggregation.lookup("PET","PET_ID", "_id", "PET"),
-                Aggregation.lookup("SALON_SCHEDULE","SCH_ID", "_id", "SCH"),
-                Aggregation.lookup("SALON_SERVICE","SVC_ID", "_id", "SVC"),
-                Aggregation.lookup("SALON_SALE","SALE_ID", "_id", "SALE")
+                Aggregation.lookup("SALON_SCHEDULE","SCH_ID", "_id", "SCH")
         );
-        AggregationResults<ResultSalonAppointment> aggregate = mongoTemplate.aggregate(aggregation, ResultSalonAppointment.class);
-        System.out.println(aggregate);
+        AggregationResults<UnwindedSalonAppointment> aggregate = mongoTemplate.aggregate(aggregation, UnwindedSalonAppointment.class);
         return aggregate.getMappedResults();
     }
 
     @Override
-    public ResultSalonAppointment findById(String id) {
-        return null;
+    public UnwindedSalonAppointment findById(String id) {
+        TypedAggregation<SalonAppointment> aggregation = Aggregation.newAggregation(
+                SalonAppointment.class,
+                Aggregation.match(Criteria.where("id").is(id)),
+                Aggregation.lookup("MEMBER", "MEM_ID", "_id", "MEM"),
+                Aggregation.lookup("PET","PET_ID", "_id", "PET"),
+                Aggregation.lookup("SALON_SCHEDULE","SCH_ID", "_id", "SCH")
+        );
+        AggregationResults<UnwindedSalonAppointment> aggregate = mongoTemplate.aggregate(aggregation, UnwindedSalonAppointment.class);
+        return aggregate.getUniqueMappedResult();
     }
 }
