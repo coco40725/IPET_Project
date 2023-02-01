@@ -1,5 +1,6 @@
 package com.ipet.web.salon.repositories;
 
+import com.ipet.web.salon.entities.SalonSchedule;
 import com.ipet.web.salon.entities.unwinded.UnwindedSalonSchedule;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 public interface CustomSalonScheduleRepository {
     List<UnwindedSalonSchedule>  findAll();
     UnwindedSalonSchedule findById(String id);
+    void partialUpdate(SalonSchedule schedule);
 
 
 }

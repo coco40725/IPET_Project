@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "ipetproject",
+  "private_key_id": "1f8092e6553478fd6090f3da3edf728e81960a99",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDiHhDYBlETo1/r\nN0bx7GQ5gYtKWCHnMswMJ/tAYIGLAbt7W2gnK7PLYr/vzbpMB4A1gpW8upTcc4RU\ndIjIOZAXOwTBNUKekuA2JGRI1dXTr/IzrO6ZDTi2Uf4tCyrROeHz7C9iBYrbcbFM\nbs0teYnZBD4H8BwdXDgzzztodpdzPh92sB46tOihKNBmPmPESinkH0d26liga5nO\ny2My9Ynn1IcrX++Z1Nmjjjv3JrKK3WzKXqw2iaHxQ3HpDGzmO4JrUofXoIwEJODT\nnRp9vOWtba4zHUTFVXmXeSF/qP/5FBKzVxwp9tf1qRoa2JmblEKdr8vNBL4PYlTM\nzVDPfYn9AgMBAAECggEAMpN0g4k4KcsVaYx56SNNkKJF6FlZrfep9b8cnvvnBdNb\nnr4lh/tpsgCSu13aAWb9GZrtiKL4KG4LJ4PQU26yqMuJ5vhVgBgMn/eYWcVAmGKG\nq2HPFXtEV91zm5ofl+BZRqCpwYRJWIev10+CQ51nhJvDDy347+VAafA8ksNR4VPU\nZ90Jj0OCLDNb6c3wcXtAt0Zv5SUCKxnN2coFoOJLQEMiEMdsmnmkqHi/6weV6RnK\nyXAVDWVX9PuAk1rcRle55JioJZpTEV8QW7DOPV/2DROp3kxpnYKr8ow3Wc0Hb7m/\nmCTu/jkNlh12abIjAGkY3QFoTC2Oy3DGwIeTTxN6GQKBgQD6p3KFF1y4/vSAqkt/\n92ee4eZtGlZDY65QpBieXB1thrrLqfEe69QIm+Q1XaPSPeGpJWMEYD0i7JMVcaA9\nIendhMAIFi2bqfomrq6lRY7YXxivLFOJ/UyjUuYQGWCy56/tihmVGq6rrxxO7/WE\nTn5XGc9xTSXvVT9bIj7MBzbY6QKBgQDm8KZy6JXz8Cd7cHRhgMYFWQGxxQKkU4+Y\ntqt/IQqNnV3IqFIpxz0arGqhDgxahf/xx79SdwEMzXfyeuqguqF6AOcXHILQpJiW\nxnhpUInjN5cVzxYMdjO6rx6LtmjDLloaJuUzfepWhte9YZ5GrODOqJOZMrH5P142\nzELFgoh79QKBgFFE84OllIHC4IHLNVmTXPyN4All7axB6KXq3rSRx1TYxz37pttQ\nuVnlObP33YLwX3dZUOZ9UbU+IV5ljf/kPBB/10eH8Ve0YBAkuSmLCQqsorNBWwC1\nqSCXY1K697hqGIebLDpFAXdW+oW5ldBFJv+UtcbVrcQQzs78poG+oRDpAoGBAI59\nJPX5M6xTHMk41VXjkkpyZG0+1SZ2uD7NVnsV8+D0m4zW7fsBB16Ryyib9ltUGlsf\nl5hV/LvdeoiN9n49KKySKgNEgCIjrFI7Gsg//RPIlNvL7hq6Q6iHrB0f6vuiec1w\n+jIPGqtQf4RF2tZYjEx2DruTX+QdiQ/eb8RViciRAoGAYu1sYD7WlUl2GjlhKmFd\nGobp96L6zStbXMemFKLE0YgjLq2WWZzR6bNCop9k8UXo+GyQPwOJYyn/UzLOKh4o\nCXb04EAWIOpgHswpsi4Xg8iqYQqKoQrbA7RSdAeSkMuQ+48X6FQNsQFTtwAIxO9L\nMUHIsngdPJgjrjxkI3Wy7zI=\n-----END PRIVATE KEY-----\n",
+  "client_email": "ipet-gcp@ipetproject.iam.gserviceaccount.com",
+  "client_id": "108025444155822592426",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/ipet-gcp%40ipetproject.iam.gserviceaccount.com"
+}

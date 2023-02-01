@@ -54,14 +54,14 @@ public class MemberServices {
             return "查無此會員";
         }else{
             // 不可更改: 帳號
-            if (!oldMember.getMemAc().equals(member.getMemAc())) {
+            if (member.getMemAc() != null) {
                 return "不可更改帳號";
             }
             // 不可更改: 身分證
-            if (!oldMember.getMemUid().equals(member.getMemUid())){
+            if (member.getMemUid() != null){
                 return "不可更改身分證";
             }
-            memberRepository.save(member);
+            customMemberRepository.partialUpdate(member);
             return "success";
         }
     }

@@ -2,6 +2,7 @@ package com.ipet.web.member.services;
 
 import com.ipet.web.member.entities.Member;
 import com.ipet.web.member.entities.Pet;
+import com.ipet.web.member.repositories.CustomPetRepository;
 import com.ipet.web.member.repositories.MemberRepository;
 import com.ipet.web.member.repositories.PetRepository;
 import org.bson.types.ObjectId;
@@ -20,15 +21,16 @@ import java.util.Objects;
 @Service
 public class PetServices {
     private PetRepository petRepository;
-    private MemberRepository memberRepository;
+    private CustomPetRepository customPetRepository;
+
     @Autowired
     public void setPetRepository(PetRepository petRepository){
         this.petRepository = petRepository;
     }
 
     @Autowired
-    public void setMemberRepository(MemberRepository memberRepository){
-        this.memberRepository = memberRepository;
+    public void setCustomPetRepository(CustomPetRepository customPetRepository){
+        this.customPetRepository = customPetRepository;
     }
 
     // pet add
@@ -44,7 +46,7 @@ public class PetServices {
         if (oldPet == null){
             return "查無此寵物";
         }
-            petRepository.save(pet);
+            customPetRepository.partialUpdate(pet);
             return "success";
     }
 

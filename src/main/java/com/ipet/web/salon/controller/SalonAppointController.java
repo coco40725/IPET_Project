@@ -4,6 +4,8 @@ import com.google.gson.*;
 import com.ipet.web.salon.entities.SalonAppointment;
 import com.ipet.web.salon.services.SalonAppointServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,27 +31,33 @@ public class SalonAppointController {
     }
 
     // Appointment add
+    @PreAuthorize("hasAnyAuthority('editSalonAppoinits','editSalonSchedules')")
     @PostMapping("/ipet-back/appoint")
+    @ResponseBody
     public String addAppoint(SalonAppointment appointment){
         return  null;
     }
 
     // Appointment edit
-    @PutMapping("/ipet-back/appoint")
+    @PreAuthorize("hasAnyAuthority('editSalonAppoinits','editSalonSchedules')")
+    @PatchMapping("/ipet-back/appoint/{id}")
     @ResponseBody
-    public String editAppoint(@RequestBody Map<String, String> map){
-        Gson gson = builder.serializeNulls().create();
-        SalonAppointment appointment = gson.fromJson(map.get("jsonFile"), SalonAppointment.class);
-        return salonAppointServices.editAppointment(appointment);
+    public String editAppoint(@PathVariable("id") String id, @RequestBody SalonAppointment salonAppointment){
+        salonAppointment.setId(id);
+        System.out.println(salonAppointment);
+        return salonAppointServices.editAppointment(salonAppointment);
     }
 
     // Appointment query
+    @PreAuthorize("hasAnyAuthority('displaySalonAppoinits','editSalonAppoinits')")
+    @Secured({"ROLE_boss","ROLE_salonAdmin","ROLE_salonEmp"})
     @GetMapping("/ipet-back/appoints")
     public String getAllAppoints(Model model){
         model.addAttribute("appoints", salonAppointServices.getAllUnwindedAppointment());
         return "backstage/salon/salonAppointAll";
     }
 
+    @PreAuthorize("hasAnyAuthority('displaySalonAppoinits','editSalonAppoinits')")
     @GetMapping("/ipet-back/appoints/{status}")
     public String getAppointsByStatus(@PathVariable("status") Integer status, Model model){
         String template = null;
@@ -68,6 +76,7 @@ public class SalonAppointController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('displaySalonAppoinits','editSalonAppoinits')")
     @GetMapping("/ipet-back/appoint/{id}")
     @ResponseBody
     public String  getAppointById(@PathVariable("id") String id){

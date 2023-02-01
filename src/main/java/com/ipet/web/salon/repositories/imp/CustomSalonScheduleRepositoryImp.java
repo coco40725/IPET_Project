@@ -1,14 +1,19 @@
 package com.ipet.web.salon.repositories.imp;
 
+import com.ipet.web.salon.entities.SalonAppointment;
 import com.ipet.web.salon.entities.SalonSchedule;
 import com.ipet.web.salon.entities.unwinded.UnwindedSalonSchedule;
 import com.ipet.web.salon.repositories.CustomSalonScheduleRepository;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -47,5 +52,21 @@ public class CustomSalonScheduleRepositoryImp implements CustomSalonScheduleRepo
         );
         AggregationResults<UnwindedSalonSchedule> aggregate = mongoTemplate.aggregate(aggregation, UnwindedSalonSchedule.class);
         return aggregate.getUniqueMappedResult();
+    }
+
+    @Override
+    public void partialUpdate(SalonSchedule schedule) {
+        Document document = new Document();
+        // 將 member 轉成 Document 格式 (如此 null 的field會直接消失) 並寫入 document
+        mongoTemplate.getConverter().write(schedule, document);
+        Update update = new Update();
+        // 重複執行 update.set("name","value")
+        document.forEach(update::set);
+        SalonSchedule updateSchedule = mongoTemplate.findAndModify(
+                Query.query(Criteria.where("_id").is(schedule.getId())),update, new FindAndModifyOptions().returnNew(true), SalonSchedule.class);
+
+        if (updateSchedule != null) {
+            mongoTemplate.save(updateSchedule);
+        }
     }
 }

@@ -92,23 +92,27 @@ public class SalonAppointServices {
     @Transactional
     public String editAppointment(SalonAppointment newAppointment){
         SalonAppointment oldAppointment = salonAppointmentRepository.findById(newAppointment.getId()).orElse(null);
+        if (oldAppointment == null) {
+            return "修改失敗，查無此班預約單";
+        }
         SalonSchedule originalJob = salonScheduleRepository.findById(Objects.requireNonNull(oldAppointment).getSchId()).orElse(null);
-        SalonSchedule newSelectJob = salonScheduleRepository.findById(newAppointment.getSchId()).orElse(null);
-
-        if (newSelectJob == null || originalJob == null){
-            return "修改失敗，查無此班表或預約單";
+        if (originalJob == null){
+            return "修改失敗，無法查詢無原班表";
+        }
+        SalonSchedule newSelectJob = null;
+        if (newAppointment.getSchId() != null){
+           newSelectJob = salonScheduleRepository.findById(newAppointment.getSchId()).orElse(null);
         }
 
 
-
-        // 1. 僅允許使用者修改 schID  預約狀態 與 note
+        // 1. 僅允許使用者修改 schID  預約狀態 加收價格 與 note
         // 不可更動其他欄位: apmID, MemID, PetID, TotalPrice
         // 確認其他欄位與之前相同，以避開資料被 null覆蓋
         if (!newAppointment.getId().equals(oldAppointment.getId()) ||
-                !newAppointment.getMemId().equals(oldAppointment.getMemId()) ||
-                !newAppointment.getPetId().equals(oldAppointment.getPetId()) ||
-                !newAppointment.getTotalPrice().equals(oldAppointment.getTotalPrice()) ||
-                !newAppointment.getSalonAppointDetail().equals(oldAppointment.getSalonAppointDetail())){
+                newAppointment.getMemId() != null ||
+                newAppointment.getPetId() != null||
+                newAppointment.getTotalPrice() != null ||
+                newAppointment.getSalonAppointDetail() != null){
             return "修改失敗，只可修改班表、預約狀態與備註。";
         }
 
@@ -122,9 +126,13 @@ public class SalonAppointServices {
 
 
         // 3. 通過上面的檢查，開始進行資料update
+        // 3.0 重新計算 total price
+        if (newAppointment.getAdditionalPrice() != null){
+            newAppointment.setTotalPrice(oldAppointment.getTotalPrice() + newAppointment.getAdditionalPrice());
+        }
 
         // 3.1 更改班表 (狀態必須為 已支付訂金)
-        if (!oldAppointment.getSchId().equals(newAppointment.getSchId())){
+        if (newSelectJob != null){
             //  "新班表" 是否已被預約
             if (newSelectJob.getAppointId() != null) {
                 newAppointment.setMessage("修改失敗，此時段與日期已被預約。");
@@ -133,32 +141,25 @@ public class SalonAppointServices {
                 newSelectJob.setAppointId(newAppointment.getId());
                 salonScheduleRepository.save(originalJob);
                 salonScheduleRepository.save(newSelectJob);
-                salonAppointmentRepository.save(newAppointment);
+                customAppointmentRepository.partialUpdate(newAppointment);
             }
             return "success";
         }
 
         // 3.2 更改狀態
-        // 3.2.1 改為已完成 或 逾時未到 (不用更新班表)
-        if (newAppointment.getApmStatus().equals(1) || newAppointment.getApmStatus().equals(3)){
-            salonAppointmentRepository.save(newAppointment);
-            return "success";
+        if (newAppointment.getApmStatus() != null){
+            // 3.2.1 改為已完成 或 逾時未到 (不用更新班表)
+            // 3.2.2 改為已取消 (需要更新舊班表)
+            if (newAppointment.getApmStatus().equals(2)){
+                originalJob.setAppointId(null);
+                salonScheduleRepository.save(originalJob);
+                customAppointmentRepository.partialUpdate(newAppointment);
+                return "success";
+            }
         }
 
-        // 3.2.2 改為已取消 (需要更新班表)
-        if (newAppointment.getApmStatus().equals(2)){
-            originalJob.setAppointId(null);
-            salonScheduleRepository.save(originalJob);
-            salonAppointmentRepository.save(newAppointment);
-            return "success";
-        }
-
-        // 3.3 狀態未更新
-        if (oldAppointment.getApmStatus().equals(newAppointment.getApmStatus())){
-            salonAppointmentRepository.save(newAppointment);
-            return "success";
-        }
-        return "未進行任何修改";
+        customAppointmentRepository.partialUpdate(newAppointment);
+        return "success";
     }
 
 

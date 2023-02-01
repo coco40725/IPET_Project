@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <title>IPET 寵物 | 員工專區 | 員工列表</title>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+  <!-- MultiDatePicker  -->
+  <link rel="stylesheet" th:href="@{/backstage/plugins/jquery-ui/jquery-ui.min.css}">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/jquery-ui-multidatepicker/css/jquery-ui.multidatespicker.css}">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" th:href="@{/backstage/plugins/fontawesome-free/css/all.css}">
+  <!-- DataTables -->
+  <link rel="stylesheet" th:href="@{/backstage/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/datatables-buttons/css/buttons.bootstrap4.min.css}">
+  <link rel="stylesheet" th:href="@{/backstage/plugins/datatables-select/css/select.bootstrap4.css}">
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" th:href="@{/backstage/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+
+  <!-- Theme style -->
+  <link rel="stylesheet" th:href="@{/backstage/css/adminlte.css}">
+
+  <style>
+    .error{
+    color: red;
+    }
+
+    .childTbody th{
+      background-color: rgb(238, 182, 149, 0.45);
+    }
+
+    .childTbody tr:nth-child(even){
+      background-color: #fffaf082;
+    }
+
+    .childTbody tr:nth-child(odd){
+      background-color: #fffffc !important;
+    }
+
+    td.details-control {
+      background: url("/backstage/img/more.png") no-repeat center;
+      background-size: 25px;
+      cursor: pointer;
+    }
+    tr.shown td.details-control {
+      background: url("/backstage/img/close.png") no-repeat center;
+      background-size: 20px;
+      cursor: pointer;
+    }
+
+    #contentBody {
+      background-image:
+              url('/backstage/img/homePage.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+  </style>
+
+
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+
+  <!--  Navbar -->
+  <div th:replace="~{backstage/common/navbor :: navbar}"></div>
+  <!-- /.navbar -->
+
+  <!-- 左邊選單區 Main Sidebar Container -->
+  <div th:replace="~{backstage/common/sidebar :: sidebar}"></div>
+  <!-- /.aside -->
+
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper" id="contentBody">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/home">Home</a></li>
+              <li class="breadcrumb-item">員工管理</li>
+              <li class="breadcrumb-item active"><a href="${pageContext.request.contextPath}/ipet-back/job/jobs_list">員工列表</a></li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+      <!-- Main content -->
+      <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+
+            <div class="col-12">
+              <!-- Filter -->
+              <div class="card card-info">
+                <div class="card-header">
+                  <h3 class="card-title">員工資料 Filter</h3>
+                </div>
+                <div class="card-body">
+                  <form>
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <!-- text input -->
+                        <div class="form-group">
+                          <label>員工編號</label>
+                          <input type="text" class="form-control column_filter" id="col0-search"  data-column="0" placeholder="Enter ...">
+                        </div>
+                        <!-- text input -->
+                        <div class="form-group">
+                          <label>員工姓名</label>
+                          <input type="text" class="form-control column_filter" id="col1-search" data-column="1" placeholder="Enter ...">
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <!-- text input -->
+                        <div class="form-group">
+                          <label>員工性別</label>
+                          <input type="text" class="form-control column_filter" id="col2-search" data-column="2" placeholder="Enter ...">
+                        </div>
+                        <!-- text input -->
+                        <div class="form-group">
+                          <label>員工Email</label>
+                          <input type="text" class="form-control column_filter" id="col3-search" data-column="3" placeholder="Enter ...">
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <!-- text input -->
+                        <div class="form-group">
+                          <label>員工手機</label>
+                          <input type="text" class="form-control column_filter" id="col4-search" data-column="4" placeholder="Enter ...">
+                        </div>
+                        <!-- text input -->
+                        <div class="form-group">
+                          <label>員工帳號</label>
+                          <input type="text" class="form-control column_filter" id="col5-search" data-column="5" placeholder="Enter ...">
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <!-- text input -->
+                        <div class="form-group">
+                          <label>員工密碼</label>
+                          <input type="text" class="form-control column_filter" id="col6-search" data-column="6" placeholder="Enter ...">
+                        </div>
+                        <!-- text input -->
+                        <div class="form-group">
+                          <label>員工職稱</label>
+                          <input type="text" class="form-control column_filter" id="col7-search" data-column="7" placeholder="Enter ...">
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <!-- text input -->
+                        <div class="form-group">
+                          <label>員工角色與權限</label>
+                          <input type="text" class="form-control column_filter" id="col8-search" data-column="8" placeholder="Enter ...">
+                        </div>
+                        <!-- text input -->
+                        <div class="form-group">
+                          <label>員工狀態</label>
+                          <input type="text" class="form-control column_filter" id="col9-search" data-column="9" placeholder="Enter ...">
+                        </div>
+                      </div>
+                    </div>
+
+                  </form>
+                </div>
+              </div>
+              <!-- /.filter -->
+
+
+              <!-- table -->
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title"></h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <table id="memberTable" class="table table-bordered table-striped  display">
+                    <thead>
+                    <tr>
+                      <th>員工編號</th>
+                      <th>員工姓名</th>
+                      <th>員工性別</th>
+                      <th>員工Email</th>
+                      <th>員工手機</th>
+                      <th>員工帳號</th>
+                      <th>員工密碼</th>
+                      <th>員工職稱</th>
+                      <th>員工角色與權限</th>
+                      <th>員工狀態</th>
+                      <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="staff : ${staffs}">
+                      <td th:text="${staff.id}"></td>
+                      <td th:text="${staff.staffName}"></td>
+                      <td th:text="${staff.staffSex}"></td>
+                      <td th:text="${staff.staffEmail}"></td>
+                      <td th:text="${staff.staffPhone}"></td>
+                      <td th:text="${staff.staffAc}"></td>
+                      <td th:text="${staff.staffPw}"></td>
+                      <td th:text="${staff.staffPosi}"></td>
+                      <td>
+                        <table  class="childTable" style="display:none">
+                          <tbody class="childTbody">
+                            <tr>
+                              <th>角色編號</th>
+                              <th>員工角色</th>
+                              <th>權限編號</th>
+                              <th>員工權限</th>
+                            </tr>
+                            <th:block th:each="role : ${staff.unwindedJobRoles}">
+                              <th:block th:each="permission : ${role.jobPermissions}">
+                                <tr>
+                                  <td th:text="${role.id}"></td>
+                                  <td th:text="${role.roleDesc}"></td>
+                                  <td th:text="${permission.id}"></td>
+                                  <td th:text="${permission.permissionDesc}"></td>
+                                </tr>
+                              </th:block>
+                            </th:block>
+                          </tbody>
+                        </table>
+                      </td>
+                      <th:block th:switch="${staff.staffStatus}">
+                        <td th:case="0">
+                          <button class="btn btn-success dt-center">
+                            正常
+                          </button>
+                        </td>
+                        <td th:case="1">
+                          <button class="btn btn-danger dt-center">
+                            停權
+                          </button>
+                        </td>
+                      </th:block>
+                      <td>
+                        <button sec:authorize="hasAnyAuthority('editEmps')" type="submit" class="btn btn-light" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
+                                th:attr="staffUrl=@{/ipet-back/staff/{id}(id=${staff.id})}">
+                          <i class="fas fa-solid fa-pen"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.table -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content -->
+
+
+    <!-- Edit Modal content   -->
+    <div  sec:authorize="hasAnyAuthority('editEmps')" th:replace="~{/backstage/member/modal/MemberModal :: memberEditModal}"></div>
+    <!-- /. Edit Modal content   -->
+
+  <!-- Main Footer -->
+  <div th:replace="~{backstage/common/footer :: footer}"></div>
+
+</div>
+<!-- /.content-wrapper -->
+
+<!-- jQuery -->
+<script th:src="@{/backstage/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/backstage/plugins/jquery-ui/jquery-ui.min.js}"></script>
+<script th:src="@{/backstage/plugins/jquery-validation/jquery.validate.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/backstage/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE -->
+<script th:src="@{/backstage/js/adminlte.js}"></script>
+<!--Axios-->
+<script th:src="@{/backstage/plugins/axios/axios.min.js}"></script>
+
+<!-- DataTables  & Plugins -->
+<script th:src="@{/backstage/plugins/datatables/jquery.dataTables.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
+<script th:src="@{/backstage/plugins/jszip/jszip.min.js}"></script>
+<script th:src="@{/backstage/plugins/pdfmake/pdfmake.min.js}"></script>
+<script th:src="@{/backstage/plugins/pdfmake/vfs_fonts.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/buttons.html5.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/buttons.print.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
+<script th:src="@{/backstage/plugins/datatables-select/js/dataTables.select.js}" ></script>
+
+<!-- MultiDatePicker -->
+<script th:src="@{/backstage/plugins/jquery-ui-multidatepicker/js/jquery-ui.multidatespicker.js}"></script>
+
+<!-- sidebar menu Class -->
+<script>
+  $("p:contains(員工管理)").closest("li").addClass("menu-open");
+  $("p:contains(員工列表)").closest("a").addClass("active");
+</script>
+
+<!-- Data presentation and operation show -->
+<script>
+  let table = $('#memberTable').DataTable({
+    autoWidth: false,
+    responsive: true,
+    lengthChange: true,
+    info: true,
+    altEditor: true,     // Enable altEditor,
+
+
+    //  填寫直接顯示的欄位，需要與thead tfoot 對應
+    "columns":[
+      {responsivePriority: 1, className: "empId dt-center"},
+      {responsivePriority: 2, className: "empName dt-center"},
+      {className: "empSex dt-center"},
+      {className: "empEmail dt-center"},
+      {responsivePriority: 3, className: "empPhone dt-center"},
+      {responsivePriority: 4, className: "empAc dt-center"},
+      {responsivePriority: 5, className: "empPw dt-center"},
+      {responsivePriority: 6, className: "empPosi dt-center"},
+      {className: 'details-control dt-center',
+        orderable:      false,
+        defaultContent: '',
+        responsivePriority: 7},
+      {className: "empStatus dt-center"},
+      {className: 'row-edit dt-center', orderable: false, responsivePriority: 8},
+    ],
+    select: {
+      style: 'single',
+      toggleable: false
+    },
+    order: [0, 'desc'],
+    fnDrawCallback: function (){
+
+
+      <!-- Edit data from modal -->
+      let targetDataEdit;
+      let memberObjectEdit;
+      let editRefresh;
+
+      // 從資料庫抓資料並呈現在 modal 上
+      $('td.row-edit').on('click','button',function (){
+        // get the selected tr
+        targetDataEdit = $(event.target).closest("tr")[0];
+        let getMemberUrl = $(this).attr("getMemberUrl");
+        // send the request to server, and response the data on the modal
+        axios({
+          method:"get",
+          url:getMemberUrl,
+        }).then((resp) => {
+          if (resp !== ""){
+            memberObjectEdit = resp.data;
+            $("#memAc-modal-edit").val(memberObjectEdit.memAc);
+            $("#memUid-modal-edit").val(memberObjectEdit.memUid);
+            $("#memBirth-modal-edit").val(memberObjectEdit.memBth);
+            $("#memName-modal-edit").val(memberObjectEdit.memName);
+            $("#memSex-modal-edit").val(memberObjectEdit.memSex);
+            $("#memEmail-modal-edit").val(memberObjectEdit.memEmail);
+            $("#memPhone-modal-edit").val(memberObjectEdit.memPhone);
+            $("#memTel-modal-edit").val(memberObjectEdit.memTel);
+            $("#memAdd-modal-edit").val(memberObjectEdit.memAdd);
+            $("#memPw-modal-edit").val(memberObjectEdit.memPw);
+            $("#memStatus-modal-edit").val(memberObjectEdit.memStatus);
+          }else{
+            $("#editModalMessage").html("錯誤: 無法從伺服器抓取該筆資料")
+                    .css("color","red");
+            editRefresh = false;
+          }
+        }).catch((err) => {console.log(err)})
+      });
+
+      // 建立 EditModalForm 規則
+      $("#EditModalForm").validate({
+        onkeyup:function(element, event) {
+          //去除左側空白
+          var value = this.elementValue(element).replace(/^\s+/g, "");
+          $(element).val(value);
+        },
+        rules:{
+          memAc:{
+            required: true,
+          },
+          memUid:{
+            required: true,
+          },
+          memBirth:{
+            required: true,
+          },
+          memName:{
+            required: true,
+          },
+          memSex: {
+            required: true,
+          },
+          memEmail:{
+            required: true,
+            email: true
+          },
+          memPhone:{
+            required: true,
+            number: true
+          },
+          memTel:{
+            number: true
+          },
+          memAdd:{
+            required: true,
+          },
+          memPw:{
+            required: true,
+          },
+          memStatus:{
+            required: true,
+          }
+        }
+      })
+
+      $('#EditModalForm').on("submit", function (e){
+        e.preventDefault();
+      })
+
+      // 送出編輯
+      $('.btn-edit-confirm').on("click" ,function(e){
+        let editUrl = $(this).attr('editUrl');
+        let EditData = {
+          id: memberObjectEdit.id,
+          memName: $("#memName-modal-edit").val(),
+          memUid: $("#memUid-modal-edit").val(),
+          memBth: $('#memBirth-modal-edit').val(),
+          memSex: $('#memSex-modal-edit').val(),
+          memEmail: $('#memEmail-modal-edit').val(),
+          memPhone: $('#memPhone-modal-edit').val(),
+          memTel: $('#memTel-modal-edit').val(),
+          memAdd: $('#memAdd-modal-edit').val(),
+          memAc: $('#memAc-modal-edit').val(),
+          memPw: $('#memPw-modal-edit').val(),
+          memStatus: $('#memStatus-modal-edit').val(),
+          pet: memberObjectEdit.pet
+        }
+
+        if ($("#EditModalForm").valid()){
+          axios({
+            method:"put",
+            url:editUrl,
+            data:{jsonFile: JSON.stringify(EditData)}
+          })
+            .then((resp) => {
+              if (resp !== "") {
+                if (resp.data === "success"){
+                  $("#editModalMessage").html("修改成功")
+                          .css("color","green");
+                  $(".btn-edit-confirm").addClass("disabled")
+                          .attr("disabled")
+                  editRefresh = true;
+                }else{
+                  $("#editModalMessage").html(resp.data)
+                          .css("color","red");
+                  editRefresh = false;
+                }
+              }else{
+                $("#editModalMessage").html("錯誤:伺服器無回傳結果")
+                        .css("color","red");
+              }
+            })
+            .catch((err) => {
+              $("#editeModalMessage").text("修改失敗，其他原因")
+                      .css("color","red");
+              $(".btn-edit-confirm").addClass("disabled")
+                      .attr("disabled");
+              editRefresh = false;
+            })
+        }else{
+          $("#editModalMessage").text("請填寫完整且正確的資料")
+                  .css("color","red");
+        }
+      });
+
+      $('#EditModal').on('hidden.bs.modal', function (){
+        // clean previous data
+        $("#editModalMessage").text("");
+        $(".error").css("color","black");
+        $("#memTel-modal-edit-error").remove();
+        if (editRefresh) {
+          window.location.reload();
+        }
+      });
+      <!-- /. Edit data from modal -->
+
+
+    }
+  });
+
+
+  $('input.column_filter').on('keyup click', function () {
+    filterColumn($(this).attr('data-column'));
+  });
+  function filterColumn(i) {
+    table.column(i)
+            .search($('#col' + i + '-search').val())
+            .draw();
+  }
+
+  <!-- Add event listener for opening and closing details -->
+  $('#memberTable tbody').on('click', 'td.details-control', function () {
+    let tr = $(this).closest('tr');
+    let row = table.row( tr );
+    if ( row.child.isShown() ) {
+      // This row is already open - close it
+      row.child.hide();
+      tr.removeClass('shown');
+    } else {
+      // Open this row
+      let chileTable = $(this).find('.childTable').html();
+      row.child(chileTable).show();
+      tr.addClass('shown');
+    }
+  });
+
+</script>
+</body>
+</html>

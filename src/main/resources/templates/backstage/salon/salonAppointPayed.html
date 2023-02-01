@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   <title>IPET 寵物 | 寵物美容專區 | 已付訂金的預約</title>
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -42,6 +44,15 @@
       cursor: pointer;
     }
 
+
+    #contentBody {
+      background-image:
+              url('/backstage/img/homePage.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+
+    }
+
   </style>
 
 
@@ -62,7 +73,7 @@
 
 
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" id="contentBody">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
@@ -126,32 +137,39 @@
                       </div>
                       <!-- text input -->
                       <div class="form-group">
-                        <label>實付金額</label>
+                        <label>班表編號</label>
                         <input type="text" class="form-control column_filter" id="col5-search" data-column="5" placeholder="Enter ...">
                       </div>
                     </div>
                     <div class="col-sm-3">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>班表編號</label>
+                        <label>加收費用</label>
                         <input type="text" class="form-control column_filter" id="col6-search" data-column="6" placeholder="Enter ...">
                       </div>
                       <!-- text input -->
                       <div class="form-group">
-                        <label>服務詳情</label>
+                        <label>實付金額</label>
                         <input type="text" class="form-control column_filter" id="col7-search" data-column="7" placeholder="Enter ...">
                       </div>
                     </div>
                     <div class="col-sm-3">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>顧客備註</label>
+                        <label>服務詳情</label>
                         <input type="text" class="form-control column_filter" id="col8-search" data-column="8" placeholder="Enter ...">
                       </div>
                       <!-- text input -->
                       <div class="form-group">
-                        <label>預約單狀態</label>
+                        <label>顧客備註</label>
                         <input type="text" class="form-control column_filter" id="col9-search" data-column="9" placeholder="Enter ...">
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>預約單狀態</label>
+                        <input type="text" class="form-control column_filter" id="col10-search" data-column="10" placeholder="Enter ...">
                       </div>
                     </div>
                   </div>
@@ -169,6 +187,14 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
+                <div>
+                  <button sec:authorize="hasAnyAuthority('editSalonAppoinits')" type="submit" data-toggle="modal" data-target="#AddModal" class="btn btn-outline-secondary row-add"
+                          th:attr="getMemberPetsUrl=@{/ipet-back/memberPets}, getServiceCategories=@{/ipet-back/serviceCategories}">
+                    <i class="fas fa-solid fa-plus"></i>
+                    新增
+                  </button>
+                  <p></p>
+                </div>
                 <table id="reserveTable" class="table table-bordered table-striped  display">
                   <thead>
                   <tr>
@@ -177,8 +203,9 @@
                     <th>寵物名字</th>
                     <th>預約日期</th>
                     <th>預約時段</th>
-                    <th>實付金額</th>
                     <th>班表編號</th>
+                    <th>加收費用</th>
+                    <th>實付金額</th>
                     <th>服務詳情</th>
                     <th>顧客備註</th>
                     <th>預約單狀態</th>
@@ -192,8 +219,9 @@
                     <td th:text="${appoint.pet[0].petName}"></td>
                     <td th:text="${#dates.format(appoint.sch[0].schDate, 'yyyy-MM-dd')}"></td>
                     <td th:text="${appoint.sch[0].schPeriod}"></td>
-                    <td th:text="${appoint.totalPrice}"></td>
                     <td th:text="${appoint.sch[0].id}"></td>
+                    <td th:text="${appoint.additionalPrice}"></td>
+                    <td th:text="${appoint.totalPrice}"></td>
                     <td>
                       <table  class="childTable" style="display:none">
                         <tbody class="childTbody">
@@ -205,13 +233,13 @@
                           <th>優惠方案名稱</th>
                           <th>優惠方案價</th>
                         </tr>
-                        <tr th:each="detail : ${appoint.salonAppointmentDetail}">
-                          <td th:text="${detail.get('SVC_ID')}"></td>
-                          <td th:text="${detail.get('svcName')}"></td>
-                          <td th:text="${detail.get('SVC_PRICE')}"></td>
-                          <td th:text="${detail.get('SALE_ID') == '' ? '無' : detail.get('SALE_ID')}"></td>
-                          <td th:text="${detail.get('saleName')}"></td>
-                          <td th:text="${detail.get('SALE_PRICE')}"></td>
+                        <tr th:each="detail : ${appoint.salonAppointDetail}">
+                          <td th:text="${detail.svcId}"></td>
+                          <td th:text="${detail.svcName}"></td>
+                          <td th:text="${detail.svcPrice}"></td>
+                          <td th:text="${detail.saleId == null ? '無' : detail.saleId}"></td>
+                          <td th:text="${detail.saleName == null? '無' : detail.saleName}"></td>
+                          <td th:text="${detail.salePrice}"></td>
                         </tr>
                         </tbody>
                       </table>
@@ -240,8 +268,8 @@
                       </td>
                     </th:block>
                     <td>
-                      <button th:if="${appoint.apmStatus} == 0" type="submit" class="btn btn-light" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
-                              th:attr="getAppointUrl=@{/ipet-back/appoint/{id}(id=${appoint.id})},
+                      <button sec:authorize="hasAnyAuthority('editSalonAppoinits')" th:if="${appoint.apmStatus} == 0" type="submit" class="btn btn-light" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
+                              th:attr="appointUrl=@{/ipet-back/appoint/{id}(id=${appoint.id})},
                                 getAvailableScheduleUrl=@{/ipet-back/schedules/available}">
                         <i class="fas fa-solid fa-pen"></i>
                       </button>
@@ -264,24 +292,21 @@
 
 
     <!-- Edit Modal content   -->
-    <div th:replace="~{/backstage/salon/modal/AppointModal :: appointEditModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editSalonAppoinits')" th:replace="~{/backstage/salon/modal/AppointModal :: appointEditModal}"></div>
     <!-- /. Edit Modal content   -->
 
     <!-- Edit Confirm Modal content   -->
-    <div th:replace="~{/backstage/salon/modal/AppointModal :: appointEditConfirmModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editSalonAppoinits')" th:replace="~{/backstage/salon/modal/AppointModal :: appointEditConfirmModal}"></div>
     <!-- /.Edit Confirm Modal content   -->
 
+    <!-- Add Modal content   -->
+    <div sec:authorize="hasAnyAuthority('editSalonAppoinits')" th:replace="~{/backstage/salon/modal/AppointModal :: appointAddModal}"></div>
+    <!-- /. Add Modal content   -->
   </div>
   <!-- /.content-wrapper -->
 
   <!-- Main Footer -->
   <div th:replace="~{backstage/common/footer :: footer}"></div>
-
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
 
@@ -331,8 +356,9 @@
       {className: "petName dt-center"},
       {responsivePriority: 3 , className: "reserveDate dt-center"},
       {responsivePriority: 4, className: "reservePeriod dt-center"},
-      {className: "totalPrice dt-center" },
       {className: "jobId dt-center"},
+      {className: "additionalPrice dt-center"},
+      {className: "totalPrice dt-center" },
       { className: 'details-control dt-center',
         orderable:      false,
         defaultContent: '',
@@ -356,16 +382,21 @@
       let targetDataEdit;
       let availableScheduleList;
       let apmObjectEdit;
+      let editData = {};
+      let appointUrl;
+      let getAvailableScheduleUrl;
+      let token = $("meta[name='_csrf']").attr("content");
       let editRefresh;
+
       $('td.row-edit').on('click', 'button', function (){
         // get the selected tr
         targetDataEdit = $(event.target).closest("tr")[0];
-        let getAppointUrl = $(this).attr("getAppointUrl");
-        let getAvailableScheduleUrl = $(this).attr("getAvailableScheduleUrl");
+        appointUrl = $(this).attr("appointUrl");
+        getAvailableScheduleUrl = $(this).attr("getAvailableScheduleUrl");
 
         // send the request to server, and response the data on the modal
         axios.all([
-          axios.get(getAppointUrl),
+          axios.get(appointUrl),
           axios.get(getAvailableScheduleUrl),
         ]).then(axios.spread((appoint, availableSchedules) => {
 
@@ -379,14 +410,18 @@
             $("#clientNote-modal-edit").val(apmObjectEdit.customerNote);
 
             // 載入原始班表並鎖定
-            $("#jobId-modal-edit").html(`<option value="${apmObjectEdit.sch.id}" selected>(${apmObjectEdit.sch.id}) ${apmObjectEdit.sch.schDate} ${apmObjectEdit.sch.schPeriod} </option>`);
+            $("#jobId-modal-edit").html(`<option value="${apmObjectEdit.sch[0].id}" selected>(${apmObjectEdit.sch[0].id}) ${apmObjectEdit.sch[0].schDate} ${apmObjectEdit.sch[0].schPeriod} </option>`);
             $("#jobId-modal-edit").prop("disabled", true);
 
             // 載入原始日期
-            $("#reserveDate-modal-edit").val(apmObjectEdit.sch.schDate);
+            $("#reserveDate-modal-edit").val(apmObjectEdit.sch[0].schDate);
 
             // 載入原始時段
-            $("#reservePeriod-modal-edit").val(apmObjectEdit.sch.schPeriod);
+            $("#reservePeriod-modal-edit").val(apmObjectEdit.sch[0].schPeriod);
+
+            // 載入加收價格
+            $("#additionalPrice-modal-edit").val(apmObjectEdit.additionalPrice);
+
 
           }else{
             $("#editModalMessage").html("錯誤: 預約單載入失敗。")
@@ -398,21 +433,21 @@
       // 當你更新了狀態....
       $("#reserveStatus-modal-edit").on("change", function (){
         // 班表會被回復到原始數值並鎖起來
-        $("#jobId-modal-edit").val(apmObjectEdit.sch.id)
+        $("#jobId-modal-edit").val(apmObjectEdit.sch[0].id)
                 .prop("disabled", true);
       });
 
       // 當狀態為 "已支付訂金" 才可點選查詢班表，進而顯示可選擇班表
       $("#searchAvailableJob").on("click", function(){
         if ($("#reserveStatus-modal-edit").val() === "0"){
-          $("#jobId-modal-edit").html(`<option value="${apmObjectEdit.sch.id}" selected>(${apmObjectEdit.sch.id}) ${apmObjectEdit.sch.schDate} ${apmObjectEdit.sch.schPeriod} </option>`);
+          $("#jobId-modal-edit").html(`<option value="${apmObjectEdit.sch[0].id}" selected>(${apmObjectEdit.sch[0].id}) ${apmObjectEdit.sch[0].schDate} ${apmObjectEdit.sch[0].schPeriod} </option>`);
 
           // 解除班表鎖定
           $("#jobId-modal-edit").removeAttr("disabled");
           // 將可選擇的班表顯示於下拉選單中
           let jobHTMLEdit = $("#jobId-modal-edit").html();
           for (let job of availableScheduleList) {
-            if (job.id === apmObjectEdit.sch.id) {
+            if (job.id === apmObjectEdit.sch[0].id) {
               jobHTMLEdit += `<option value="${job.id}">(${job.id}) ${job.schDate} ${job.schPeriod}</option>`
             }else{
               jobHTMLEdit += `<option value="${job.id}">(${job.id}) ${job.schDate} ${job.schPeriod}</option>`
@@ -454,26 +489,29 @@
 
       })
 
+      // 當你更改資料時 EditData 會更動
+      $("input").filter(".appointEdit").on("change", function (){
+        editData[$(this).attr("name").toString()] = {};
+        editData[$(this).attr("name").toString()] = $(this).val();
+      });
+      $("select").filter(".appointEdit").on("change", function (){
+        editData[$(this).attr("name").toString()] = {};
+        editData[$(this).attr("name").toString()] = $(this).val();
+      });
+      $("textarea").filter(".appointEdit").on("change", function (){
+        editData[$(this).attr("name").toString()] = {};
+        editData[$(this).attr("name").toString()] = $(this).val();
+      });
 
+      // 送出編輯
       $('.modal-footer').on('click', '.btn-edit-confirm-confirm', function (){
-        let editUrl = $(this).attr("editUrl");
-        let editData = {
-          id: apmObjectEdit.id,
-          apmStatus: $("#reserveStatus-modal-edit").val(),
-          memId: apmObjectEdit.memId,
-          petId: apmObjectEdit.petId,
-          schId: $("#jobId-modal-edit").val(),
-          totalPrice: apmObjectEdit.totalPrice,
-          customerNote: $("#clientNote-modal-edit").val(),
-          apmBuildTime: apmObjectEdit.apmBuildTime,
-          salonAppointmentDetail: apmObjectEdit.salonAppointmentDetail
-        };
-
-
         axios({
-          method:"put",
-          url: editUrl,
-          data: {jsonFile: JSON.stringify(editData)},
+          method:"patch",
+          url: appointUrl,
+          data: editData,
+          headers:{
+            "X-CSRF-TOKEN": token
+          }
         })
                 .then((resp) => {
                   if (resp.data === "success"){
@@ -509,6 +547,47 @@
         }
       });
       <!--  /.Edit data from modal -->
+
+
+
+      <!--  Add data from modal -->
+      let illegalDates;
+      let periods = [];
+      // send the request to server, and get the emp
+      $('.row-add').on('click', function (){
+        let getMemberPetsUrl = $(this).attr("getMemberPetsUrl");
+        let getServiceCategories = $(this).attr("getServiceCategories");
+
+        axios.all([
+          axios.get(getMemberPetsUrl),
+          axios.get(getServiceCategories),
+        ]).then(axios.spread((members, categories) =>{
+          if (members !== "" && categories !== ""){
+            membersList = members.data;
+            categoriesList = categories.data;
+
+            let memberHTMLAdd = `<option disabled selected>請選擇</option>`;
+            for (let i = 0; i < membersList.length; i ++) {
+              memberHTMLAdd += `<option value="${membersList[i].id}"> ${membersList[i].memName}</option>`
+            }
+            $('#member_name-modal-add').html(memberHTMLAdd);
+
+            let categoriesHTMLAdd = `<option disabled selected>請選擇</option>`;
+            for (let i = 0; i < categoriesList.length; i ++) {
+              categoriesHTMLAdd += `<option value="${categoriesList[i].id}"> ${categoriesList[i].svcCategoryName}</option>`
+            }
+            $('#service_category-modal-add').html(categoriesHTMLAdd);
+
+          }else {
+            $("#addModalMessage").html("無法查詢到會員與服務相關資料，請洽網站管理員")
+                    .css("color","red")
+          }
+        })).catch((err) => console.log(err));
+      });
+
+      <!--  /.Add data from modal -->
+
+
 
 
     }

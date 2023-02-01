@@ -3,12 +3,17 @@ package com.ipet.web.member.repositories.imp;
 import com.ipet.web.member.entities.Member;
 import com.ipet.web.member.entities.unwinded.UnwindedMember;
 import com.ipet.web.member.repositories.CustomMemberRepository;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.AggregationUpdate;
 import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -49,5 +54,20 @@ public class CustomMemberRepositoryImp implements CustomMemberRepository {
         );
         AggregationResults<UnwindedMember> results = mongoTemplate.aggregate(aggregation, UnwindedMember.class);
         return results.getUniqueMappedResult();
+    }
+
+    @Override
+    public void partialUpdate(Member member) {
+        Document document = new Document();
+        // 將 member 轉成 Document 格式 (如此 null 的field會直接消失) 並寫入 document
+        mongoTemplate.getConverter().write(member, document);
+        Update update = new Update();
+        // 重複執行 update.set("name","value")
+        document.forEach(update::set);
+        Member updateMember = mongoTemplate.findAndModify(
+                Query.query(Criteria.where("_id").is(member.getId())),update, new FindAndModifyOptions().returnNew(true), Member.class);
+        if (updateMember != null) {
+            mongoTemplate.save(updateMember);
+        }
     }
 }

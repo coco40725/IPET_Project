@@ -79,7 +79,11 @@ public class SalonScheduleServices {
     // job delete
     @Transactional
     public String deleteSchedule(String id){
-        if (salonScheduleRepository.findById(id).orElse(null).getAppointId() != null){
+        SalonSchedule salonSchedule = salonScheduleRepository.findById(id).orElse(null);
+        if (salonSchedule == null){
+            return "查無此班表";
+        }
+        if (salonSchedule.getAppointId() != null){
             return "該班表已被預約，不可刪除!";
         }
         salonScheduleRepository.deleteById(id);
@@ -92,13 +96,14 @@ public class SalonScheduleServices {
 
         // 只可以更動 美容師 助理 預約單 以及 備註
         String schID = newJobSchedule.getId();
-        String groomerID = newJobSchedule.getGroomerId();
-        String asstID1 = newJobSchedule.getAsst1Id();
-        String asstID2 = newJobSchedule.getAsst2Id();
-        Date newSchDate = newJobSchedule.getSchDate();
-        String newSchPeriod = newJobSchedule.getSchPeriod();
+        SalonSchedule oldJobSchedule = salonScheduleRepository.findById(schID).orElse(null);
+        if (oldJobSchedule == null){
+            return "修改失敗，查詢不到原班表";
+        }
 
-        Set<String> empsByDatePeriodExcludedSchID = findEmpsByDatePeriod(newSchDate, newSchPeriod, schID);
+        String groomerID = newJobSchedule.getGroomerId() == null ?  oldJobSchedule.getGroomerId() : newJobSchedule.getGroomerId();
+        String asstID1 = newJobSchedule.getAsst1Id() == null ? oldJobSchedule.getAsst1Id() : newJobSchedule.getAsst1Id();
+        String asstID2 = newJobSchedule.getAsst2Id() == null ? oldJobSchedule.getAsst2Id() : newJobSchedule.getAsst2Id();
 
 
         if (!"美容師".equals(Objects.requireNonNull(staffRepository.findById(groomerID).orElse(null)).getStaffPosi()) ||
@@ -110,11 +115,12 @@ public class SalonScheduleServices {
 
         // 2. 判斷是否有出現
         // 同個日期時段 且為其他班表 出現同一位員工
+        Set<String> empsByDatePeriodExcludedSchID = findEmpsByDatePeriod(oldJobSchedule.getSchDate(), oldJobSchedule.getSchPeriod(), schID);
         if (empsByDatePeriodExcludedSchID.contains(groomerID) || empsByDatePeriodExcludedSchID.contains(asstID1) || empsByDatePeriodExcludedSchID.contains(asstID2)){
             return "修改失敗，同時段與日期出現重複的員工。";
         }
 
-        salonScheduleRepository.save(newJobSchedule);
+        customSalonScheduleRepository.partialUpdate(newJobSchedule);
         return "success";
     }
 
@@ -157,7 +163,7 @@ public class SalonScheduleServices {
                     salonSchedule.getAsst2Id().equals(asstID2)){
                 illegalDates.add(salonSchedule.getSchDate());
             }
-            map.put(salonSchedule.getSchDate(), map.getOrDefault(salonSchedule.getSchDate(), 1) + 1);
+            map.put(salonSchedule.getSchDate(), map.getOrDefault(salonSchedule.getSchDate(), 0) + 1);
         }
 
         for (Map.Entry<Date, Integer> entry: map.entrySet()){

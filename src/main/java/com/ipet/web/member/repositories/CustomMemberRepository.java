@@ -1,5 +1,6 @@
 package com.ipet.web.member.repositories;
 
+import com.ipet.web.member.entities.Member;
 import com.ipet.web.member.entities.unwinded.UnwindedMember;
 
 import java.util.List;
@@ -11,5 +12,6 @@ import java.util.List;
 public interface CustomMemberRepository {
     List<UnwindedMember> findAll();
     UnwindedMember findById(String id);
+    void partialUpdate(Member member);
 
 }

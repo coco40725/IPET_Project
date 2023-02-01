@@ -6,6 +6,7 @@ import com.ipet.web.member.entities.Pet;
 import com.ipet.web.member.services.MemberServices;
 import com.ipet.web.member.services.PetServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -39,21 +40,23 @@ public class PetController {
     // pet add
 
     // pet edit
-    @PutMapping("/ipet-back/pet")
+    @PreAuthorize("hasAnyAuthority('editMems')")
+    @PatchMapping("/ipet-back/pet/{id}")
     @ResponseBody
-    public String editPet(@RequestBody Map<String, String> map){
-        Gson gson = builder.serializeNulls().create();
-        Pet pet = gson.fromJson(map.get("jsonFile"), Pet.class);
+    public String editPet(@PathVariable("id") String id, @RequestBody Pet pet){
+        pet.setId(id);
         return petServices.editPet(pet);
     }
 
     // pet query
+    @PreAuthorize("hasAnyAuthority('editMems','displayMems')")
     @GetMapping("/ipet-back/pets")
     public String getAllPets(Model model){
         model.addAttribute("members", memberServices.getAllUnwindedMembers());
         return "backstage/member/petList";
     }
 
+    @PreAuthorize("hasAnyAuthority('editMems','displayMems')")
     @GetMapping("/ipet-back/pet/{id}")
     @ResponseBody
     public String getPetById(@PathVariable("id") String id){

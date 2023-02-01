@@ -19,15 +19,15 @@
         <form>
           <div class="form-group">
             <label for="reserveDate-modal-edit" class="col-form-label" >預約日期</label>
-            <input type="date" class="form-control" id="reserveDate-modal-edit" readonly>
+            <input type="date"  id="reserveDate-modal-edit" class="form-control appointEdit"  readonly>
           </div>
           <div class="form-group">
             <label for="reservePeriod-modal-edit" class="col-form-label">預約時段</label>
-            <input type="text" id="reservePeriod-modal-edit"  class="form-control"  readonly >
+            <input type="text" id="reservePeriod-modal-edit"  class="form-control appointEdit"  readonly >
           </div>
           <div class="form-group">
             <label for="reserveStatus-modal-edit" class="col-form-label">預約單狀態</label>
-            <select id="reserveStatus-modal-edit" class="form-control">
+            <select id="reserveStatus-modal-edit" class="form-control appointEdit" name="apmStatus">
               <option value="0">已支付訂金</option>
               <option value="1">已完成預約</option>
               <option value="2">已取消</option>
@@ -40,12 +40,16 @@
           </div>
           <div class="form-group">
             <label for="jobId-modal-edit" class="col-form-label">班表編號</label>
-            <select id="jobId-modal-edit" class="form-control">
+            <select id="jobId-modal-edit" class="form-control appointEdit" name="schId">
             </select>
+          </div>
+          <div class="form-group">
+            <label for="additionalPrice-modal-edit" class="col-form-label">加收費用</label>
+            <input type="number" id="additionalPrice-modal-edit"  min="0" class="form-control appointEdit" name="additionalPrice">
           </div>
           <div>
             <label for="jobId-modal-edit" class="col-form-label">顧客備註</label>
-            <textarea id="clientNote-modal-edit" class="form-control"></textarea>
+            <textarea id="clientNote-modal-edit" class="form-control appointEdit" name="customerNote"></textarea>
           </div>
           <div>
             <p id="editModalMessage"></p>

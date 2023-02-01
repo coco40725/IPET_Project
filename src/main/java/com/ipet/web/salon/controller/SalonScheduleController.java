@@ -6,6 +6,7 @@ import com.ipet.web.salon.entities.SalonSchedule;
 import com.ipet.web.salon.services.SalonScheduleServices;
 import com.ipet.web.staff.services.StaffServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,7 @@ public class SalonScheduleController {
 
 
     // schedule add
+    @PreAuthorize("hasAnyAuthority('editSalonSchedules')")
     @PostMapping("/ipet-back/schedule")
     @ResponseBody
     public String addSchedule(@RequestBody Map<String, String> map){
@@ -69,35 +71,16 @@ public class SalonScheduleController {
     }
 
     // schedule edit
-    @PutMapping("/ipet-back/schedule")
+    @PreAuthorize("hasAnyAuthority('editSalonSchedules')")
+    @PatchMapping("/ipet-back/schedule/{id}")
     @ResponseBody
-    public String editSchedule(@RequestBody Map<String, String> map){
-        SalonSchedule salonSchedule = new SalonSchedule();
-        String groomerID = map.get("groomerId");
-        String asstID1 = map.get("asst1Id");
-        String asstID2 = map.get("asst2Id");
-        String notes = map.get("employeeNote");
-        String id = map.get("id");
-        String appointId = salonScheduleServices.getScheduleById(id).getAppointId();
-        String period = salonScheduleServices.getScheduleById(id).getSchPeriod();
-        java.util.Date date = salonScheduleServices.getScheduleById(id).getSchDate();
-
-        salonSchedule.setId(id);
-        salonSchedule.setSchDate(date);
-        salonSchedule.setSchPeriod(period);
-        salonSchedule.setGroomerId(groomerID);
-        salonSchedule.setAsst1Id(asstID1);
-        salonSchedule.setAsst2Id(asstID2);
-        salonSchedule.setEmployeeNote(notes);
-
-        if (appointId != null){
-            salonSchedule.setAppointId(appointId);
-        }
-
-        return salonScheduleServices.editSchedule(salonSchedule);
+    public String editSchedule(@PathVariable("id") String id, @RequestBody SalonSchedule schedule){
+        schedule.setId(id);
+        return salonScheduleServices.editSchedule(schedule);
     }
 
     // schedule delete
+    @PreAuthorize("hasAnyAuthority('editSalonSchedules')")
     @DeleteMapping("/ipet-back/schedule/{id}")
     @ResponseBody
     public String deleteScheduleById(@PathVariable("id") String id){
@@ -106,27 +89,29 @@ public class SalonScheduleController {
 
 
     // schedule query
+    @PreAuthorize("hasAnyAuthority('displaySalonSchedules','editSalonSchedules')")
     @GetMapping("/ipet-back/schedules")
     public String getAllSchedules(Model model){
         model.addAttribute("schedules", salonScheduleServices.getAllUnwindedSchedule());
         return "backstage/salon/salonJobList";
     }
 
-    @GetMapping("/ipet-back/schedules/{id}")
+    @PreAuthorize("hasAnyAuthority('displaySalonSchedules','editSalonSchedules')")
+    @GetMapping("/ipet-back/schedule/{id}")
     @ResponseBody
     public String getScheduleById(@PathVariable("id") String id){
         Gson gson = builder.serializeNulls().setDateFormat("yyyy-MM-dd").create();
         return gson.toJson(salonScheduleServices.getUnwindedScheduleById(id));
     }
 
-
+    @PreAuthorize("hasAnyAuthority('displaySalonSchedules','editSalonSchedules')")
     @GetMapping("/ipet-back/schedules/available")
     @ResponseBody
     public String getAvailableSchedule(){
         Gson gson = builder.serializeNulls().setDateFormat("yyyy-MM-dd").create();
         return gson.toJson(salonScheduleServices.findAvailableJobsToAddAppoint());
     }
-
+    @PreAuthorize("hasAnyAuthority('displaySalonSchedules','editSalonSchedules')")
     @PostMapping("/ipet-back/schedules/illegal")
     @ResponseBody
     public String getIllegalScheduleDate(@RequestBody Map<String, String> map){
@@ -143,6 +128,7 @@ public class SalonScheduleController {
         return gson.toJson(illegalDates);
     }
 
+    @PreAuthorize("hasAnyAuthority('displaySalonSchedules','editSalonSchedules')")
     @GetMapping("/ipet-back/schedules/calendar")
     public String getAllScheduleCalendars(Model model){
         model.addAttribute("schedules", salonScheduleServices.getAllUnwindedSchedule());

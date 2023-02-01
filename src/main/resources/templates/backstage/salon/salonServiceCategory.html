@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   <title>IPET 寵物 | 寵物美容專區 | 服務類別</title>
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -116,24 +118,24 @@
                       <!-- text input -->
                       <div class="form-group" hidden="hidden">
                         <label>寵物大小</label>
-                        <input type="text" class="form-control column_filter" id="col2-search" data-column="2" placeholder="Enter ...">
+                        <input type="text" class="form-control column_filter" id="col3-search" data-column="3" placeholder="Enter ...">
                       </div>
                       <!-- text input -->
                       <div class="form-group" hidden="hidden">
                         <label>寵物種類</label>
-                        <input type="text" class="form-control column_filter" id="col3-search" data-column="3" placeholder="Enter ...">
+                        <input type="text" class="form-control column_filter" id="col4-search" data-column="4" placeholder="Enter ...">
                       </div>
                     </div>
                     <div class="col-sm-3">
                       <!-- text input -->
-                      <div class="form-group" hidden="hidden">
+                      <div class="form-group" >
                         <label>服務項目</label>
-                        <input type="text" class="form-control column_filter" id="col4-search" data-column="4" placeholder="Enter ...">
+                        <input type="text" class="form-control column_filter" id="col5-search" data-column="5" placeholder="Enter ...">
                       </div>
                       <!-- text input -->
                       <div class="form-group">
                         <label>狀態</label>
-                        <input type="text" class="form-control column_filter" id="col5-search" data-column="5" placeholder="Enter ...">
+                        <input type="text" class="form-control column_filter" id="col6-search" data-column="6" placeholder="Enter ...">
                       </div>
                     </div>
                   </div>
@@ -150,7 +152,7 @@
               <!-- /.card-header -->
               <div class="card-body">
                 <div>
-                  <button type="submit" data-toggle="modal" data-target="#AddModal" class="btn btn-outline-secondary row-add">
+                  <button sec:authorize="hasAnyAuthority('editSalonServices')" type="submit" data-toggle="modal" data-target="#AddModal" class="btn btn-outline-secondary row-add">
                     <i class="fas fa-solid fa-plus"></i>
                     新增
                   </button>
@@ -236,7 +238,7 @@
                           </td>
                         </th:block>
                         <td>
-                          <button type="submit" class="btn btn-light row-edit dt-center" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
+                          <button sec:authorize="hasAnyAuthority('editSalonServices')" type="submit" class="btn btn-light row-edit dt-center" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
                                   th:attr="getCategoryUrl=@{/ipet-back/services/categories/{id}(id=${category.id})}">
                             <i class="fas fa-solid fa-pen"></i>
                           </button>
@@ -259,11 +261,11 @@
 
 
     <!-- Edit Modal content   -->
-    <div th:replace="~{/backstage/salon/modal/ServiceCategoryModal :: serviceCategotyEditModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{/backstage/salon/modal/ServiceCategoryModal :: serviceCategotyEditModal}"></div>
     <!-- /. Edit Modal content   -->
 
     <!--  Add Modal content  -->
-    <div th:replace="~{/backstage/salon/modal/ServiceCategoryModal :: serviceCategotyAddModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{/backstage/salon/modal/ServiceCategoryModal :: serviceCategotyAddModal}"></div>
     <!-- /. Add Modal content   -->
 
 
@@ -313,7 +315,7 @@
 <!-- sidebar menu Class -->
 <script>
   $("p:contains(服務項目管理)").closest("li").addClass("menu-open");
-  $("p:contains(班表類別)").closest("a").addClass("active");
+  $("p:contains(服務列表)").closest("a").addClass("active");
 </script>
 
 <!-- Data presentation and operation show -->
@@ -426,9 +428,10 @@
         if ($("td.details-control").parent().hasClass("shown")){
           renderRowTable($(this).parent().siblings("td.details-control"));
         }
-      })
+      });
 
       // 當上傳了圖片，svcCategoryImgPreview-modal-edit 要改變成上傳的圖
+      let image;
       $("#svcCategoryImg-modal-edit").on("change", function (){
         let file = this.files[0];
         let reader = new FileReader();
@@ -437,11 +440,19 @@
           $("#svcCategoryImgPreview-modal-edit").attr("src", reader.result)
         }
         reader.readAsDataURL(file);
-      })
+        image = document.getElementById("svcCategoryImg-modal-edit").files[0];
+        if (image.size > 1048576){
+          $("#editModalMessage").text("圖片太大，無法上傳")
+                  .css("color", "red");
+        }else {
+          $("#editModalMessage").text("");
+        }
+      });
 
 
       $(".btn-edit-confirm").on("click", function (){
         let editUrl = $(this).attr('editUrl');
+        let token = $("meta[name='_csrf']").attr("content");
         let formData = new FormData();
 
         let editData = {
@@ -450,7 +461,6 @@
           svcCategoryImg: categoryObjectEdit.svcCategoryImg,
           svcCategoryStatus: $('#svcCategoryStatus-modal-edit').val()
         }
-        console.log(editData);
 
         let image = document.getElementById("svcCategoryImg-modal-edit").files[0];
         const jsonFile = JSON.stringify(editData);
@@ -465,6 +475,7 @@
           url: editUrl,
           data: formData,
           headers: {
+            "X-CSRF-TOKEN": token,
             'content-type': 'multipart/form-data'
           }
         }).then((resp) => {

@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.ipet.web.member.entities.Member;
 import com.ipet.web.member.services.MemberServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,34 +32,37 @@ public class MemberController {
     }
 
     // member add
+    @PreAuthorize("hasAnyAuthority('editMems')")
     @PostMapping("/ipet-back/member")
     public String addMember(@RequestBody Map<String, String> map) {
         return null;
     }
 
     // member edit
-    @PutMapping("/ipet-back/member")
+    @PreAuthorize("hasAnyAuthority('editMems')")
+    @PatchMapping("/ipet-back/member/{id}")
     @ResponseBody
-    public String editMember(@RequestBody Map<String, String> map) {
-        Gson gson = builder.serializeNulls().create();
-        Member member = gson.fromJson(map.get("jsonFile"), Member.class);
+    public String editMember(@PathVariable("id") String id, @RequestBody Member member) {
+        member.setId(id);
         return memberServices.editMember(member);
     }
 
     // member query
+    @PreAuthorize("hasAnyAuthority('editMems','displayMems')")
     @GetMapping("/ipet-back/members")
     public String getAllMembers(Model model) {
         model.addAttribute("members", memberServices.getAllMembers());
         return "backstage/member/memberList";
     }
 
+    @PreAuthorize("hasAnyAuthority('editMems','displayMems')")
     @GetMapping("/ipet-back/member/{id}")
     @ResponseBody
     public String getMembersById(@PathVariable("id") String id) {
         Gson gson = builder.serializeNulls().setDateFormat("yyyy-MM-dd").create();
         return gson.toJson(memberServices.getMemberById(id));
     }
-
+    @PreAuthorize("hasAnyAuthority('editMems','displayMems')")
     @GetMapping("/ipet-back/memberPets")
     @ResponseBody
     public String getAllMembersPets() {

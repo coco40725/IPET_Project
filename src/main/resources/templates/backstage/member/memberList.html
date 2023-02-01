@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   <title>IPET 寵物 | 會員專區 | 會員列表</title>
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -51,6 +53,13 @@
       cursor: pointer;
     }
 
+    #contentBody {
+      background-image:
+              url('/backstage/img/homePage.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
   </style>
 
 
@@ -67,8 +76,9 @@
   <!-- /.aside -->
 
 
+
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" id="contentBody">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
@@ -225,8 +235,8 @@
                         </td>
                       </th:block>
                       <td>
-                        <button type="submit" class="btn btn-light" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
-                                th:attr="getMemberUrl=@{/ipet-back/member/{id}(id=${member.id})}">
+                        <button sec:authorize="hasAnyAuthority('editMems')" type="submit" class="btn btn-light" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
+                                th:attr="memberUrl=@{/ipet-back/member/{id}(id=${member.id})}">
                           <i class="fas fa-solid fa-pen"></i>
                         </button>
                       </td>
@@ -248,26 +258,16 @@
     </div>
     <!-- /.content -->
 
-
-    <!-- Edit Modal content   -->
-    <div th:replace="~{/backstage/member/modal/MemberModal :: memberEditModal}"></div>
-    <!-- /. Edit Modal content   -->
-
-
-
-  </div>
-  <!-- /.content-wrapper -->
+  <!-- Edit Modal content   -->
+  <div sec:authorize="hasAnyAuthority('editMems')" th:replace="~{/backstage/member/modal/MemberModal :: memberEditModal}"></div>
+  <!-- /. Edit Modal content   -->
 
   <!-- Main Footer -->
   <div th:replace="~{backstage/common/footer :: footer}"></div>
-
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
+
+
 
 <!-- jQuery -->
 <script th:src="@{/backstage/plugins/jquery/jquery.min.js}"></script>
@@ -342,17 +342,20 @@
       <!-- Edit data from modal -->
       let targetDataEdit;
       let memberObjectEdit;
+      let editData = {};
+      let memberUrl;
+      let token = $("meta[name='_csrf']").attr("content");
       let editRefresh;
 
       // 從資料庫抓資料並呈現在 modal 上
-      $('td.row-edit').on('click','button',function (){
+      $('td.row-edit').on('click','button', function (){
         // get the selected tr
         targetDataEdit = $(event.target).closest("tr")[0];
-        let getMemberUrl = $(this).attr("getMemberUrl");
+        memberUrl = $(this).attr("memberUrl");
         // send the request to server, and response the data on the modal
         axios({
           method:"get",
-          url:getMemberUrl,
+          url: memberUrl,
         }).then((resp) => {
           if (resp !== ""){
             memberObjectEdit = resp.data;
@@ -375,7 +378,22 @@
         }).catch((err) => {console.log(err)})
       });
 
-      // 建立 EditModalForm 規則
+      // 當你更改資料時 EditData 會更動
+      $("input").filter(".memEdit").on("change", function (){
+        editData[$(this).attr("name").toString()] = {};
+        editData[$(this).attr("name").toString()] = $(this).val();
+      });
+      $("select").filter(".memEdit").on("change", function (){
+        editData[$(this).attr("name").toString()] = {};
+        editData[$(this).attr("name").toString()] = $(this).val();
+      });
+      $("textarea").filter(".memEdit").on("change", function (){
+        editData[$(this).attr("name").toString()] = {};
+        editData[$(this).attr("name").toString()] = $(this).val();
+      });
+
+
+      // 建立 EditModalForm 規則 (必須用 submit 才有效果，button沒效果)
       $("#EditModalForm").validate({
         onkeyup:function(element, event) {
           //去除左側空白
@@ -421,34 +439,21 @@
         }
       })
 
+      // 關閉 "submit 後自動刷新" 這個動作
       $('#EditModalForm').on("submit", function (e){
         e.preventDefault();
       })
 
       // 送出編輯
       $('.btn-edit-confirm').on("click" ,function(e){
-        let editUrl = $(this).attr('editUrl');
-        let EditData = {
-          id: memberObjectEdit.id,
-          memName: $("#memName-modal-edit").val(),
-          memUid: $("#memUid-modal-edit").val(),
-          memBth: $('#memBirth-modal-edit').val(),
-          memSex: $('#memSex-modal-edit').val(),
-          memEmail: $('#memEmail-modal-edit').val(),
-          memPhone: $('#memPhone-modal-edit').val(),
-          memTel: $('#memTel-modal-edit').val(),
-          memAdd: $('#memAdd-modal-edit').val(),
-          memAc: $('#memAc-modal-edit').val(),
-          memPw: $('#memPw-modal-edit').val(),
-          memStatus: $('#memStatus-modal-edit').val(),
-          pet: memberObjectEdit.pet
-        }
-
         if ($("#EditModalForm").valid()){
           axios({
-            method:"put",
-            url:editUrl,
-            data:{jsonFile: JSON.stringify(EditData)}
+            method:"patch",
+            url: memberUrl,
+            data: editData,
+            headers:{
+              "X-CSRF-TOKEN": token
+            }
           })
             .then((resp) => {
               if (resp !== "") {

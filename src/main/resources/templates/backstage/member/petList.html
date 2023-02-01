@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   <title>IPET 寵物 | 會員專區 | 寵物列表</title>
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -51,6 +53,13 @@
       cursor: pointer;
     }
 
+    #contentBody {
+      background-image:
+              url('/backstage/img/homePage.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
   </style>
 
 
@@ -68,7 +77,7 @@
 
 
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" id="contentBody">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
@@ -208,8 +217,8 @@
                           </td>
                         </th:block>
                         <td>
-                          <button type="submit" class="btn btn-light" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
-                                  th:attr="getPetUrl=@{/ipet-back/pet/{id}(id=${pet.id})}">
+                          <button sec:authorize="hasAnyAuthority('editMems')" type="submit" class="btn btn-light" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
+                                  th:attr="petUrl=@{/ipet-back/pet/{id}(id=${pet.id})}">
                             <i class="fas fa-solid fa-pen"></i>
                           </button>
                         </td>
@@ -237,20 +246,13 @@
     <div th:replace="~{/backstage/member/modal/PetModal :: petEditModal}"></div>
     <!-- /. Edit Modal content   -->
 
-
+  <!-- Main Footer -->
+  <div th:replace="~{backstage/common/footer :: footer}"></div>
 
   </div>
   <!-- /.content-wrapper -->
 
-  <!-- Main Footer -->
-  <div th:replace="~{backstage/common/footer :: footer}"></div>
 
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
-</div>
 <!-- ./wrapper -->
 
 <!-- jQuery -->
@@ -322,18 +324,24 @@
       <!-- Edit data from modal -->
       let targetDataEdit;
       let petObjectEdit;
+      let memId;
+      let memName;
+      let editData = {};
+      let petUrl;
+      let token = $("meta[name='_csrf']").attr("content");
       let editRefresh;
 
       $('td.row-edit').on('click','button',function (){
         // get the selected tr
         targetDataEdit = $(event.target).closest("tr")[0];
-        let getPetUrl = $(this).attr("getPetUrl");
-        let memId = $(event.target).closest("td").siblings("td.memId").text();
-        let memName = $(event.target).closest("td").siblings("td.memName").text();
+        petUrl = $(this).attr("petUrl");
+        memId = $(event.target).closest("td").siblings("td.memId").text();
+        memName = $(event.target).closest("td").siblings("td.memName").text();
+
         // send the request to server, and response the data on the modal
         axios({
           method:"get",
-          url:getPetUrl,
+          url: petUrl,
         }).then((resp) => {
             if (resp !== ""){
               petObjectEdit = resp.data;
@@ -392,6 +400,21 @@
         }
       })
 
+      // 當你更改資料時 EditData 會更動
+      $("input").filter(".petEdit").on("change", function (){
+        editData[$(this).attr("name").toString()] = {};
+        editData[$(this).attr("name").toString()] = $(this).val();
+      });
+      $("select").filter(".petEdit").on("change", function (){
+        editData[$(this).attr("name").toString()] = {};
+        editData[$(this).attr("name").toString()] = $(this).val();
+      });
+      $("textarea").filter(".petEdit").on("change", function (){
+        editData[$(this).attr("name").toString()] = {};
+        editData[$(this).attr("name").toString()] = $(this).val();
+      });
+
+
       // 停止送出表單並刷新頁面
       $('#EditModalForm').on("submit", function (e){
         e.preventDefault();
@@ -399,22 +422,15 @@
 
       // 送出編輯
       $('.btn-edit-confirm').on("click" ,function(e){
-        let editUrl = $(this).attr('editUrl');
-        let EditData = {
-          id: petObjectEdit.id,
-          petName: $("#petName-modal-edit").val(),
-          petVar: $('#petVarId-modal-edit').val(),
-          petSize: $('#petSize-modal-edit').val(),
-          petGen: $('#petGen-modal-edit').val(),
-          petBirth: $('#petBirth-modal-edit').val(),
-          petStatus: $('#petStatus-modal-edit').val(),
-        }
 
         if ($("#EditModalForm").valid()){
           axios({
-            method:"put",
-            url:editUrl,
-            data:{jsonFile: JSON.stringify(EditData)}
+            method:"patch",
+            url: petUrl,
+            data: editData,
+            headers:{
+              "X-CSRF-TOKEN": token
+            }
           })
             .then((resp) => {
               if (resp !== "") {

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- Edit Modal content   -->
+<div th:fragment="memberEditModal" class="modal fade" id="EditModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">資料編輯</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="EditModalForm">
+
+          <div class="form-group">
+            <label for="memAc-modal-edit" class="col-form-label">會員帳號</label>
+            <input type="text" id="memAc-modal-edit" class="form-control" name="memAc" readonly>
+          </div>
+
+          <div class="form-group">
+            <label for="memUid-modal-edit" class="col-form-label">會員身分證</label>
+            <input type="text" id="memUid-modal-edit" class="form-control" name="memUid" readonly >
+          </div>
+
+          <div class="form-group">
+            <label for="memBirth-modal-edit" class="col-form-label">會員生日</label>
+            <input type="date" id="memBirth-modal-edit" class="form-control" name="memBirth" >
+          </div>
+
+          <div class="form-group">
+            <label for="memName-modal-edit" class="col-form-label">會員姓名</label>
+            <input type="text" id="memName-modal-edit" class="form-control" name="memName" >
+          </div>
+
+          <div class="form-group">
+            <label for="memSex-modal-edit" class="col-form-label">會員性別</label>
+            <select  id="memSex-modal-edit" class="form-control" name="memSex">
+              <option value="男">男</option>
+              <option value="女">女</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="memEmail-modal-edit" class="col-form-label">會員Email</label>
+            <input type="email" id="memEmail-modal-edit" class="form-control"  name="memEmail">
+          </div>
+
+          <div>
+            <label for="memPhone-modal-edit" class="col-form-label">會員手機</label>
+            <input type="tel" id="memPhone-modal-edit" class="form-control" name="memPhone">
+          </div>
+
+          <div class="form-group">
+            <label for="memTel-modal-edit" class="col-form-label">會員電話</label>
+            <input type="tel" id="memTel-modal-edit" class="form-control" name="memTel">
+          </div>
+
+          <div>
+            <label for="memAdd-modal-edit" class="col-form-label">會員住址</label>
+            <textarea id="memAdd-modal-edit" class="form-control" name="memAdd"></textarea>
+          </div>
+
+          <div>
+            <label for="memPw-modal-edit" class="col-form-label">會員密碼</label>
+            <input type="text" id="memPw-modal-edit" class="form-control" name="memPw"></input>
+          </div>
+
+          <div>
+            <label for="memStatus-modal-edit" class="col-form-label">會員狀態</label>
+            <select id="memStatus-modal-edit" class="form-control" name="memStatus">
+              <option value="0">正常</option>
+              <option value="1">停權</option>
+            </select>
+          </div>
+
+          <div>
+            <p id="editModalMessage"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
+            <button type="submit" class="btn btn-primary btn-edit-confirm" th:attr="editUrl=@{/ipet-back/member}">確認修改</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /. Edit Modal content   -->
+
+</body>
+</html>

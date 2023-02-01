@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>$Title$</title>
@@ -21,8 +21,8 @@
             <div class="image">
                 <img th:src="@{/backstage/img/AdminLTELogo.png}" class="img-circle elevation-2" alt="User Image">
             </div>
-           <!--  TODO: 新增登出與登入對象          -->
             <div class="info">
+                <a href="#" class="d-block" th:text="${#authentication.getName()}"></a>
             </div>
         </div>
 
@@ -31,75 +31,36 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
                      with font-awesome or any other icon font library -->
-                <li class="nav-header"><b>最新消息</b></li>
-                <li class="nav-item">
-                    <!--  TODO: {最新消息管理-消息管理} 請修改消息管理的 href  -->
-                    <a href="#" class="nav-link">
-                        <!--  TODO: {最新消息管理-消息管理} 可以修改消息管理的icon，參考網站: font awesome  -->
-                        <i class="nav-icon fas fa-solid fa-bullhorn"></i>
-                        <p>
-                            消息管理
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="${pageContext.request.contextPath}/ipet-back/news/getAllList" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>最新消息列表</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="${pageContext.request.contextPath}/ipet-back/news/addNew" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>新增最新消息</p>
-                            </a>
-                        </li>
-                    </ul>
+                <li class="nav-header" sec:authorize="hasAnyRole('humanAdmin','ROLE_boss')">
+                    <b>員工專區</b>
                 </li>
-                <li class="nav-header"><b>員工專區</b></li>
-                <li class="nav-item">
-                    <!--  TODO: {員工專區-員工管理} 請修改員工管理的 href  -->
+                <li class="nav-item" sec:authorize="hasAnyRole('humanAdmin','ROLE_boss')">
                     <a href="#" class="nav-link">
-                        <!--  TODO: {員工專區-員工管理} 可以修改員工管理的icon，參考網站: font awesome  -->
                         <i class="nav-icon fas fa-solid fa-user-tie"></i>
                         <p>
                             員工管理
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
-                    <!--    TODO: {員工專區-員工管理} 請評估是否要有子項目，需要的話請於按照  <li class="nav-item">... </li> 進行新增  -->
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="${pageContext.request.contextPath}/ipet-back/staff/allStaffList" class="nav-link">
+                            <a th:href="@{/ipet-back/staffs}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>員工總覽</p>
+                                <p>員工列表</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/ipet-back/staffs}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>員工權限</p>
                             </a>
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <!--  TODO: {員工專區-權限管理} 請修改權限管理的 href  -->
-                    <a href="#" class="nav-link">
-                        <!--  TODO: {員工專區-權限管理} 可以修改權限管理的icon，參考網站: font awesome  -->
-                        <i class="nav-icon fas fa-solid fa-user-lock"></i>
-                        <p>
-                            權限管理
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <!--    TODO: {員工專區-權限管理} 請評估是否要有子項目，需要的話請於按照  <li class="nav-item">... </li> 進行新增  -->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="${pageContext.request.contextPath}/ipet-back/admin/admin" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>員工權限與新增權限</p>
-                            </a>
-                        </li>
-                    </ul>
+                <li class="nav-header" sec:authorize="hasAnyRole('ROLE_boss','ROLE_memberAdmin')">
+                    <b>會員專區</b>
                 </li>
-                <li class="nav-header"><b>會員專區</b></li>
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="hasAnyRole('ROLE_boss','ROLE_memberAdmin')">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-solid fa-users"></i>
                         <p>
@@ -122,8 +83,10 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-header"><b>寵物美容專區</b></li>
-                <li class="nav-item">
+                <li class="nav-header" sec:authorize="hasAnyRole('ROLE_boss','ROLE_salonEmp','ROLE_salonAdmin')">
+                    <b>寵物美容專區</b>
+                </li>
+                <li class="nav-item" sec:authorize="hasAnyRole('ROLE_boss','ROLE_salonEmp','ROLE_salonAdmin')">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-regular fa-clipboard-list"></i>
                         <p>
@@ -131,7 +94,6 @@
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
-                    <!--    TODO: {寵物美容專區-美容預約管理} 請評估是否要有子項目，需要的話請於按照  <li class="nav-item">... </li> 進行新增  -->
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a th:href="@{/ipet-back/appoints}" class="nav-link">
@@ -165,7 +127,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="hasAnyRole('ROLE_boss','ROLE_salonEmp','ROLE_salonAdmin')">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-calendar-alt"></i>
                         <p>
@@ -188,7 +150,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="hasAnyRole('ROLE_boss','ROLE_salonEmp','ROLE_salonAdmin')">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-solid fa-dog"></i>
                         <p>
@@ -200,18 +162,12 @@
                         <li class="nav-item">
                             <a th:href="@{/ipet-back/services/categories}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>服務類別</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>服務細項</p>
+                                <p>服務列表</p>
                             </a>
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="hasAnyRole('ROLE_boss','ROLE_salonEmp','ROLE_salonAdmin')">
                     <!--  TODO: {寵物美容專區-優惠管理} 請修改優惠管理的 href  -->
                     <a href="#" class="nav-link">
                         <!--  TODO: {寵物美容專區-優惠管理} 可以修改優惠管理的icon，參考網站: font awesome  -->
@@ -226,13 +182,7 @@
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>項目1</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>項目2</p>
+                                <p>優惠列表</p>
                             </a>
                         </li>
                     </ul>
