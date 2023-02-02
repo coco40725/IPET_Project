@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -44,7 +46,7 @@ public class SalonServicesController {
 
     // add
     @PreAuthorize("hasAnyAuthority('editSalonServices')")
-    @PostMapping("/ipet-back/services/category")
+    @PostMapping("/ipet-back/category")
     @ResponseBody
     public String addServiceCategory(@RequestParam(name ="imageFile") Optional <MultipartFile> imageFile,
                                      @RequestParam(name ="jsonFile") Optional <MultipartFile> jsonFile){
@@ -68,10 +70,25 @@ public class SalonServicesController {
         SalonServiceCategory category = gson.fromJson(String.valueOf(txtResult), SalonServiceCategory.class);
         return services.addServiceCategory(category, image);
     }
+
+    @PreAuthorize("hasAnyAuthority('editSalonServices')")
+    @PostMapping("/ipet-back/services")
+    @ResponseBody
+    public String addService(@RequestBody List<SalonService> salonServices){
+        return  services.addService(salonServices);
+    }
+
     // delete
+    @PreAuthorize("hasAuthority('editSalonServices')")
+    @DeleteMapping("/ipet-back/category/{id}")
+    @ResponseBody
+    public String deleteServiceCategory(@PathVariable("id") String id){
+        return  services.deleteServiceCategory(id);
+    }
+
     // edit
     @PreAuthorize("hasAnyAuthority('editSalonServices')")
-    @PutMapping("/ipet-back/service/{id}")
+    @PutMapping("/ipet-back/category/{id}")
     @ResponseBody
     public String editServiceCategory(@RequestParam(name = "imageFile") Optional <MultipartFile> imageFile,
                                       @RequestParam(name = "jsonFile") MultipartFile jsonFile){

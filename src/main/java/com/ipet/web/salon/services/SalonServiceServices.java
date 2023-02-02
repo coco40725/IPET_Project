@@ -90,7 +90,39 @@ public class SalonServiceServices {
         return "success";
     }
 
+    @Transactional
+    public String addService(List<SalonService> services){
+        salonServiceRepository.saveAll(services);
+        return "success";
+    }
+
     // delete service
+    @Transactional
+    public String deleteServiceCategory(String id){
+        SalonServiceCategory category = salonServiceCategoryRepository.findById(id).orElse(null);
+        // 該 category 不能有服務
+        if (category == null) {
+            return "查不到該服務類型";
+        }
+
+        if (salonServiceRepository.findAllBySvcCategoryId(id) != null){
+            return "該服務類型含有服務細項，不可刪除";
+        }
+
+        salonServiceCategoryRepository.deleteById(id);
+        return "success";
+    }
+    @Transactional
+    public String deleteService(String id){
+        SalonService service = salonServiceRepository.findById(id).orElse(null);
+        if (service == null){
+            return "查不到該服務細項";
+        }
+
+        salonServiceRepository.deleteById(id);
+        return null;
+    }
+
     // edit service
     @Transactional
     public String editServiceCategory(SalonServiceCategory serviceCategory, byte[] imageFile){

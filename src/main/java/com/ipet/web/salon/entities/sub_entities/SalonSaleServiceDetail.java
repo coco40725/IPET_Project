@@ -23,6 +23,10 @@ public class SalonSaleServiceDetail implements Serializable {
     private static final long serialVersionUID = -1763107515969547550L;
     @Field(name = "REF_ID", targetType = FieldType.OBJECT_ID)
     private String id;
+    @Field(name = "SVC_NAME")
+    private String svcName;
+    @Field(name = "SVC_PRICE")
+    private Integer svcPrice;
     @Field(name = "SALE_PRICE")
     private Integer salePrice;
 }

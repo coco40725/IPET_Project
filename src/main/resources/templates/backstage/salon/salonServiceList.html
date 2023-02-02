@@ -74,7 +74,7 @@
             <!-- Filter -->
             <div class="card card-info">
               <div class="card-header">
-                <h3 class="card-title">班表 Filter</h3>
+                <h3 class="card-title">服務細項 Filter</h3>
               </div>
               <div class="card-body">
                 <form>
@@ -82,44 +82,49 @@
                     <div class="col-sm-3">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>班表編號</label>
+                        <label>服務編號</label>
                         <input type="text" class="form-control column_filter" id="col0-search"  data-column="0" placeholder="Enter ...">
                       </div>
                       <!-- text input -->
                       <div class="form-group">
-                        <label>美容師姓名</label>
+                        <label>服務名稱</label>
                         <input type="text" class="form-control column_filter" id="col1-search" data-column="1" placeholder="Enter ...">
                       </div>
                     </div>
                     <div class="col-sm-3">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>助理1姓名</label>
+                        <label>服務類型</label>
                         <input type="text" class="form-control column_filter" id="col2-search" data-column="2" placeholder="Enter ...">
                       </div>
                       <!-- text input -->
                       <div class="form-group">
-                        <label>助理2姓名</label>
+                        <label>寵物大小</label>
                         <input type="text" class="form-control column_filter" id="col3-search" data-column="3" placeholder="Enter ...">
                       </div>
                     </div>
                     <div class="col-sm-3">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>班表日期</label>
+                        <label>寵物品種</label>
                         <input type="text" class="form-control column_filter" id="col4-search" data-column="4" placeholder="Enter ...">
                       </div>
                       <!-- text input -->
                       <div class="form-group">
-                        <label>班表時段</label>
+                        <label>服務描述</label>
                         <input type="text" class="form-control column_filter" id="col5-search" data-column="5" placeholder="Enter ...">
                       </div>
                     </div>
                     <div class="col-sm-3">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>預約單編號</label>
+                        <label>服務價格</label>
                         <input type="text" class="form-control column_filter" id="col6-search" data-column="6" placeholder="Enter ...">
+                      </div>
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>狀態</label>
+                        <input type="text" class="form-control column_filter" id="col7-search" data-column="7" placeholder="Enter ...">
                       </div>
                     </div>
                   </div>
@@ -328,7 +333,7 @@
                       .attr("disabled");
               deleteRefresh = true;
             }else {
-              $("#deleteModalMessage").html("刪除失敗" + resp)
+              $("#deleteModalMessage").html("刪除失敗" + resp.data)
                       .css("color","red");
               $(".btn-remove-confirm").addClass("disabled")
                       .attr("disabled");
@@ -512,19 +517,21 @@
 
 
       <!-- Add data from modal -->
-      let petTypeIds = [];
+      let petTypeIds = new Set();
+      let addData = [];
+      let addRefresh;
 
       // 當犬大小被選擇時，...
       $("div.servicePetSize input").on('change', function(){
         // clean the data
-        $("div.servicePetVar input").attr("hidden","hidden");
+        $("div.servicePetVar input").attr("hidden","hidden")
+                .prop("checked", false)
         $("div.servicePetVar label").attr("hidden","hidden");
-        $("div.servicePetVar input").prop("checked", false);
 
         // 挑選全部，將把其他的選項自動選取，並顯示所有品種
         // 並且不把全部 uncheck 則無法挑選其他
-        if ($("div.servicePetSize input:checked").val() === "全部"){
-          $("div.servicePetSize input[value != '全部']").prop("checked", true);
+        if ($("div.servicePetSize input[value='全部']").is(":checked")){
+          $("div.servicePetSize input").prop("checked", true);
           $("div.servicePetVar input").removeAttr("hidden");
           $("div.servicePetVar label").removeAttr("hidden");
 
@@ -533,6 +540,8 @@
           $("div.servicePetSize input:checked").each(function (){
             $("div.servicePetVar input[size='" + $(this).val() + "']").removeAttr("hidden");
             $("div.servicePetVar label[size='" + $(this).val() + "']").removeAttr("hidden");
+            $("div.servicePetVar input[size='所有" + $(this).val() + "']").removeAttr("hidden");
+            $("div.servicePetVar label[size='所有" + $(this).val() + "']").removeAttr("hidden");
           })
         }
       });
@@ -540,29 +549,16 @@
       // 當犬品種被選擇時，...
       $("div.servicePetVar input").on("change", function (){
         // 挑選某大小之全部時，其對應的大小品種亦被挑選並鎖定
-        if ($("div.servicePetVar input:checked").val() === "全部小型犬"){
-          $("div.servicePetVar input[size='" + '小型犬' + "']").prop("checked", true)
-                  .each(function (){
-                    petTypeIds.push($(this).val());
-                  })
-
-        }else if ($("div.servicePetVar input:checked").val() === "全部中型犬"){
-          $("div.servicePetVar input[size='" + '中型犬' + "']").prop("checked", true)
-                  .each(function (){
-                    petTypeIds.push($(this).val());
-                  })
-
-        }else if ($("div.servicePetVar input:checked").val() === "全部大型犬"){
-          $("div.servicePetVar input[size='" + '大型犬' + "']").prop("checked", true)
-                  .each(function (){
-                    petTypeIds.push($(this).val());
-                  })
-
-        }else{
-          petTypeIds.push($(this).val());
+        if ($("div.servicePetVar input[size='所有小型犬']").is(":checked")){
+          $("div.servicePetVar input[size='" + '小型犬' + "']").prop("checked", true);
         }
-        console.log(petTypeIds);
-      })
+        if ($("div.servicePetVar input[size='所有中型犬']").is(":checked")){
+          $("div.servicePetVar input[size='" + '中型犬' + "']").prop("checked", true);
+        }
+       if ($("div.servicePetVar input[size='所有大型犬']").is(":checked")){
+          $("div.servicePetVar input[size='" + '大型犬' + "']").prop("checked", true);
+        }
+      });
 
 
 
@@ -570,24 +566,35 @@
       $('.btn-add-confirm').on('click',  function (){
         let addUrl = $(this).attr("addUrl");
         let token = $("meta[name='_csrf']").attr("content");
+        $("div.servicePetVar input").filter(":checked").each(function(){
+          if ($(this).val() !== "全部小型犬" && $(this).val() !== "全部中型犬" && $(this).val() !== "全部大型犬"){
+            petTypeIds.add($(this).val());
+          }
+        });
+        console.log(petTypeIds);
+
+        for (let petTypeId of petTypeIds){
+          addData.push({
+            svcCategoryId: $('#serviceCategory-modal-add').val(),
+            salonServicePetTypeId: petTypeId,
+            svcContent: $('#serviceContent-modal-add').val(),
+            svcName: $('#serviceName-modal-add').val(),
+            svcPrice: $('#servicePrice-modal-add').val(),
+            svcStatus: $('#serviceStatus-modal-add').val()
+          })
+        }
+
 
         if ($('#serviceCategory-modal-add').val() != null &&
                 $('#serviceName-modal-add').val() != null &&
-                $('input.servicePetSize:checked').val() != null &&
-                periods.length !== 0 &&
+                $('div.servicePetSize input:checked').val() != null &&
+                petTypeIds.size !== 0 &&
                 $('#servicePrice-modal-add').val().trim() !== ""
         ) {
           axios({
             method: "post",
             url: addUrl,
-            data:{
-              groomer: $('#GROOMER_name-modal-add').val(),
-              asst1: $('#ASST_name_1-modal-add').val(),
-              asst2: $('#ASST_name_2-modal-add').val(),
-              periods: periods.join(","),
-              dates: $('#schDate-modal-add').val(),
-              notes: $('#schNote-add-modal').val()
-            },
+            data: addData,
             headers:{
               "X-CSRF-TOKEN": token
             }
@@ -597,39 +604,55 @@
                 $("#addModalMessage").html("新增成功")
                         .css("color","green");
                 $(".btn-add-confirm").addClass("disabled")
-                        .attr("disabled")
+                        .attr("disabled");
+                addRefresh = true;
               }else{
                 $("#addModalMessage").html(resp)
                         .css("color","red");
                 $(".btn-add-confirm").addClass("disabled")
-                        .attr("disabled")
+                        .attr("disabled");
+                addRefresh = false;
+
               }
             }else{
               $("#addModalMessage").html("錯誤:伺服器無回傳結果")
                       .css("color","red");
               $(".btn-add-confirm").addClass("disabled")
-                      .attr("disabled")
+                      .attr("disabled");
+              addRefresh = false;
+
             }
 
           }).catch((err) => {
             console.log(err);
             $("#addModalMessage").text("新增失敗，其他原因")
                     .css("color","red");
+            addRefresh = false;
+
           })
         } else {
           $("#addModalMessage").html("請填寫完整資料")
                   .css("color","red");
+          addRefresh = false;
+
         }
       })
 
       $('#AddModal').on("hidden.bs.modal", function (){
         // clean the previous data
-        $('#GROOMER_name-modal-add').val("");
-        $('#ASST_name_1-modal-add').val("");
-        $('#ASST_name_2-modal-add').val("");
-        $('#schDate-modal-add').val("");
-        $('input.jobPeriod-add').prop("checked", false);
-        window.location.reload();
+        $('#serviceCategory-modal-add').val("");
+        $('#serviceName-modal-add').val("");
+        $('#serviceContent-modal-add').val("");
+        $('#servicePrice-modal-add').val("");
+        $('#serviceStatus-modal-add').val("0");
+        $("div.servicePetSize input").prop("checked", false);
+        $("div.servicePetVar input").attr("hidden","hidden")
+                .prop("checked", false);
+        $("div.servicePetVar label").attr("hidden","hidden")
+                .prop("checked", false);
+        if (addRefresh){
+          window.location.reload();
+        }
       });
       <!-- /.Add data from modal -->
     }
