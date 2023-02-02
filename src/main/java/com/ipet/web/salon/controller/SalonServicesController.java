@@ -3,6 +3,7 @@ package com.ipet.web.salon.controller;
 import com.google.cloud.storage.Storage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.ipet.web.salon.entities.SalonService;
 import com.ipet.web.salon.entities.SalonServiceCategory;
 import com.ipet.web.salon.services.SalonServiceServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.plaf.PanelUI;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -41,10 +43,35 @@ public class SalonServicesController {
 
 
     // add
+    @PreAuthorize("hasAnyAuthority('editSalonServices')")
+    @PostMapping("/ipet-back/services/category")
+    @ResponseBody
+    public String addServiceCategory(@RequestParam(name ="imageFile") Optional <MultipartFile> imageFile,
+                                     @RequestParam(name ="jsonFile") Optional <MultipartFile> jsonFile){
+        Gson gson = builder.serializeNulls().create();
+        StringBuilder txtResult = new StringBuilder();
+        byte[] image = null;
+
+        try(InputStreamReader isr = new InputStreamReader(jsonFile.get().getInputStream(), StandardCharsets.UTF_8);
+            BufferedReader br = new BufferedReader(isr)){
+            String lineTxt;
+            if (imageFile.isPresent()) {
+                image = imageFile.orElse(null).getBytes();
+            }
+            while((lineTxt = br.readLine()) != null){
+                txtResult.append(lineTxt);
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+        SalonServiceCategory category = gson.fromJson(String.valueOf(txtResult), SalonServiceCategory.class);
+        return services.addServiceCategory(category, image);
+    }
     // delete
     // edit
     @PreAuthorize("hasAnyAuthority('editSalonServices')")
-    @PutMapping("/ipet-back/services/category")
+    @PutMapping("/ipet-back/service/{id}")
     @ResponseBody
     public String editServiceCategory(@RequestParam(name = "imageFile") Optional <MultipartFile> imageFile,
                                       @RequestParam(name = "jsonFile") MultipartFile jsonFile){
@@ -69,21 +96,50 @@ public class SalonServicesController {
         return services.editServiceCategory(category, image);
     }
 
+    @PreAuthorize("hasAuthority('editSalonServices')")
+    @PatchMapping("/ipet-back/service/{id}")
+    @ResponseBody
+    public String editService(@PathVariable("id") String id, @RequestBody SalonService salonService){
+        salonService.setId(id);
+        return services.editService(salonService);
+    }
+
     // query
     @PreAuthorize("hasAnyAuthority('displaySalonServices','editSalonServices')")
     @GetMapping("/ipet-back/services/categories")
-    public String getAllServiceCategories(Model model){
+    public String getAllServiceCategoriesWithUnwindedServices(Model model){
         model.addAttribute("services", services.getAllUnwindedServices());
         model.addAttribute("categories", services.getAllServiceCategory());
         model.addAttribute("petTypes", services.getAllServicePetType());
         return "backstage/salon/salonServiceCategory";
     }
-
     @PreAuthorize("hasAnyAuthority('displaySalonServices','editSalonServices')")
-    @GetMapping("/ipet-back/services/categories/{id}")
+    @GetMapping("/ipet-back/categories")
+    @ResponseBody
+    public String getAllServiceCategories(){
+        Gson gson = builder.serializeNulls().create();
+        return gson.toJson(services.getAllServiceCategory());
+    }
+    @PreAuthorize("hasAnyAuthority('displaySalonServices','editSalonServices')")
+    @GetMapping("/ipet-back/category/{id}")
     @ResponseBody
     public String getServiceCategoryById(@PathVariable("id") String id){
         Gson gson = builder.serializeNulls().create();
         return gson.toJson(services.getServiceCategoryById(id));
+    }
+    @PreAuthorize("hasAnyAuthority('displaySalonServices','editSalonServices')")
+    @GetMapping("/ipet-back/services")
+    public String getAllUnwindedServices(Model model){
+        model.addAttribute("services", services.getAllUnwindedServices());
+        model.addAttribute("categories", services.getAllServiceCategory());
+        model.addAttribute("petTypes", services.getAllServicePetType());
+        return "backstage/salon/salonServiceList";
+    }
+    @PreAuthorize("hasAnyAuthority('displaySalonServices','editSalonServices')")
+    @GetMapping("/ipet-back/service/{id}")
+    @ResponseBody
+    public String getUnwindedServiceById(@PathVariable("id") String id){
+        Gson gson = builder.serializeNulls().create();
+        return gson.toJson(services.getUnwindedServicesById(id));
     }
 }

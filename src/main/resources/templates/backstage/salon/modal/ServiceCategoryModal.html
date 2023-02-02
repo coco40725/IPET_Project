@@ -82,10 +82,10 @@
 
           <div class="form-group">
             <div class="mb-4 d-flex">
-              <img id="svcCategoryImgPreview-modal-add"  alt="example placeholder" style="width: 300px;" />
+              <img src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg" id="svcCategoryImgPreview-modal-add"  alt="example placeholder" style="width: 300px;" />
             </div>
             <div class="btn btn-primary btn-rounded">
-              <label class="form-label text-white m-1" for="svcCategoryImg-modal-edit">選擇圖片</label>
+              <label class="form-label text-white m-1" for="svcCategoryImg-modal-add">選擇圖片</label>
               <input type="file" class="form-control d-none" id="svcCategoryImg-modal-add" />
             </div>
           </div>
@@ -95,7 +95,7 @@
             <label for="svcCategoryStatus-modal-add" class="col-form-label">狀態</label>
             <select id="svcCategoryStatus-modal-add" class="form-control">
               <option th:value="0">前台顯示</option>
-              <option th:value="1">前台隱藏</option>
+              <option th:value="1" selected>前台隱藏</option>
             </select>
           </div>
           <div>
@@ -104,7 +104,7 @@
         </form>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
-          <button type="submit" class="btn btn-primary btn-edit-confirm" th:attr="editUrl=@{/ipet-back/services/category}">確認修改</button>
+          <button type="submit" class="btn btn-primary btn-add-confirm" th:attr="addUrl=@{/ipet-back/services/category}">確認新增</button>
         </div>
       </div>
     </div>

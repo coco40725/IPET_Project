@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- Remove Modal content   -->
+<div th:fragment="serviceRemoveModal" class="modal fade" id="RemoveModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">資料刪除</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        確認要刪除此筆資料?
+        <p id="deleteModalMessage"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
+        <button type="submit" class="btn btn-danger btn-remove-confirm">確認</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /.Remove Modal content   -->
+
+<!-- Edit Modal content   -->
+<div th:fragment="serviceEditModal" class="modal fade" id="EditModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">資料編輯</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="serviceId-modal-edit" class="col-form-label">服務編號</label>
+            <input type="text" id="serviceId-modal-edit" class="form-control serviceEdit" name="id" readonly>
+          </div>
+
+          <div class="form-group">
+            <label for="serviceCategory-modal-edit" class="col-form-label">服務類型</label>
+            <select id="serviceCategory-modal-edit" class="form-control serviceEdit" name="svcCategoryId">
+              <th:block th:each="category : ${categories}">
+                <option th:value="${category.id}"  th:text="${category.svcCategoryName}"></option>
+              </th:block>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="serviceName-modal-edit" class="col-form-label">服務名稱</label>
+            <input type="text" id="serviceName-modal-edit" class="form-control serviceEdit" name="svcName">
+          </div>
+
+          <div class="form-group">
+            <label for="servicePetSize-modal-edit" class="col-form-label">寵物大小</label>
+            <select id="servicePetSize-modal-edit" class="form-control">
+              <option th:value="小型犬">小型犬</option>
+              <option th:value="中型犬">中型犬</option>
+              <option th:value="大型犬">大型犬</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="servicePetVar-modal-edit" class="col-form-label">寵物品種</label>
+            <select id="servicePetVar-modal-edit" class="form-control serviceEdit" name="salonServicePetTypeId">
+              <option disabled value="default">請選擇</option>
+              <th:block th:each="petType : ${petTypes}">
+                <option th:value="${petType.id}" th:name="${petType.petSize}" th:text="${petType.typeName}" hidden="hidden"></option>
+              </th:block>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="serviceContent-modal-edit" class="col-form-label">服務描述</label>
+            <textarea type="text" id="serviceContent-modal-edit"  class="form-control serviceEdit" name="svcContent">
+            </textarea>
+          </div>
+
+          <div>
+            <label for="servicePrice-modal-edit" class="col-form-label">服務價格</label>
+            <input type="number" min="0" id="servicePrice-modal-edit" class="form-control serviceEdit" name="svcPrice"></input>
+          </div>
+
+          <div>
+            <label for="serviceStatus-modal-edit" class="col-form-label">狀態</label>
+            <select id="serviceStatus-modal-edit" class="form-control serviceEdit" name="svcStatus">
+              <option th:value="0" >暫不提供服務</option>
+              <option th:value="1" >提供服務</option>
+            </select>
+          </div>
+
+          <div>
+            <p id="editModalMessage"></p>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
+        <button type="submit" class="btn btn-primary btn-edit-confirm">確認修改</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /. Edit Modal content   -->
+
+<!-- Add Modal content   -->
+<div th:fragment="serviceAddModal" class="modal fade" id="AddModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">資料新增</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="serviceCategory-modal-add" class="col-form-label">服務類型</label>
+            <select id="serviceCategory-modal-add" class="form-control serviceAdd" name="svcCategoryId">
+              <option selected value="-99" disabled>請選擇</option>
+              <th:block th:each="category : ${categories}">
+                <option th:value="${category.id}"  th:text="${category.svcCategoryName}" ></option>
+              </th:block>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="serviceName-modal-add" class="col-form-label">服務名稱</label>
+            <input type="text" id="serviceName-modal-add" class="form-control serviceAdd" name="svcName">
+          </div>
+
+          <div class="form-group">
+            <label class="col-form-label">寵物大小</label>
+            <p></p>
+            <div class="icheck-primary d-inline servicePetSize">
+              <input type="checkbox" id="allSize" th:value="全部">
+              <label  for="allSize" th:text="全部"></label>
+            </div>
+
+            <div class="icheck-primary d-inline servicePetSize">
+              <input type="checkbox" id="smallSize" th:value="小型犬">
+              <label  for="smallSize" th:text="小型犬"></label>
+            </div>
+
+            <div class="icheck-primary d-inline servicePetSize">
+              <input type="checkbox" id="mediumSize" th:value="中型犬">
+              <label  for="mediumSize" th:text="中型犬"></label>
+            </div>
+
+            <div class="icheck-primary d-inline servicePetSize">
+              <input type="checkbox" id="largeSize" th:value="大型犬">
+              <label for="largeSize" th:text="大型犬"></label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-form-label">寵物品種</label>
+            <p></p>
+            <div class="icheck-primary d-inline servicePetVar">
+              <input type="checkbox" id="allSmallPet" th:value="全部小型犬" class="servicePetVar" th:attr="size=${'小型犬'}" hidden="hidden">
+              <label for="allSmallPet" style="color: #0c5894" th:text="全部小型犬" th:attr="size=${'小型犬'}" hidden="hidden"></label>
+            </div>
+
+            <div class="icheck-primary d-inline servicePetVar">
+              <input type="checkbox" id="allMediumPet" th:value="全部中型犬"  th:attr="size=${'中型犬'}" hidden="hidden">
+              <label for="allMediumPet" style="color: #0c5894" th:text="全部中型犬"  th:attr="size=${'中型犬'}" hidden="hidden"></label>
+            </div>
+
+            <div class="icheck-primary d-inline servicePetVar">
+              <input type="checkbox" id="allLargelPet" th:value="全部大型犬" th:attr="size=${'大型犬'}" hidden="hidden">
+              <label  for="allLargelPet" style="color: #0c5894" th:text="全部大型犬"  th:attr="size=${'大型犬'}" hidden="hidden"></label>
+            </div>
+
+            <div th:each="petType : ${petTypes}" class="icheck-primary d-inline servicePetVar">
+              <input type="checkbox" th:id="${petType.id}" th:value="${petType.id}" th:name="salonServicePetTypeId"  th:attr="size=${petType.petSize}" hidden="hidden"></input>
+              <label th:for="${petType.id}" th:text="${petType.typeName}"  th:attr="size=${petType.petSize}" hidden="hidden"></label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="serviceContent-modal-add" class="col-form-label">服務描述</label>
+            <textarea type="text" id="serviceContent-modal-add"  class="form-control serviceAdd" name="svcContent">
+            </textarea>
+          </div>
+
+          <div>
+            <label for="servicePrice-modal-add" class="col-form-label">服務價格</label>
+            <input type="number" min="0" id="servicePrice-modal-add" class="form-control serviceAdd" name="svcPrice"></input>
+          </div>
+
+          <div>
+            <label for="serviceStatus-modal-add" class="col-form-label">狀態</label>
+            <select id="serviceStatus-modal-add" class="form-control">
+              <option th:value="0" selected>暫不提供服務</option>
+              <option th:value="1">提供服務</option>
+            </select>
+          </div>
+
+          <div>
+            <p id="addModalMessage"></p>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
+        <button type="submit" class="btn btn-primary btn-add-confirm">確認新增</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /. Add Modal content   -->
+
+</body>
+</html>

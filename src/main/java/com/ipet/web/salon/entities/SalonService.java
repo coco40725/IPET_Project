@@ -41,7 +41,4 @@ public class SalonService extends Core {
   @Field("SVC_STATUS")
   @NonNull
   private Integer svcStatus;
-  @Field("TYPE_NAME")
-  @NonNull
-  private String typeName;
 }

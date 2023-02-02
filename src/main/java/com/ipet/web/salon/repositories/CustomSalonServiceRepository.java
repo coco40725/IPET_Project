@@ -1,5 +1,6 @@
 package com.ipet.web.salon.repositories;
 
+import com.ipet.web.salon.entities.SalonService;
 import com.ipet.web.salon.entities.SalonServiceCategory;
 import com.ipet.web.salon.entities.unwinded.UnwindedSalonServices;
 
@@ -12,4 +13,5 @@ import java.util.List;
 public interface CustomSalonServiceRepository {
     List<UnwindedSalonServices> findAll();
     UnwindedSalonServices findById(String id);
+    void partialUpdate(SalonService salonService);
 }
