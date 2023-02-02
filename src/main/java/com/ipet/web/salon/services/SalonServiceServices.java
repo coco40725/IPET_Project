@@ -74,6 +74,22 @@ public class SalonServiceServices {
 
 
     // add service
+    @Transactional
+    public String addServiceCategory(SalonServiceCategory serviceCategory, byte[] imageFile){
+        // inset file first then storage image
+        salonServiceCategoryRepository.save(serviceCategory);
+        if (imageFile != null && imageFile.length != 0){
+            String fileName = "ipet-image/salonCategory/" + serviceCategory.getId() + ".jpg";
+            BlobId blobId = BlobId.of(bucketName ,fileName);
+            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+            serviceCategory.setSvcCategoryImg(fileName);
+            storage.create(blobInfo, imageFile);
+            serviceCategory.setId(serviceCategory.getId());
+            salonServiceCategoryRepository.save(serviceCategory);
+        }
+        return "success";
+    }
+
     // delete service
     // edit service
     @Transactional
@@ -89,6 +105,11 @@ public class SalonServiceServices {
         return "success";
     }
 
+    @Transactional
+    public String editService(SalonService salonService){
+        customSalonServiceRepository.partialUpdate(salonService);
+        return  "success";
+    }
 
     // query service
     public List<UnwindedSalonServices> getAllUnwindedServices(){

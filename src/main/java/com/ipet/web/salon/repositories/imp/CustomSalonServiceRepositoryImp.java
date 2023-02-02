@@ -3,12 +3,16 @@ package com.ipet.web.salon.repositories.imp;
 import com.ipet.web.salon.entities.SalonService;
 import com.ipet.web.salon.entities.unwinded.UnwindedSalonServices;
 import com.ipet.web.salon.repositories.CustomSalonServiceRepository;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -48,5 +52,19 @@ public class CustomSalonServiceRepositoryImp implements CustomSalonServiceReposi
         );
         AggregationResults<UnwindedSalonServices> aggregate = mongoTemplate.aggregate(aggregation, UnwindedSalonServices.class);
         return aggregate.getUniqueMappedResult();
+    }
+
+    @Override
+    public void partialUpdate(SalonService salonService) {
+        Document document = new Document();
+        Update update = new Update();
+        mongoTemplate.getConverter().write(salonService, document);
+        document.forEach(update::set);
+        SalonService updateService = mongoTemplate.findAndModify(
+                Query.query(Criteria.where("_id").is(salonService.getId())), update, new FindAndModifyOptions().returnNew(true), SalonService.class);
+
+        if (updateService != null){
+            mongoTemplate.save(updateService);
+        }
     }
 }
