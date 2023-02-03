@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="_csrf" th:content="${_csrf.token}" />
   <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-  <title>IPET 寵物 | 寵物美容專區 | 服務類別</title>
+  <title>IPET 寵物 | 寵物美容專區 | 優惠列表</title>
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
@@ -22,11 +22,12 @@
   <!-- iCheck for checkboxes and radio inputs -->
   <link rel="stylesheet" th:href="@{/backstage/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
 
-  <!-- w3 -->
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
   <!-- Theme style -->
+
   <link rel="stylesheet" th:href="@{/backstage/css/adminlte.css}">
+  <!-- multiselect -->
+  <link th:href="@{/backstage/plugins/jquery-multiselect/css/multi-select.dev.css}" media="screen" rel="stylesheet" type="text/css">
 
   <!-- childTable style -->
   <style>
@@ -52,7 +53,27 @@
       background-size: 20px;
       cursor: pointer;
     }
-     #contentBody {
+
+    /*修改 optgroup label 的顏色*/
+    li.ms-optgroup-label span{
+      color: #168516;
+      font-weight: bold;
+    }
+
+    li.ms-optgroup-label:hover span{
+      color:white;
+    }
+
+    li.ms-optgroup-label {
+      background-color: rgba(239, 231, 231, 0.96);
+    }
+
+    li.ms-optgroup-label:hover{
+      background-color: rgba(101, 163, 229, 0.9);
+    }
+
+
+    #contentBody {
        background-image: url('/backstage/img/homePage.png');
        background-size: cover;
        background-repeat: no-repeat;
@@ -164,95 +185,72 @@
                   </button>
                    <p></p>
                 </div>
-                <table id="categoryTable" class="table table-bordered table-striped  display">
+                <table id="saleTable" class="table table-bordered table-striped  display">
                   <thead>
                   <tr>
-                    <th>服務類別編號</th>
-                    <th>服務類別名稱</th>
-                    <th>圖片</th>
-                    <th>寵物大小</th>
-                    <th>寵物種類</th>
-                    <th>服務項目</th>
+                    <th>優惠編號</th>
+                    <th>優惠名稱</th>
+                    <th>優惠內容</th>
+                    <th>開始時間</th>
+                    <th>結束時間</th>
+                    <th>優惠項目</th>
                     <th>狀態</th>
                     <th></th>
                     <th></th>
                   </tr>
                   </thead>
                   <tbody>
-                      <tr th:each="category : ${categories}">
-                        <td th:text="${category.id}"></td>
-                        <td th:text="${category.svcCategoryName}"></td>
-                        <td>
-                          <div class="w3-container">
-                            <img th:src="${category.svcCategoryImgSignedUrl}" style="width:25%;cursor:zoom-in"
-                                 th:onclick="document.getElementById([[${category.id}]]).style.display='block'"
-                            alt="image">
-                            <div th:id="${category.id}" class="w3-modal" onclick="this.style.display='none'">
-                              <span class="w3-button w3-hover-red w3-xlarge w3-display-topright">&times;</span>
-                              <div class="w3-modal-content w3-animate-zoom" style="background: rgb(0,0,0,0)">
-                                <img th:src="${category.svcCategoryImgSignedUrl}"/>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <select class="form-control">
-                            <option th:value="全部">全部</option>
-                            <option th:value="小型犬">小型犬</option>
-                            <option th:value="中型犬">中型犬</option>
-                            <option th:value="大型犬">大型犬</option>
-                          </select>
-                        </td>
-                        <td>
-                          <select class="form-control">
-                            <option th:value="-99" selected>全部</option>
-                          </select>
-                        </td>
+                      <tr th:each="sale : ${sales}">
+                        <td th:text="${sale.id}"></td>
+                        <td th:text="${sale.saleName}"></td>
+                        <td th:text="${sale.saleContent}"></td>
+                        <td th:text="${#dates.format(sale.startTime,'YYYY-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${#dates.format(sale.endTime,'YYYY-MM-dd HH:mm:ss')}"></td>
                         <td>
                           <table class="childTable" style="display:none">
                             <tbody class="childTbody" >
                               <tr>
-                                <th>寵物大小</th>
-                                <th>寵物品種</th>
                                 <th>服務編號</th>
                                 <th>服務名稱</th>
-                                <th>服務內容</th>
+                                <th>寵物編號</th>
+                                <th>寵物大小</th>
+                                <th>寵物品種</th>
                                 <th>服務價格</th>
-                                <th hidden="hidden"></th>
+                                <th>優惠價格</th>
                               </tr>
-                              <tr th:each="service : ${services}" th:if="${service.serviceCategory[0].id == category.id}" class="serviceInfo">
-                                  <td th:text="${service.salonServicePetType[0].petSize}" class="servicePetSize"></td>
-                                  <td th:text="${service.salonServicePetType[0].typeName}" class="servicePetName"></td>
-                                  <td th:text="${service.id}" class="serviceSvcId"></td>
-                                  <td th:text="${service.svcName}" class="serviceSvcName"></td>
-                                  <td th:text="${service.svcContent}" class="serviceSvcContent"></td>
-                                  <td th:text="${service.svcPrice}" class="serviceSvcPrice"></td>
-                                  <td hidden="hidden" th:text="${service.serviceCategory[0].id}" class="serviceSvcCategory"></td>
+                              <tr th:each="service : ${sale.svcDetailIds}">
+                                  <td th:text="${service.id}" class="serviceId"></td>
+                                  <td th:text="${service.svcName}" class="serviceName"></td>
+                                  <td th:text="${service.petId}" class="petId"></td>
+                                  <td th:text="${service.petSize}" class="petSize"></td>
+                                  <td th:text="${service.petType}" class="petType"></td>
+                                  <td th:text="${service.svcPrice}" class="servicePrice"></td>
+                                  <td th:text="${service.salePrice}" class="salePrice"></td>
                               </tr>
                             </tbody>
                           </table>
                         </td>
-                        <th:block th:switch="${category.svcCategoryStatus}">
-                          <td th:case="0">
+                        <th:block>
+                          <td th:if="${sale.endTime.after(#dates.createNow())}">
                             <button class="btn btn-success dt-center">
-                              前台顯示
+                              進行中
                             </button>
                           </td>
-                          <td th:case="1">
+                          <td th:if="${sale.endTime.before(#dates.createNow())}">
                             <button class="btn btn-secondary dt-center">
-                              前台隱藏
+                              已結束
                             </button>
                           </td>
                         </th:block>
                         <td>
-                          <button sec:authorize="hasAnyAuthority('editSalonServices')" type="submit" class="btn btn-light row-edit dt-center" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
-                                  th:attr="categoryeUrl=@{/ipet-back/category/{id}(id=${category.id})}">
+                          <button sec:authorize="hasAnyAuthority('editSalonSales')" type="submit" class="btn btn-light row-edit dt-center" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
+                                  th:attr="saleUrl=@{/ipet-back/sale/{id}(id=${sale.id})}">
                             <i class="fas fa-solid fa-pen"></i>
                           </button>
                         </td>
                         <td>
-                          <button sec:authorize="hasAnyAuthority('editSalonServices')"  type="submit" class="btn btn-danger row-remove dt-center" data-toggle="modal" data-target="#RemoveModal"
-                                  th:attr="categoryeUrl=@{/ipet-back/category/{id}(id=${category.id})}">
+                          <button sec:authorize="hasAnyAuthority('editSalonSales')"  type="submit" class="btn btn-danger row-remove dt-center" data-toggle="modal" data-target="#RemoveModal"
+                                  th:attr="saleUrl=@{/ipet-back/sale/{id}(id=${sale.id})}">
                             <i class="fas fa-solid fa-trash"></i>
                           </button>
                         </td>
@@ -273,15 +271,15 @@
     <!-- /.content -->
 
     <!--  Remove Modal content  -->
-    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{/backstage/salon/modal/ServiceCategoryModal :: serviceCategotyRemoveModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{/backstage/salon/modal/SaleModal :: saleRemoveModal}"></div>
     <!-- /. Remove Modal content   -->
 
     <!-- Edit Modal content   -->
-    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{/backstage/salon/modal/ServiceCategoryModal :: serviceCategotyEditModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{/backstage/salon/modal/SaleModal :: saleEditModal}"></div>
     <!-- /. Edit Modal content   -->
 
     <!--  Add Modal content  -->
-    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{/backstage/salon/modal/ServiceCategoryModal :: serviceCategotyAddModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{/backstage/salon/modal/SaleModal :: saleAddModal}"></div>
     <!-- /. Add Modal content   -->
 
 
@@ -308,7 +306,11 @@
 <script th:src="@{/backstage/js/adminlte.js}"></script>
 <!--Axios-->
 <script th:src="@{/backstage/plugins/axios/axios.min.js}"></script>
+<!--jquery multiselect-->
+<script th:src="@{/backstage/plugins/jquery-multiselect/js/jquery.multi-select.js}" type="text/javascript"></script>
 
+<!-- jquery quicksearch -->
+<script th:src="@{/backstage/plugins/jquery-quicksearch/js/jquery.quicksearch.js}" type="text/javascript"></script>
 
 <!-- DataTables  & Plugins -->
 <script th:src="@{/backstage/plugins/datatables/jquery.dataTables.min.js}"></script>
@@ -330,13 +332,13 @@
 
 <!-- sidebar menu Class -->
 <script>
-  $("p:contains(服務項目管理)").closest("li").addClass("menu-open");
-  $("p:contains(服務類型)").closest("a").addClass("active");
+  $("p:contains(美容優惠管理)").closest("li").addClass("menu-open");
+  $("p:contains(優惠列表)").closest("a").addClass("active");
 </script>
 
 <!-- Data presentation and operation show -->
 <script th:inline="javascript">
-  let table = $('#categoryTable').DataTable({
+  let table = $('#saleTable').DataTable({
     autoWidth: false,
     responsive: true,
     lengthChange: true,
@@ -346,18 +348,18 @@
 
     //  填寫直接顯示的欄位，需要與thead tfoot 對應
     "columns":[
-      {responsivePriority: 1, className: "svcCategoryId dt-center"},
-      {responsivePriority: 2, className: "svcCategoryName dt-center"},
-      {responsivePriority: 3, className: "svcCategoryImgBase64 dt-center"},
-      {responsivePriority: 4, className: "petSize dt-center"},
-      {responsivePriority: 5, className: "typeName dt-center"},
+      {responsivePriority: 1, className: "saleId dt-center"},
+      {responsivePriority: 2, className: "saleName dt-center"},
+      {responsivePriority: 3, className: "saleContent dt-center"},
+      {responsivePriority: 4, className: "saleStartTime dt-center"},
+      {responsivePriority: 5, className: "saleEndTime dt-center"},
       {
         className: 'details-control dt-center',
         orderable:      false,
         defaultContent: '',
         responsivePriority: 6
       },
-      {className: "svcCategoryStatus dt-center"},
+      {className: "saleStatus dt-center"},
       {className: 'row-edit dt-center', orderable: false, responsivePriority: 7},
       {className: 'row-remove dt-center', orderable: false, responsivePriority: 8}
     ],
@@ -370,20 +372,18 @@
 
       <!-- Delete data from modal -->
       let token  = $("meta[name='_csrf']").attr("content");
-      let targetDataDelete;
       let deleteRefresh;
-      let categoryeUrl;
+      let saleUrl;
       $('td.row-remove').on('click', 'button',function (){
         // get the selected tr
-        categoryeUrl = $(this).attr("categoryeUrl");
-        targetDataDelete = $(this).closest("tr")[0];
+        saleUrl = $(this).attr("saleUrl");
       });
 
       $('.modal-footer').on('click', '.btn-remove-confirm', function (){
         // send the request to server, and use delete service
         axios({
           method: "delete",
-          url: categoryeUrl,
+          url: saleUrl,
           headers: {
             "X-CSRF-TOKEN": token
           }
@@ -435,125 +435,123 @@
 
       <!-- Edit data from modal -->
       let targetDataEdit;
-      let categoryObjectEdit;
+      let saleObjectEdit;
+      let editData;
+      let saleStrategy;
       let editRefresh;
 
-      $('td.row-edit').on('click','button',function (){
+      $('button.row-edit').on('click',function (){
         // get the selected tr
         targetDataEdit = $(event.target).closest("tr")[0];
-        categoryeUrl = $(this).attr("categoryeUrl");
+        saleUrl = $(this).attr("saleUrl");
+
+
         // send the request to server, and response the data on the modal
         axios({
           method:"get",
-          url: categoryeUrl
+          url: saleUrl
         }).then((resp) => {
           if (resp !== "" ){
-            categoryObjectEdit = resp.data;
+            saleObjectEdit = resp.data;
 
-            // 載入 svcCategoryId 並 唯讀
-            $('#svcCategoryId-modal-edit').val(categoryObjectEdit.id);
+            // 載入 saleId 並 唯讀
+            $('#saleId-modal-edit').val(saleObjectEdit.id);
 
-            // 載入 svcCategoryName
-            $('#svcCategoryName-modal-edit').val(categoryObjectEdit.svcCategoryName);
+            // 載入 saleName
+            $('#saleName-modal-edit').val(saleObjectEdit.saleName);
 
-            // 載入 狀態
-            $('#svcCategoryStatus-modal-edit').val(categoryObjectEdit.svcCategoryStatus);
+            // 載入 saleContent
+            $('#saleContent-modal-edit').val(saleObjectEdit.saleContent);
 
-            // 載入 ImgBase64
-            // 如果圖片是 null，src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg"
-            if (categoryObjectEdit.svcCategoryImgSignedUrl === null){
-              $('#svcCategoryImgPreview-modal-edit').attr("src", "https://mdbootstrap.com/img/Photos/Others/placeholder.jpg")
-            }else{
-              $('#svcCategoryImgPreview-modal-edit').attr("src", categoryObjectEdit.svcCategoryImgSignedUrl);
-            }
+            // saleStartTime
+            $('#saleStartTime-modal-edit').val(saleObjectEdit.startTime);
+
+            // saleEndTime
+            $('#saleEndTime-modal-edit').val(saleObjectEdit.endTime);
+
+            // saleItem，將已經選過的挑進右方已選中
+            for (let saleItem of saleObjectEdit.svcDetailIds){
+              $("#saleItemEdit option[value='" +saleItem.id + "']").prop("selected", true);
+            };
+
+            $('#saleItemEdit').multiSelect({
+              selectableOptgroup: true,
+              selectableHeader: "<span style='color: darkblue'>未挑選之項目</span>",
+              selectionHeader: "<span style='color: darkblue'>已挑選之項目</span>",
+            });
+
           }else{
             $("#editModalMessage").html("錯誤: 無法從伺服器抓取該筆資料")
                     .css("color","red");
             editRefresh = false;
           }
+
         }).catch((err) => {console.log(err)})
       });
 
+      // 當選擇了優惠方式
+      $("#saleStrategy-modal-edit").on("change", function (){
+        $("label[name='saleStrategy-edit-percent']").attr("hidden","hidden");
+        $("input[name='saleStrategy-edit-percent']").attr("hidden","hidden");
+        $("label[name='saleStrategy-edit-dollars']").attr("hidden","hidden");
+        $("input[name='saleStrategy-edit-dollars']").attr("hidden","hidden");
 
-      // 當改動大小時後，顯示種類的可選名單
-      $('td.petSize').on("change",'select',function (){
-        let petVarHTML = `<option th:value="-99">全部</option>`;
-        /*<![CDATA[*/
-        let petObject = /*[[${petTypes}]]*/ null;
-        /*]]>*/
+        // 採用打折
+        if ($("#saleStrategy-modal-edit").val() === "0"){
+          $("label[name='saleStrategy-edit-percent']").removeAttr("hidden");
+          $("input[name='saleStrategy-edit-percent']").removeAttr("hidden");
 
-        let petSize = $(this).val();
-        if (petSize === "全部"){
-          for (let pet of petObject){
-            petVarHTML += `<option th:value="${pet.typeId}">${pet.typeName}</option>`;
-          }
-        }else{
-          for (let pet of petObject){
-            if (pet.petSize === petSize){
-              petVarHTML += `<option th:value="${pet.typeId}">${pet.typeName}</option>`;
-            }
-          }
-        }
-        $(this).parent().next().find("select").html(petVarHTML);
-        if ($("td.details-control").parent().hasClass("shown")){
-          renderRowTable($(this).parent().siblings("td.details-control"));
+          // 採用折扣
+        }else if ($("#saleStrategy-modal-edit").val() === "1"){
+          $("label[name='saleStrategy-edit-dollars']").removeAttr("hidden");
+          $("input[name='saleStrategy-edit-dollars']").removeAttr("hidden");
         }
 
-      });
+      })
+      saleStrategy = $("#saleStrategy-modal-edit").val();
 
-      // 當點擊 服務詳情時，顯示特定 犬種的服務
-      $('td.typeName').on("change",'select', function (){
-        if ($("td.details-control").parent().hasClass("shown")){
-          renderRowTable($(this).parent().siblings("td.details-control"));
-        }
-      });
-
-      // 當上傳了圖片，svcCategoryImgPreview-modal-edit 要改變成上傳的圖
-      let image;
-      $("#svcCategoryImg-modal-edit").on("change", function (){
-        let file = this.files[0];
-        let reader = new FileReader();
-
-        reader.onloadend = function (){
-          $("#svcCategoryImgPreview-modal-edit").attr("src", reader.result)
-        }
-        reader.readAsDataURL(file);
-        image = document.getElementById("svcCategoryImg-modal-edit").files[0];
-        if (image.size > 1048576){
-          $("#editModalMessage").text("圖片太大，無法上傳")
-                  .css("color", "red");
-        }else {
-          $("#editModalMessage").text("");
-        }
-      });
 
       //確認編輯
       $(".btn-edit-confirm").on("click", function (){
-        let token = $("meta[name='_csrf']").attr("content");
-        let formData = new FormData();
+        saleStrategy = $("#saleStrategy-modal-edit").val();
 
-        let editData = {
-          id: categoryObjectEdit.id,
-          svcCategoryName: $('#svcCategoryName-modal-edit').val(),
-          svcCategoryImg: categoryObjectEdit.svcCategoryImg,
-          svcCategoryStatus: $('#svcCategoryStatus-modal-edit').val()
+
+        let token = $("meta[name='_csrf']").attr("content");
+
+        // 確認有多少的 service Id 被選到
+        let svcDetailIds = [];
+        let salePrice;
+        if (saleStrategy === "0") {
+          salePrice = $("input[name='saleStrategy-edit-percent']").val();
+        }else if (saleStrategy === "1"){
+          salePrice = $("input[name='saleStrategy-edit-dollars']").val();
         }
 
-        let image = document.getElementById("svcCategoryImg-modal-edit").files[0];
-        const jsonFile = JSON.stringify(editData);
-        const blob = new Blob([jsonFile], {
-          type: 'application/json'
-        });
+        for (let svcItem of $("#saleItemEdit").val()){
+          console.log(salePrice);
+          svcDetailIds.push({
+            id: svcItem,
+            saleStrategy: saleStrategy,
+            salePrice: salePrice
+          });
+        }
 
-        formData.append("imageFile", image)
-        formData.append("jsonFile", blob);
+
+        editData = {
+          saleName: $("#saleName-modal-edit").val(),
+          saleContent: $("#saleContent-modal-edit").val(),
+          startTime: $("#saleStartTime-modal-edit").val(),
+          endTime: $("#saleEndTime-modal-edit").val(),
+          svcDetailIds: svcDetailIds
+        }
+
+
         axios({
-          method: "put",
-          url: categoryeUrl,
-          data: formData,
+          method: "patch",
+          url: saleUrl,
+          data: editData,
           headers: {
             "X-CSRF-TOKEN": token,
-            'content-type': 'multipart/form-data'
           }
         }).then((resp) => {
           if (resp !== ""){
@@ -577,12 +575,16 @@
           $("#editModalMessage").text("修改失敗，其他原因")
                   .css("color","red");
           editRefresh = false;
-        })
+        });
+
       })
 
 
 
       $('#EditModal').on('hidden.bs.modal', function (){
+        // clean the previous data
+        $("#saleItemEdit option").prop("selected", false);
+        $("#saleItemEdit").multiSelect('refresh');
         if (editRefresh) {
           window.location.reload();
         }
@@ -592,7 +594,7 @@
 
 
       <!-- Add data from modal -->
-      // send the request to server, and get the emp
+      // send the request to server
       // 當上傳了圖片，svcCategoryImgPreview-modal-edit 要改變成上傳的圖
       let imageAdd;
       $("#svcCategoryImg-modal-add").on("change", function (){
@@ -683,7 +685,7 @@
 
 
   <!-- Add event listener for opening and closing details -->
-  $('#categoryTable tbody').on('click', 'td.details-control', function () {
+  $('#saleTable tbody').on('click', 'td.details-control', function () {
     let tr = $(this).closest('tr');
     let row = table.row( tr );
     if ( row.child.isShown() ) {
@@ -692,9 +694,8 @@
       tr.removeClass('shown');
     } else {
       // Open this row
-      renderRowTable($(this));
-      // let childTable = $(this).find('.childTable').html();
-      // row.child(childTable).show();
+      let chileTable = $(this).find('.childTable').html();
+      row.child(chileTable).show();
       tr.addClass('shown');
     }
   });
@@ -710,31 +711,7 @@
             .draw();
   }
 
-  function renderRowTable(e){
-    let tr = e.closest('tr');
-    let row = table.row( tr );
 
-    let selectPetSize = e.siblings("td.petSize").find("select").find(" option:selected").text();
-    let selectPetVar = e.siblings("td.typeName").find("select option:selected").text();
-    let selectCategory = e.siblings("td.svcCategoryId").text();
-
-    e.find('.childTable').find('tr.serviceInfo').each(function (){
-      $(this).show();
-      if ($(this).find("td.serviceSvcCategory").text() !== selectCategory){
-        $(this).remove();
-      } else {
-        if (selectPetSize !== "全部" && selectPetSize !== $(this).find("td.servicePetSize").text()){
-          $(this).hide();
-        }
-        if (selectPetVar !== "全部" && selectPetVar !== $(this).find("td.servicePetName").text()) {
-          $(this).hide();
-        }
-      }
-    });
-
-    let childTable = e.find('.childTable').html();
-    row.child(childTable).show();
-  }
 
 </script>
 </body>

@@ -6,7 +6,7 @@
 </head>
 <body>
 <!-- Remove Modal content   -->
-<div th:fragment="serviceRemoveModal" class="modal fade" id="RemoveModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div th:fragment="saleRemoveModal" class="modal fade" id="RemoveModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -29,7 +29,7 @@
 <!-- /.Remove Modal content   -->
 
 <!-- Edit Modal content   -->
-<div th:fragment="serviceEditModal" class="modal fade" id="EditModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div th:fragment="saleEditModal" class="modal fade" id="EditModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -41,60 +41,57 @@
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="serviceId-modal-edit" class="col-form-label">服務編號</label>
-            <input type="text" id="serviceId-modal-edit" class="form-control serviceEdit" name="id" readonly>
+            <label for="saleId-modal-edit" class="col-form-label">優惠編號</label>
+            <input type="text" id="saleId-modal-edit" class="form-control serviceEdit" name="id" readonly>
           </div>
 
           <div class="form-group">
-            <label for="serviceCategory-modal-edit" class="col-form-label">服務類型</label>
-            <select id="serviceCategory-modal-edit" class="form-control serviceEdit" name="svcCategoryId">
-              <th:block th:each="category : ${categories}">
-                <option th:value="${category.id}"  th:text="${category.svcCategoryName}"></option>
-              </th:block>
-            </select>
+            <label for="saleName-modal-edit" class="col-form-label">優惠名稱</label>
+            <input type="text" id="saleName-modal-edit" class="form-control serviceEdit" name="saleName">
           </div>
 
           <div class="form-group">
-            <label for="serviceName-modal-edit" class="col-form-label">服務名稱</label>
-            <input type="text" id="serviceName-modal-edit" class="form-control serviceEdit" name="svcName">
-          </div>
-
-          <div class="form-group">
-            <label for="servicePetSize-modal-edit" class="col-form-label">寵物大小</label>
-            <select id="servicePetSize-modal-edit" class="form-control">
-              <option th:value="小型犬">小型犬</option>
-              <option th:value="中型犬">中型犬</option>
-              <option th:value="大型犬">大型犬</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="servicePetVar-modal-edit" class="col-form-label">寵物品種</label>
-            <select id="servicePetVar-modal-edit" class="form-control serviceEdit" name="salonServicePetTypeId">
-              <option disabled value="default">請選擇</option>
-              <th:block th:each="petType : ${petTypes}">
-                <option th:value="${petType.id}" th:name="${petType.petSize}" th:text="${petType.typeName}" hidden="hidden"></option>
-              </th:block>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="serviceContent-modal-edit" class="col-form-label">服務描述</label>
-            <textarea type="text" id="serviceContent-modal-edit"  class="form-control serviceEdit" name="svcContent">
+            <label for="saleContent-modal-edit" class="col-form-label">優惠內容</label>
+            <textarea type="text" id="saleContent-modal-edit"  class="form-control serviceEdit" name="saleContent">
             </textarea>
           </div>
 
-          <div>
-            <label for="servicePrice-modal-edit" class="col-form-label">服務價格</label>
-            <input type="number" min="0" id="servicePrice-modal-edit" class="form-control serviceEdit" name="svcPrice"></input>
+          <div class="form-group">
+            <label for="saleStartTime-modal-edit" class="col-form-label">開始時間</label>
+            <input type="datetime-local" id="saleStartTime-modal-edit" class="form-control serviceEdit" name="startTime">
           </div>
 
-          <div>
-            <label for="serviceStatus-modal-edit" class="col-form-label">狀態</label>
-            <select id="serviceStatus-modal-edit" class="form-control serviceEdit" name="svcStatus">
-              <option th:value="0" >暫不提供服務</option>
-              <option th:value="1" >提供服務</option>
+          <div class="form-group">
+            <label for="saleEndTime-modal-edit" class="col-form-label">結束時間</label>
+            <input type="datetime-local" id="saleEndTime-modal-edit" class="form-control serviceEdit" name="endTime">
+          </div>
+
+          <div class="form-group">
+            <label class="col-form-label">優惠項目</label>
+            <select multiple="multiple" id="saleItemEdit" class="col-form-label">
+                <th:block th:each="category : ${categories}">
+                  <optgroup th:label="${category.svcCategoryName}">
+                    <th:block th:each="service : ${services}" th:if="${service.serviceCategory[0].id == category.id}">
+                      <option th:value="${service.id}" th:text=" '(' + ${service.salonServicePetType[0].typeName} + ') ' + ${service.svcName}"></option>
+                    </th:block>
+                  </optgroup>
+                </th:block>
             </select>
+          </div>
+
+          <div class="form-group">
+            <label class="col-form-label">優惠方式</label>
+             <select  class="form-control" id="saleStrategy-modal-edit">
+               <option value="-99" selected>不更改</option>
+               <option value="0">打折 (1 - 95 折)</option>
+               <option value="1">折扣 (元)</option>
+             </select>
+          </div>
+          <div class="form-group">
+            <label class="col-form-label" hidden="hidden" name="saleStrategy-edit-percent">打折折數</label>
+            <input type="number" class="form-control" min="1" max="95" hidden="hidden" name="saleStrategy-edit-percent">
+            <label class="col-form-label" hidden="hidden" name="saleStrategy-edit-dollars">折扣元數</label>
+            <input type="number" class="form-control" min="0" hidden="hidden" name="saleStrategy-edit-dollars">
           </div>
 
           <div>
@@ -112,7 +109,7 @@
 <!-- /. Edit Modal content   -->
 
 <!-- Add Modal content   -->
-<div th:fragment="serviceAddModal" class="modal fade" id="AddModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div th:fragment="saleAddModal" class="modal fade" id="AddModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">

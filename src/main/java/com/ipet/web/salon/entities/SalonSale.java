@@ -1,5 +1,6 @@
 package com.ipet.web.salon.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ipet.core.entities.Core;
 import com.ipet.web.salon.entities.sub_entities.SalonSaleServiceDetail;
 import com.mongodb.lang.NonNull;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.io.Serial;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 @EqualsAndHashCode(callSuper = false)
 @Data
@@ -18,7 +20,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SalonSale extends Core {
-
   @Serial
   private static final long serialVersionUID = -7635226219222789436L;
   @Id
@@ -39,6 +40,5 @@ public class SalonSale extends Core {
   @Field("SVC_DETAIL_IDS")
   @NonNull
   private List<SalonSaleServiceDetail> svcDetailIds;
-
 
 }
