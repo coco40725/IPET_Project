@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-k8s-demo-deployment
+  labels:
+    app: ipet_docker_k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ipet_docker_k8s
+  template:
+    metadata:
+      labels:
+        app: ipet_docker_k8s
+    spec:
+      containers:
+        - name: ipet_docker_k8s
+          image: coco40725/ipet_docker
+          env:
+            - name: "PORT"
+              value: "8080"

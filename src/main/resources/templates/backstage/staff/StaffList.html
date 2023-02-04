@@ -262,12 +262,8 @@
     <!-- /.content -->
 
 
-    <!-- Edit Modal content   -->
-    <div  sec:authorize="hasAnyAuthority('editEmps')" th:replace="~{/backstage/member/modal/MemberModal :: memberEditModal}"></div>
-    <!-- /. Edit Modal content   -->
-
   <!-- Main Footer -->
-  <div th:replace="~{backstage/common/footer :: footer}"></div>
+  <div th:replace="~{backstage/common/footer.html :: footer}"></div>
 
 </div>
 <!-- /.content-wrapper -->

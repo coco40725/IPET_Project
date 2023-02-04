@@ -279,15 +279,15 @@
     <!-- /.content -->
 
     <!--  Remove Modal content  -->
-    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{/backstage/salon/modal/SaleModal :: saleRemoveModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{backstage/salon/modal/SaleModal :: saleRemoveModal}"></div>
     <!-- /. Remove Modal content   -->
 
     <!-- Edit Modal content   -->
-    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{/backstage/salon/modal/SaleModal :: saleEditModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{backstage/salon/modal/SaleModal :: saleEditModal}"></div>
     <!-- /. Edit Modal content   -->
 
     <!--  Add Modal content  -->
-    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{/backstage/salon/modal/SaleModal :: saleAddModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editSalonServices')" th:replace="~{backstage/salon/modal/SaleModal :: saleAddModal}"></div>
     <!-- /. Add Modal content   -->
 
 

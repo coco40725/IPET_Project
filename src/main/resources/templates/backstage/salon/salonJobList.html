@@ -198,15 +198,15 @@
     <!-- /.content -->
 
     <!-- Remove Modal content   -->
-    <div sec:authorize="hasAnyAuthority('editSalonSchedules')" th:replace="~{/backstage/salon/modal/ScheduleModal :: scheduleRemoveModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editSalonSchedules')" th:replace="~{backstage/salon/modal/ScheduleModal :: scheduleRemoveModal}"></div>
     <!-- /.Remove Modal content   -->
 
     <!-- Edit Modal content   -->
-    <div sec:authorize="hasAnyAuthority('editSalonSchedules')" th:replace="~{/backstage/salon/modal/ScheduleModal :: scheduleEditModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editSalonSchedules')" th:replace="~{backstage/salon/modal/ScheduleModal :: scheduleEditModal}"></div>
     <!-- /. Edit Modal content   -->
 
     <!--  Add Modal content  -->
-    <div sec:authorize="hasAnyAuthority('editSalonSchedules')" th:replace="~{/backstage/salon/modal/ScheduleModal :: scheduleAddModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editSalonSchedules')" th:replace="~{backstage/salon/modal/ScheduleModal :: scheduleAddModal}"></div>
     <!-- /. Add Modal content   -->
 
 

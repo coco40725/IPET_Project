@@ -243,7 +243,7 @@
 
 
     <!-- Edit Modal content   -->
-    <div th:replace="~{/backstage/member/modal/PetModal :: petEditModal}"></div>
+    <div sec:authorize="hasAnyAuthority('editMems')" th:replace="~{backstage/member/modal/PetModal :: petEditModal}"></div>
     <!-- /. Edit Modal content   -->
 
   <!-- Main Footer -->
