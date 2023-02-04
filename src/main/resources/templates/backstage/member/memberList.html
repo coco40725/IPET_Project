@@ -447,6 +447,9 @@
       // 送出編輯
       $('.btn-edit-confirm').on("click" ,function(e){
         if ($("#EditModalForm").valid()){
+          $(".btn-edit-confirm").addClass("disabled")
+                  .attr("disabled");
+          $("body:hover").css("cursor","wait");
           axios({
             method:"patch",
             url: memberUrl,
@@ -455,31 +458,31 @@
               "X-CSRF-TOKEN": token
             }
           })
-            .then((resp) => {
-              if (resp !== "") {
-                if (resp.data === "success"){
-                  $("#editModalMessage").html("修改成功")
-                          .css("color","green");
-                  $(".btn-edit-confirm").addClass("disabled")
-                          .attr("disabled")
-                  editRefresh = true;
-                }else{
-                  $("#editModalMessage").html(resp.data)
-                          .css("color","red");
-                  editRefresh = false;
-                }
+          .then(resp => {
+            if (resp !== "") {
+              if (resp.data === "success"){
+                $("#editModalMessage").html("修改成功")
+                        .css("color","green");
+                editRefresh = true;
               }else{
-                $("#editModalMessage").html("錯誤:伺服器無回傳結果")
+                $("#editModalMessage").html(resp.data)
                         .css("color","red");
+                editRefresh = false;
               }
-            })
-            .catch((err) => {
-              $("#editeModalMessage").text("修改失敗，其他原因")
+            }else{
+              $("#editModalMessage").html("錯誤:伺服器無回傳結果")
                       .css("color","red");
-              $(".btn-edit-confirm").addClass("disabled")
-                      .attr("disabled");
-              editRefresh = false;
-            })
+            }
+          })
+          .catch(err => {
+            $("#editeModalMessage").text("修改失敗，其他原因")
+                    .css("color","red");
+            editRefresh = false;
+            console.log(err);
+          })
+          .finally(() => {
+            $("body:hover").css("cursor","default");
+          })
         }else{
           $("#editModalMessage").text("請填寫完整且正確的資料")
                   .css("color","red");
