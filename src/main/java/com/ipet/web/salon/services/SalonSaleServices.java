@@ -42,35 +42,73 @@ public class SalonSaleServices {
     // sale add
     @Transactional
     public String addSalonSale(SalonSale salonSale){
-        salonSaleRepository.save(salonSale);
+        // 將SalonSaleServiceDetail
+        List<SalonSaleServiceDetail> svcDetailIds = salonSale.getSvcDetailIds();
+        Integer saleStrategy = salonSale.getSaleStrategy();
+        // 若 svcDetailIds == null 則代表完全不用改，
+        // svcDetailIds == [] 代表全數移除，
+        // 其餘都是有更改並且要補上資料;
+        if (svcDetailIds == null || svcDetailIds.size() == 0){
+            salonSaleRepository.save(salonSale);
+
+        } else {
+            for (SalonSaleServiceDetail svcDetailId : svcDetailIds) {
+                UnwindedSalonServices salonService = customSalonServiceRepository.findById(svcDetailId.getId());
+                svcDetailId.setSvcName(salonService.getSvcName());
+                svcDetailId.setSvcPrice(salonService.getSvcPrice());
+                svcDetailId.setPetId(salonService.getSalonServicePetType().get(0).getId());
+                svcDetailId.setPetSize(salonService.getSalonServicePetType().get(0).getPetSize());
+                svcDetailId.setPetType(salonService.getSalonServicePetType().get(0).getTypeName());
+                // 0 是打折
+                if (saleStrategy == 0){
+                    svcDetailId.setSalePrice((int) Math.round(svcDetailId.getSalePrice() * svcDetailId.getSvcPrice() * 0.1));
+                    // 1是折扣
+                }else if (saleStrategy == 1){
+                    svcDetailId.setSalePrice(svcDetailId.getSvcPrice() - svcDetailId.getSalePrice());
+                }else{
+                    // 沒有改
+                    svcDetailId.setSalePrice(svcDetailId.getSalePrice());
+                }
+            }
+            salonSaleRepository.save(salonSale);
+        }
         return "success";
     }
 
     // sale edit
     @Transactional
     public String editSalonSale(SalonSale salonSale){
-        // 將SalonSaleServiceDetail 根據 service 填入資料 並計算 salePrice
-        List<SalonSaleServiceDetail> svcDetailIds = salonSale.getSvcDetailIds();
-        for (SalonSaleServiceDetail svcDetailId : svcDetailIds) {
-            UnwindedSalonServices salonService = customSalonServiceRepository.findById(svcDetailId.getId());
-            svcDetailId.setSvcName(salonService.getSvcName());
-            svcDetailId.setSvcPrice(salonService.getSvcPrice());
-            svcDetailId.setPetId(salonService.getSalonServicePetType().get(0).getId());
-            svcDetailId.setPetSize(salonService.getSalonServicePetType().get(0).getPetSize());
-            svcDetailId.setPetType(salonService.getSalonServicePetType().get(0).getTypeName());
-            // 0 是打折
-            if (svcDetailId.getSaleStrategy() == 0){
-                svcDetailId.setSalePrice((int) Math.round(svcDetailId.getSalePrice() * svcDetailId.getSvcPrice() * 0.1));
-                // 1是折扣
-            }else if (svcDetailId.getSaleStrategy() == 1){
-                svcDetailId.setSalePrice(svcDetailId.getSvcPrice() - svcDetailId.getSalePrice());
-            }else{
-                // 沒有改
-                svcDetailId.setSalePrice(svcDetailId.getSalePrice());
-            }
-        }
 
-        salonSaleRepository.save(salonSale);
+        // 將SalonSaleServiceDetail
+        List<SalonSaleServiceDetail> svcDetailIds = salonSale.getSvcDetailIds();
+        Integer saleStrategy = salonSale.getSaleStrategy();
+        // 若 svcDetailIds == null 則代表完全不用改，
+        // svcDetailIds == [] 代表全數移除，
+        // 其餘都是有更改並且要補上資料;
+        if (svcDetailIds == null || svcDetailIds.size() == 0){
+            customSaleRepository.partialUpdate(salonSale);
+
+        } else {
+            for (SalonSaleServiceDetail svcDetailId : svcDetailIds) {
+                UnwindedSalonServices salonService = customSalonServiceRepository.findById(svcDetailId.getId());
+                svcDetailId.setSvcName(salonService.getSvcName());
+                svcDetailId.setSvcPrice(salonService.getSvcPrice());
+                svcDetailId.setPetId(salonService.getSalonServicePetType().get(0).getId());
+                svcDetailId.setPetSize(salonService.getSalonServicePetType().get(0).getPetSize());
+                svcDetailId.setPetType(salonService.getSalonServicePetType().get(0).getTypeName());
+                // 0 是打折
+                if (saleStrategy == 0){
+                    svcDetailId.setSalePrice((int) Math.round(svcDetailId.getSalePrice() * svcDetailId.getSvcPrice() * 0.1));
+                    // 1是折扣
+                }else if (saleStrategy == 1){
+                    svcDetailId.setSalePrice(svcDetailId.getSvcPrice() - svcDetailId.getSalePrice());
+                }else{
+                    // 沒有改
+                    svcDetailId.setSalePrice(svcDetailId.getSalePrice());
+                }
+            }
+            customSaleRepository.partialUpdate(salonSale);
+        }
         return "success";
     }
 

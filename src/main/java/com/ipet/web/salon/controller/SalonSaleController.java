@@ -34,6 +34,13 @@ public class SalonSaleController {
         this.builder = builder;
     }
     // add sale
+    @PreAuthorize("hasAnyAuthority('displaySalonSales', 'editSalonSales')")
+    @PatchMapping("/ipet-back/sale")
+    @ResponseBody
+    public String addSale(@RequestBody SalonSale salonSale){
+        return salonSaleServices.addSalonSale(salonSale);
+    }
+
     // delete sale
     @PreAuthorize("hasAnyAuthority('displaySalonSales', 'editSalonSales')")
     @DeleteMapping("/ipet-back/sale/{id}")

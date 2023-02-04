@@ -42,33 +42,32 @@
         <form>
           <div class="form-group">
             <label for="saleId-modal-edit" class="col-form-label">優惠編號</label>
-            <input type="text" id="saleId-modal-edit" class="form-control serviceEdit" name="id" readonly>
+            <input type="text" id="saleId-modal-edit" class="form-control saleEdit" name="id" readonly>
           </div>
 
           <div class="form-group">
             <label for="saleName-modal-edit" class="col-form-label">優惠名稱</label>
-            <input type="text" id="saleName-modal-edit" class="form-control serviceEdit" name="saleName">
+            <input type="text" id="saleName-modal-edit" class="form-control saleEdit" name="saleName">
           </div>
 
           <div class="form-group">
             <label for="saleContent-modal-edit" class="col-form-label">優惠內容</label>
-            <textarea type="text" id="saleContent-modal-edit"  class="form-control serviceEdit" name="saleContent">
-            </textarea>
+            <textarea type="text" id="saleContent-modal-edit"  class="form-control saleEdit" name="saleContent"></textarea>
           </div>
 
           <div class="form-group">
             <label for="saleStartTime-modal-edit" class="col-form-label">開始時間</label>
-            <input type="datetime-local" id="saleStartTime-modal-edit" class="form-control serviceEdit" name="startTime">
+            <input type="datetime-local" id="saleStartTime-modal-edit" class="form-control saleEdit" name="startTime">
           </div>
 
           <div class="form-group">
             <label for="saleEndTime-modal-edit" class="col-form-label">結束時間</label>
-            <input type="datetime-local" id="saleEndTime-modal-edit" class="form-control serviceEdit" name="endTime">
+            <input type="datetime-local" id="saleEndTime-modal-edit" class="form-control saleEdit" name="endTime">
           </div>
 
           <div class="form-group">
             <label class="col-form-label">優惠項目</label>
-            <select multiple="multiple" id="saleItemEdit" class="col-form-label">
+            <select multiple="multiple" id="saleItemEdit" class="col-form-label saleEdit" name="svcDetailIds">
                 <th:block th:each="category : ${categories}">
                   <optgroup th:label="${category.svcCategoryName}">
                     <th:block th:each="service : ${services}" th:if="${service.serviceCategory[0].id == category.id}">
@@ -81,17 +80,18 @@
 
           <div class="form-group">
             <label class="col-form-label">優惠方式</label>
-             <select  class="form-control" id="saleStrategy-modal-edit">
+             <select  class="form-control saleEdit" id="saleStrategy-modal-edit">
+               <option value="default" disabled>請選擇</option>
                <option value="-99" selected>不更改</option>
-               <option value="0">打折 (1 - 95 折)</option>
+               <option value="0">打折 (1 - 10 折)</option>
                <option value="1">折扣 (元)</option>
              </select>
           </div>
           <div class="form-group">
-            <label class="col-form-label" hidden="hidden" name="saleStrategy-edit-percent">打折折數</label>
-            <input type="number" class="form-control" min="1" max="95" hidden="hidden" name="saleStrategy-edit-percent">
-            <label class="col-form-label" hidden="hidden" name="saleStrategy-edit-dollars">折扣元數</label>
-            <input type="number" class="form-control" min="0" hidden="hidden" name="saleStrategy-edit-dollars">
+            <label class="col-form-label" hidden="hidden" th:attr="saleType=0">打折折數</label>
+            <input type="number" class="form-control saleEdit" min="1" max="10" hidden="hidden" name="salePrice" th:attr="saleType=0">
+            <label class="col-form-label" hidden="hidden" th:attr="saleType=1">折扣元數</label>
+            <input type="number" class="form-control saleEdit" min="0" hidden="hidden" name="salePrice" th:attr="saleType=1">
           </div>
 
           <div>
@@ -121,84 +121,51 @@
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="serviceCategory-modal-add" class="col-form-label">服務類型</label>
-            <select id="serviceCategory-modal-add" class="form-control serviceAdd" name="svcCategoryId">
-              <option selected value="-99" disabled>請選擇</option>
+            <label for="saleName-modal-add" class="col-form-label">優惠名稱</label>
+            <input type="text" id="saleName-modal-add" class="form-control saleAdd" name="saleName">
+          </div>
+
+          <div class="form-group">
+            <label for="saleContent-modal-add" class="col-form-label">優惠內容</label>
+            <textarea type="text" id="saleContent-modal-add"  class="form-control saleAdd" name="saleContent"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="saleStartTime-modal-add" class="col-form-label">開始時間</label>
+            <input type="datetime-local" id="saleStartTime-modal-add" class="form-control saleAdd" name="startTime">
+          </div>
+
+          <div class="form-group">
+            <label for="saleEndTime-modal-add" class="col-form-label">結束時間</label>
+            <input type="datetime-local" id="saleEndTime-modal-add" class="form-control saleAdd" name="endTime">
+          </div>
+
+          <div class="form-group">
+            <label class="col-form-label">優惠項目</label>
+            <select multiple="multiple" id="saleItemAdd" class="col-form-label saleAdd" name="svcDetailIds">
               <th:block th:each="category : ${categories}">
-                <option th:value="${category.id}"  th:text="${category.svcCategoryName}" ></option>
+                <optgroup th:label="${category.svcCategoryName}">
+                  <th:block th:each="service : ${services}" th:if="${service.serviceCategory[0].id == category.id}">
+                    <option th:value="${service.id}" th:text=" '(' + ${service.salonServicePetType[0].typeName} + ') ' + ${service.svcName}"></option>
+                  </th:block>
+                </optgroup>
               </th:block>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="serviceName-modal-add" class="col-form-label">服務名稱</label>
-            <input type="text" id="serviceName-modal-add" class="form-control serviceAdd" name="svcName">
-          </div>
-
-          <div class="form-group">
-            <label class="col-form-label">寵物大小</label>
-            <p></p>
-            <div class="icheck-primary d-inline servicePetSize">
-              <input type="checkbox" id="allSize" th:value="全部">
-              <label  for="allSize" th:text="全部"></label>
-            </div>
-
-            <div class="icheck-primary d-inline servicePetSize">
-              <input type="checkbox" id="smallSize" th:value="小型犬">
-              <label  for="smallSize" th:text="小型犬"></label>
-            </div>
-
-            <div class="icheck-primary d-inline servicePetSize">
-              <input type="checkbox" id="mediumSize" th:value="中型犬">
-              <label  for="mediumSize" th:text="中型犬"></label>
-            </div>
-
-            <div class="icheck-primary d-inline servicePetSize">
-              <input type="checkbox" id="largeSize" th:value="大型犬">
-              <label for="largeSize" th:text="大型犬"></label>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="col-form-label">寵物品種</label>
-            <p></p>
-            <div class="icheck-primary d-inline servicePetVar">
-              <input type="checkbox" id="allSmallPet" th:value="全部小型犬" class="servicePetVar" th:attr="size=${'所有小型犬'}" hidden="hidden">
-              <label for="allSmallPet" style="color: #0c5894" th:text="全部小型犬" th:attr="size=${'所有小型犬'}" hidden="hidden"></label>
-            </div>
-
-            <div class="icheck-primary d-inline servicePetVar">
-              <input type="checkbox" id="allMediumPet" th:value="全部中型犬"  th:attr="size=${'所有中型犬'}" hidden="hidden">
-              <label for="allMediumPet" style="color: #0c5894" th:text="全部中型犬"  th:attr="size=${'所有中型犬'}" hidden="hidden"></label>
-            </div>
-
-            <div class="icheck-primary d-inline servicePetVar">
-              <input type="checkbox" id="allLargelPet" th:value="全部大型犬" th:attr="size=${'所有大型犬'}" hidden="hidden">
-              <label  for="allLargelPet" style="color: #0c5894" th:text="全部大型犬"  th:attr="size=${'所有大型犬'}" hidden="hidden"></label>
-            </div>
-
-            <div th:each="petType : ${petTypes}" class="icheck-primary d-inline servicePetVar">
-              <input type="checkbox" th:id="${petType.id}" th:value="${petType.id}" th:name="salonServicePetTypeId"  th:attr="size=${petType.petSize}" hidden="hidden"></input>
-              <label th:for="${petType.id}" th:text="${petType.typeName}"  th:attr="size=${petType.petSize}" hidden="hidden"></label>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="serviceContent-modal-add" class="col-form-label">服務描述</label>
-            <textarea type="text" id="serviceContent-modal-add"  class="form-control serviceAdd" name="svcContent"></textarea>
-          </div>
-
-          <div>
-            <label for="servicePrice-modal-add" class="col-form-label">服務價格</label>
-            <input type="number" min="0" id="servicePrice-modal-add" class="form-control serviceAdd" name="svcPrice"></input>
-          </div>
-
-          <div>
-            <label for="serviceStatus-modal-add" class="col-form-label">狀態</label>
-            <select id="serviceStatus-modal-add" class="form-control">
-              <option th:value="0" selected>暫不提供服務</option>
-              <option th:value="1">提供服務</option>
+            <label class="col-form-label">優惠方式</label>
+            <select  class="form-control saleAdd" id="saleStrategy-modal-add">
+              <option value="default" disabled selected>請選擇</option>
+              <option value="0">打折 (1 - 10 折)</option>
+              <option value="1">折扣 (元)</option>
             </select>
+          </div>
+          <div class="form-group">
+            <label class="col-form-label" hidden="hidden" th:attr="saleType=0">打折折數</label>
+            <input type="number" class="form-control saleAdd" min="1" max="10" hidden="hidden" name="salePrice" th:attr="saleType=0">
+            <label class="col-form-label" hidden="hidden" th:attr="saleType=1">折扣元數</label>
+            <input type="number" class="form-control saleAdd" min="0" hidden="hidden" name="salePrice" th:attr="saleType=1">
           </div>
 
           <div>
@@ -208,7 +175,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
-        <button type="submit" class="btn btn-primary btn-add-confirm" th:attr="addUrl=@{/ipet-back/services}">確認新增</button>
+        <button type="submit" class="btn btn-primary btn-add-confirm">確認新增</button>
       </div>
     </div>
   </div>

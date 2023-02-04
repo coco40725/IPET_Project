@@ -175,14 +175,6 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <div>
-                  <button type="submit" data-toggle="modal" data-target="#AddModal" class="btn btn-outline-secondary row-add"
-                          th:attr="getMemberPetsUrl=@{/ipet-back/memberPets}, getServiceCategories=@{/ipet-back/serviceCategories}">
-                    <i class="fas fa-solid fa-plus"></i>
-                    新增
-                  </button>
-                  <p></p>
-                </div>
                 <table id="reserveTable" class="table table-bordered table-striped  display">
                   <thead>
                   <tr>
@@ -297,8 +289,7 @@
 <script th:src="@{/backstage/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <!-- AdminLTE -->
 <script th:src="@{/backstage/js/adminlte.js}"></script>
-<!--Axios-->
-<script th:src="@{/backstage/plugins/axios/axios.min.js}"></script>
+
 
 <!-- DataTables  & Plugins -->
 <script th:src="@{/backstage/plugins/datatables/jquery.dataTables.min.js}"></script>

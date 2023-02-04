@@ -6,6 +6,7 @@ import com.ipet.web.salon.entities.sub_entities.SalonSaleServiceDetail;
 import com.mongodb.lang.NonNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -40,5 +41,6 @@ public class SalonSale extends Core {
   @Field("SVC_DETAIL_IDS")
   @NonNull
   private List<SalonSaleServiceDetail> svcDetailIds;
-
+  @Transient
+  private Integer saleStrategy;
 }

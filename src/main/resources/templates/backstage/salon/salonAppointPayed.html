@@ -187,14 +187,6 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <div>
-                  <button sec:authorize="hasAnyAuthority('editSalonAppoinits')" type="submit" data-toggle="modal" data-target="#AddModal" class="btn btn-outline-secondary row-add"
-                          th:attr="getMemberPetsUrl=@{/ipet-back/memberPets}, getServiceCategories=@{/ipet-back/serviceCategories}">
-                    <i class="fas fa-solid fa-plus"></i>
-                    新增
-                  </button>
-                  <p></p>
-                </div>
                 <table id="reserveTable" class="table table-bordered table-striped  display">
                   <thead>
                   <tr>
@@ -299,9 +291,6 @@
     <div sec:authorize="hasAnyAuthority('editSalonAppoinits')" th:replace="~{/backstage/salon/modal/AppointModal :: appointEditConfirmModal}"></div>
     <!-- /.Edit Confirm Modal content   -->
 
-    <!-- Add Modal content   -->
-    <div sec:authorize="hasAnyAuthority('editSalonAppoinits')" th:replace="~{/backstage/salon/modal/AppointModal :: appointAddModal}"></div>
-    <!-- /. Add Modal content   -->
   </div>
   <!-- /.content-wrapper -->
 
@@ -395,10 +384,9 @@
         getAvailableScheduleUrl = $(this).attr("getAvailableScheduleUrl");
 
         // send the request to server, and response the data on the modal
-        axios.all([
-          axios.get(appointUrl),
-          axios.get(getAvailableScheduleUrl),
-        ]).then(axios.spread((appoint, availableSchedules) => {
+        axios
+        .all([axios.get(appointUrl), axios.get(getAvailableScheduleUrl)])
+        .then(axios.spread((appoint, availableSchedules) => {
 
           if (appoint !== "" && availableSchedules !== ""){
             apmObjectEdit = appoint.data;
@@ -427,7 +415,8 @@
             $("#editModalMessage").html("錯誤: 預約單載入失敗。")
                     .css("color","red");
           }
-        })).catch((err) => console.log(err));
+        }))
+        .catch(err => console.log(err));
       })
 
       // 當你更新了狀態....
@@ -505,6 +494,9 @@
 
       // 送出編輯
       $('.modal-footer').on('click', '.btn-edit-confirm-confirm', function (){
+        $(".btn-edit-confirm-confirm").addClass("disabled")
+                .attr("disabled");
+        $("body:hover").css("cursor","wait");
         axios({
           method:"patch",
           url: appointUrl,
@@ -513,19 +505,22 @@
             "X-CSRF-TOKEN": token
           }
         })
-                .then((resp) => {
-                  if (resp.data === "success"){
-                    $("#editConfirmModalMessage").html("修改成功")
-                            .css("color","green");
-                    $(".btn-edit-confirm-confirm").addClass("disabled")
-                            .attr("disabled");
-                    editRefresh = true;
-                  }else{
-                    $("#editConfirmModalMessage").html("錯誤:" + resp.data)
-                            .css("color","red");
-                  }
-                })
-                .catch((err) => {console.log(err)});
+        .then(resp => {
+          if (resp.data === "success"){
+            $("#editConfirmModalMessage").html("修改成功")
+                    .css("color","green");
+            $(".btn-edit-confirm-confirm").addClass("disabled")
+                    .attr("disabled");
+            editRefresh = true;
+          }else{
+            $("#editConfirmModalMessage").html("錯誤:" + resp.data)
+                    .css("color","red");
+          }
+        })
+        .catch(err => {console.log(err)})
+        .finally(() =>{
+          $("body:hover").css("cursor","default");
+        });
       })
 
       $('#EditConfirmModal').on("hidden.bs.modal", function (){
@@ -550,42 +545,6 @@
 
 
 
-      <!--  Add data from modal -->
-      let illegalDates;
-      let periods = [];
-      // send the request to server, and get the emp
-      $('.row-add').on('click', function (){
-        let getMemberPetsUrl = $(this).attr("getMemberPetsUrl");
-        let getServiceCategories = $(this).attr("getServiceCategories");
-
-        axios.all([
-          axios.get(getMemberPetsUrl),
-          axios.get(getServiceCategories),
-        ]).then(axios.spread((members, categories) =>{
-          if (members !== "" && categories !== ""){
-            membersList = members.data;
-            categoriesList = categories.data;
-
-            let memberHTMLAdd = `<option disabled selected>請選擇</option>`;
-            for (let i = 0; i < membersList.length; i ++) {
-              memberHTMLAdd += `<option value="${membersList[i].id}"> ${membersList[i].memName}</option>`
-            }
-            $('#member_name-modal-add').html(memberHTMLAdd);
-
-            let categoriesHTMLAdd = `<option disabled selected>請選擇</option>`;
-            for (let i = 0; i < categoriesList.length; i ++) {
-              categoriesHTMLAdd += `<option value="${categoriesList[i].id}"> ${categoriesList[i].svcCategoryName}</option>`
-            }
-            $('#service_category-modal-add').html(categoriesHTMLAdd);
-
-          }else {
-            $("#addModalMessage").html("無法查詢到會員與服務相關資料，請洽網站管理員")
-                    .css("color","red")
-          }
-        })).catch((err) => console.log(err));
-      });
-
-      <!--  /.Add data from modal -->
 
 
 

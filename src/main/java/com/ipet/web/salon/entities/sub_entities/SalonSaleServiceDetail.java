@@ -36,6 +36,5 @@ public class SalonSaleServiceDetail implements Serializable {
     private Integer svcPrice;
     @Field(name = "SALE_PRICE")
     private Integer salePrice;
-    @Transient
-    private Integer saleStrategy;
+
 }

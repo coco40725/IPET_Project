@@ -176,7 +176,8 @@
                           </button>
                         </td>
                         <td>
-                          <button sec:authorize="hasAnyAuthority('editSalonSchedules')" th:if="${job.appointId} == null" type="submit" class="btn btn-danger row-remove dt-center" data-toggle="modal" data-target="#RemoveModal" th:attr="getScheduleUrl=@{/ipet-back/schedule/{id}(id=${job.id})}">
+                          <button sec:authorize="hasAnyAuthority('editSalonSchedules')" th:if="${job.appointId} == null" type="submit" class="btn btn-danger row-remove dt-center" data-toggle="modal" data-target="#RemoveModal"
+                                  th:attr="scheduleUrl=@{/ipet-back/schedule/{id}(id=${job.id})}">
                             <i class="fas fa-solid fa-trash"></i>
                           </button>
                         </td>
@@ -286,73 +287,73 @@
     },
     order: [0, 'desc'],
     fnDrawCallback: function (){
+      <!-- Common variable -->
       let groomersList;
       let asstsList;
+      let scheduleUrl;
+      let token = $("meta[name='_csrf']").attr("content");
+
 
       <!-- Delete data from modal -->
       let targetDataDelete;
-      let schIDDelete;
       let deleteRefresh;
-      let deleteUrl;
+
       $('td.row-remove').on('click', 'button',function (){
         // get the selected tr
-        deleteUrl = $(this).attr("getScheduleUrl");
+        scheduleUrl = $(this).attr("scheduleUrl");
         targetDataDelete = $(this).closest("tr")[0];
-        schIDDelete = targetDataDelete.querySelector("td.schID").innerText.trim();
       });
 
+      // send the request to server, and use delete service
       $('.modal-footer').on('click', '.btn-remove-confirm', function (){
-        let token  = $("meta[name='_csrf']").attr("content");
-        // send the request to server, and use delete service
+        $(".btn-remove-confirm").addClass("disabled")
+                .prop("disabled", true);
+        $("body:hover").css("cursor","wait");
+
         axios({
           method: "delete",
-          url: deleteUrl,
+          url: scheduleUrl,
           headers: {
             "X-CSRF-TOKEN": token
           }
         })
-        .then((resp) => {
+        .then(resp => {
           if (resp !== ""){
             if (resp.data === "success"){
               $("#deleteModalMessage").html("成功刪除")
                       .css("color","green");
-              $(".btn-remove-confirm").addClass("disabled")
-                      .attr("disabled");
               deleteRefresh = true;
             }else {
               $("#deleteModalMessage").html("刪除失敗;" +
                       "<br> 錯誤: 此班表含有預約單" +
                       "<br> 或是該資料已不存在，請刷新。")
                       .css("color","red");
-              $(".btn-remove-confirm").addClass("disabled")
-                      .attr("disabled");
               deleteRefresh = false;
             }
           }else{
             $("#deleteModalMessage").html("刪除失敗;" +
                     "<br> 錯誤: 伺服器無回傳結果")
                     .css("color","red");
-            $(".btn-remove-confirm").addClass("disabled")
-                    .attr("disabled");
             deleteRefresh = false;
           }
 
         })
-        .catch((err) => {
+        .catch(err => {
           $("#deleteModalMessage").text("刪除失敗，其他原因")
                 .css("color","red");
-          $(".btn-remove-confirm").addClass("disabled")
-                  .attr("disabled");
           deleteRefresh = true;
           console.log(err)
         })
+        .finally(() => {
+          $("body:hover").css("cursor","default");
+        })
+
       });
 
       $('#RemoveModal').on('hidden.bs.modal', function (){
         // clean the value
         $("#deleteModalMessage").text("");
-        $(".btn-remove-confirm").removeAttr("disabled");
-        $(".btn-remove-confirm").removeClass("disabled");
+        $(".btn-remove-confirm").removeAttr("disabled").removeClass("disabled");
         if (deleteRefresh === true) {
           window.location.reload();
         }
@@ -364,12 +365,11 @@
       let targetDataEdit;
       let scheduleObjectEdit;
       let editData = {};
-      let scheduleUrl;
       let getGroomersUrl;
       let getAsstsUrl;
-      let token = $("meta[name='_csrf']").attr("content");
       let editRefresh;
 
+      // send the request to server, and response the data on the modal
       $('td.row-edit').on('click','button',function (){
         // get the selected tr
         targetDataEdit = $(event.target).closest("tr")[0];
@@ -377,12 +377,10 @@
         getGroomersUrl = $(this).attr("getGroomersUrl");
         getAsstsUrl = $(this).attr("getAsstsUrl");
 
-        // send the request to server, and response the data on the modal
-        axios.all([
-                axios.get(scheduleUrl),
-                axios.get(getGroomersUrl),
-                axios.get(getAsstsUrl)
-        ]).then(axios.spread((schedule, groomers, assts) => {
+
+        axios
+        .all([axios.get(scheduleUrl), axios.get(getGroomersUrl), axios.get(getAsstsUrl)])
+        .then(axios.spread((schedule, groomers, assts) => {
           if (schedule !== "" && groomers !== "" && assts!== ""){
             scheduleObjectEdit = schedule.data;
             groomersList = groomers.data;
@@ -437,7 +435,8 @@
                     .css("color","red");
             editRefresh = false;
           }
-        })).catch((err) => {console.log(err)})
+        }))
+        .catch(err => {console.log(err)});
       });
 
       // 當改動助理1後，顯示助理2的可選名單
@@ -504,8 +503,9 @@
       // 送出編輯
       $('.btn-edit-confirm').on("click" ,function(){
         if ($('#ASST_name_2-modal-edit').val() !== null){
-          console.log(editData);
-          console.log(scheduleUrl);
+          $(".btn-edit-confirm").addClass("disabled")
+                  .attr("disabled")
+          $("body:hover").css("cursor","wait");
 
           axios({
             method:"patch",
@@ -514,30 +514,31 @@
             headers:{
               "X-CSRF-TOKEN": token
             }
-          }).then((resp) => {
-              if (resp !== "") {
-                if (resp.data === "success"){
-                  $("#editModalMessage").html("修改成功")
-                          .css("color","green");
-                  $(".btn-edit-confirm").addClass("disabled")
-                          .attr("disabled")
-                  editRefresh = true;
-                }else{
-                  $("#editModalMessage").html(resp.data)
-                          .css("color","red");
-                  editRefresh = false;
-                }
+          })
+          .then(resp => {
+            if (resp !== "") {
+              if (resp.data === "success"){
+                $("#editModalMessage").html("修改成功")
+                        .css("color","green");
+                editRefresh = true;
               }else{
-                $("#editModalMessage").html("錯誤:伺服器無回傳結果")
+                $("#editModalMessage").html(resp.data)
                         .css("color","red");
+                editRefresh = false;
               }
-            }).catch((err) => {
-                    $("#editeModalMessage").text("修改失敗，其他原因")
-                            .css("color","red");
-                    $(".btn-edit-confirm").addClass("disabled")
-                            .attr("disabled");
-                    editRefresh = false;
-                  })
+            }else{
+              $("#editModalMessage").html("錯誤:伺服器無回傳結果")
+                      .css("color","red");
+            }
+          })
+          .catch(err => {
+                  $("#editeModalMessage").text("修改失敗，其他原因")
+                          .css("color","red");
+
+                  editRefresh = false;
+                })
+          .finally(() => {$("body:hover").css("cursor","default");})
+
         }else{
           $("#editModalMessage").text("請填寫完整資料")
                   .css("color","red");
@@ -562,10 +563,10 @@
         let getGroomersUrl = $(this).attr("getGroomersUrl");
         let getAsstsUrl = $(this).attr("getAsstsUrl");
 
-        axios.all([
-                axios.get(getGroomersUrl),
-                axios.get(getAsstsUrl),
-        ]).then(axios.spread((groomers, assts) =>{
+
+        axios
+        .all([axios.get(getGroomersUrl), axios.get(getAsstsUrl)])
+        .then(axios.spread((groomers, assts) =>{
           if (groomers !== "" && assts !== ""){
             groomersList = groomers.data;
             asstsList = assts.data;
@@ -585,7 +586,8 @@
             $("#addModalMessage").html("無法查詢到美容師與助理，請洽網站管理員")
                     .css("color","red")
           }
-        })).catch((err) => console.log(err));
+        }))
+        .catch(err => console.log(err));
       });
 
       // 當挑選出助理1後，顯示助理2的可選名單
@@ -631,8 +633,8 @@
             headers:{
               "X-CSRF-TOKEN": token
             }
-          }).then((resp) => {
-
+          })
+          .then(resp => {
             if (resp !== ""){
               illegalDates = resp.data;
               // 移除舊 日曆
@@ -672,7 +674,8 @@
                       .css("color","red");
             }
 
-          }).catch((err) => console.log(err));
+          })
+          .catch(err => console.log(err));
         }else{
           $("#addModalMessage").html("請填寫完美容師、助理與時段，再查詢日期。")
                   .css("color","red");
@@ -694,17 +697,20 @@
 
 
 
-
+      // 送出新增
       $('.btn-add-confirm').on('click',  function (){
         let addUrl = $(this).attr("addUrl");
         let token = $("meta[name='_csrf']").attr("content");
+        $(".btn-add-confirm").addClass("disabled")
+                .attr("disabled")
+        $("body:hover").css("cursor","wait");
 
         if ($('#GROOMER_name-modal-add').val() != null &&
                 $('#ASST_name_1-modal-add').val() != null &&
                 $('#ASST_name_2-modal-add').val() != null &&
                 periods.length !== 0 &&
-                $('#schDate-modal-add').val().trim() !== ""
-        ) {
+                $('#schDate-modal-add').val().trim() !== "")
+        {
           axios({
             method: "post",
             url: addUrl,
@@ -719,31 +725,30 @@
             headers:{
               "X-CSRF-TOKEN": token
             }
-          }).then((resp) => {
+          })
+          .then(resp => {
             if (resp !== ""){
               if (resp.data === "success"){
                 $("#addModalMessage").html("新增成功")
                         .css("color","green");
-                $(".btn-add-confirm").addClass("disabled")
-                        .attr("disabled")
+
               }else{
-                $("#addModalMessage").html(resp)
+                $("#addModalMessage").html(resp.data)
                         .css("color","red");
-                $(".btn-add-confirm").addClass("disabled")
-                        .attr("disabled")
               }
             }else{
               $("#addModalMessage").html("錯誤:伺服器無回傳結果")
                       .css("color","red");
-              $(".btn-add-confirm").addClass("disabled")
-                      .attr("disabled")
             }
 
-          }).catch((err) => {
+          })
+          .catch(err => {
             console.log(err);
             $("#addModalMessage").text("新增失敗，其他原因")
                     .css("color","red");
           })
+          .finally(() => {$("body:hover").css("cursor","default");})
+
         } else {
           $("#addModalMessage").html("請填寫完整資料")
                   .css("color","red");

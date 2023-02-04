@@ -86,6 +86,14 @@ public class SalonServicesController {
         return  services.deleteServiceCategory(id);
     }
 
+    @PreAuthorize("hasAuthority('editSalonServices')")
+    @DeleteMapping("/ipet-back/service/{id}")
+    @ResponseBody
+    public String deleteService(@PathVariable("id") String id){
+        return  services.deleteService(id);
+    }
+
+
     // edit
     @PreAuthorize("hasAnyAuthority('editSalonServices')")
     @PutMapping("/ipet-back/category/{id}")

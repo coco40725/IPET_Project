@@ -143,7 +143,7 @@
               <div class="card-body">
                 <div>
                   <button sec:authorize="hasAnyAuthority('editSalonServices')" type="submit" data-toggle="modal" data-target="#AddModal" class="btn btn-outline-secondary row-add"
-                          th:attr="serviceCategoryUrl=@{/ipet-back/staffs/美容師}">
+                          th:attr="addUrl=@{/ipet-back/services}">
                     <i class="fas fa-solid fa-plus"></i>
                     新增
                   </button>
@@ -303,12 +303,13 @@
     },
     order: [0, 'desc'],
     fnDrawCallback: function (){
+      <!-- Common variable-->
+      let token  = $("meta[name='_csrf']").attr("content");
+      let serviceUrl;
 
       <!-- Delete data from modal -->
-      let token  = $("meta[name='_csrf']").attr("content");
       let targetDataDelete;
       let deleteRefresh;
-      let serviceUrl;
       $('td.row-remove').on('click', 'button',function (){
         // get the selected tr
         serviceUrl = $(this).attr("serviceUrl");
@@ -316,7 +317,10 @@
       });
 
       $('.modal-footer').on('click', '.btn-remove-confirm', function (){
-        // send the request to server, and use delete service
+        $(".btn-remove-confirm").addClass("disabled")
+                .attr("disabled");
+        $("body:hover").css("cursor","wait");
+
         axios({
           method: "delete",
           url: serviceUrl,
@@ -324,7 +328,7 @@
             "X-CSRF-TOKEN": token
           }
         })
-        .then((resp) => {
+        .then(resp => {
           if (resp !== ""){
             if (resp.data === "success"){
               $("#deleteModalMessage").html("成功刪除")
@@ -335,34 +339,30 @@
             }else {
               $("#deleteModalMessage").html("刪除失敗" + resp.data)
                       .css("color","red");
-              $(".btn-remove-confirm").addClass("disabled")
-                      .attr("disabled");
               deleteRefresh = false;
             }
           }else{
             $("#deleteModalMessage").html("刪除失敗;" +
                     "<br> 錯誤: 伺服器無回傳結果")
                     .css("color","red");
-            $(".btn-remove-confirm").addClass("disabled")
-                    .attr("disabled");
             deleteRefresh = false;
           }
         })
-        .catch((err) => {
+        .catch(err => {
           $("#deleteModalMessage").text("刪除失敗，其他原因")
                 .css("color","red");
-          $(".btn-remove-confirm").addClass("disabled")
-                  .attr("disabled");
           deleteRefresh = true;
           console.log(err)
+        })
+        .finally(() => {
+          $("body:hover").css("cursor", "default");
         })
       });
 
       $('#RemoveModal').on('hidden.bs.modal', function (){
         // clean the value
         $("#deleteModalMessage").text("");
-        $(".btn-remove-confirm").removeAttr("disabled");
-        $(".btn-remove-confirm").removeClass("disabled");
+        $(".btn-remove-confirm").removeAttr("disabled").removeClass("disabled");
         if (deleteRefresh === true) {
           window.location.reload();
         }
@@ -379,7 +379,6 @@
       /*<![CDATA[*/
       let petTypeList = /*[[${petTypes}]]*/ null;
       /*]]>*/
-      let serviceCategoryUrl;
       let editData = {};
       let editRefresh;
 
@@ -393,7 +392,8 @@
         axios({
           method: "get",
           url: serviceUrl
-        }).then((resp) => {
+        })
+        .then(resp => {
           if (resp !== ""){
             serviceObjectEdit = resp.data;
             // 載入 服務編號
@@ -420,7 +420,10 @@
                     .css("color","red");
             editRefresh = false;
           }
-        }).catch((err) => {console.log(err)});
+        })
+        .catch(err => {
+          console.log(err)
+        });
       });
 
       // 當改動大小時後，顯示種類的可選名單，並且原先的
@@ -450,64 +453,73 @@
 
       // 送出編輯
       $('.btn-edit-confirm').on("click" ,function(){
-        if ($('#servicePetVar-modal-edit').val() !== null){
-          axios({
-            method:"patch",
-            url: serviceUrl,
-            data: editData,
-            headers:{
-              "X-CSRF-TOKEN": token
-            }
-          }).then((resp) => {
-              if (resp !== "") {
-                if (resp.data === "success"){
-                  $("#editModalMessage").html("修改成功")
-                          .css("color","green");
-                  $(".btn-edit-confirm").addClass("disabled")
-                          .attr("disabled")
-                  editRefresh = true;
-                }else{
-                  $("#editModalMessage").html(resp.data)
-                          .css("color","red");
-                  editRefresh = false;
-                }
-              }else{
-                $("#editModalMessage").html("錯誤:伺服器無回傳結果")
-                        .css("color","red");
-              }
-            }).catch((err) => {
-                    $("#editeModalMessage").text("修改失敗，其他原因")
-                            .css("color","red");
-                    $(".btn-edit-confirm").addClass("disabled")
-                            .attr("disabled");
-                    editRefresh = false;
-                  })
-        }else{
-          $("#editModalMessage").text("請填寫完整資料")
+        <!-- 確認資料是否完整 -->
+        console.log($('#serviceName-modal-edit').val());
+        if ($('#serviceName-modal-edit').val() === null || $('#serviceName-modal-edit').val().trim() === ""){
+          $("#editModalMessage").html("請填寫服務名稱")
                   .css("color","red");
+          editRefresh = true;
+          return;
         }
+        if ($('#serviceContent-modal-edit').val() === null || $('#serviceContent-modal-edit').val().trim() === ""){
+          $("#editModalMessage").html("請填寫服務描述")
+                  .css("color","red");
+          editRefresh = true;
+          return;
+        }
+        if ($('#servicePrice-modal-edit').val() === null || $('#servicePrice-modal-edit').val().trim() === ""){
+          $("#editModalMessage").html("請填寫服務價格")
+                  .css("color","red");
+          editRefresh = true;
+          return;
+        }
+        <!-- /. 確認資料是否完整 -->
 
+        $(".btn-edit-confirm").addClass("disabled")
+                .attr("disabled")
+        $("body:hover").css("cursor","wait");
+
+        axios({
+          method:"patch",
+          url: serviceUrl,
+          data: editData,
+          headers:{
+            "X-CSRF-TOKEN": token
+          }
+        })
+        .then(resp => {
+          if (resp !== "") {
+            if (resp.data === "success"){
+              $("#editModalMessage").html("修改成功")
+                      .css("color","green");
+              editRefresh = true;
+            }else{
+              $("#editModalMessage").html(resp.data)
+                      .css("color","red");
+              editRefresh = false;
+            }
+          }else{
+            $("#editModalMessage").html("錯誤:伺服器無回傳結果")
+                    .css("color","red");
+          }
+        })
+        .catch(err => {
+          $("#editeModalMessage").text("修改失敗，其他原因")
+                  .css("color","red");
+          editRefresh = false;
+          console.log(err);
+        })
+        .finally(() => {
+        $("body:hover").css("cursor","default");
+        });
       });
 
       $('#EditModal').on('hidden.bs.modal', function (){
         // clean the previous data
-        // 服務編號
-        $("#serviceId-modal-edit").val();
-        // 服務名稱
-        $("#serviceName-modal-edit").val();
-        // 服務類型
-        $("#serviceCategory-modal-edit").val();
-        // 寵物大小
+        $("input.serviceEdit").val();
+        $("select.serviceEdit").val();
+        $("textarea.serviceEdit").val();
         $("#servicePetSize-modal-edit").val();
-        // 寵物品種
-        $("#servicePetVar-modal-edit").val();
-        // 服務描述
-        $("#serviceContent-modal-edit").val();
-        // 服務價格
-        $("#servicePrice-modal-edit").val();
-        // 狀態
-        $("#serviceStatus-modal-edit").val();
-        // 訊息
         $("#editModalMessage").val();
         if (editRefresh) {
           window.location.reload();
@@ -518,8 +530,12 @@
 
       <!-- Add data from modal -->
       let petTypeIds = new Set();
+      let addUrl;
       let addData = [];
       let addRefresh;
+      $("button.row-add").on("click", function(){
+        addUrl = $(this).attr("addUrl");
+      })
 
       // 當犬大小被選擇時，...
       $("div.servicePetSize input").on('change', function(){
@@ -561,18 +577,13 @@
       });
 
 
-
       // 確認新增
       $('.btn-add-confirm').on('click',  function (){
-        let addUrl = $(this).attr("addUrl");
-        let token = $("meta[name='_csrf']").attr("content");
         $("div.servicePetVar input").filter(":checked").each(function(){
           if ($(this).val() !== "全部小型犬" && $(this).val() !== "全部中型犬" && $(this).val() !== "全部大型犬"){
             petTypeIds.add($(this).val());
           }
         });
-        console.log(petTypeIds);
-
         for (let petTypeId of petTypeIds){
           addData.push({
             svcCategoryId: $('#serviceCategory-modal-add').val(),
@@ -584,67 +595,92 @@
           })
         }
 
+        <!-- 確認資料是否完整 -->
+        if ($('#serviceName-modal-add').val() === null || $('#serviceName-modal-add').val().trim() === ""){
+          $("#addModalMessage").html("請填寫服務名稱")
+                  .css("color","red");
+          addRefresh = true;
+          return;
+        }
+        if ($('#serviceContent-modal-add').val() === null || $('#serviceContent-modal-add').val().trim() === ""){
+          $("#addModalMessage").html("請填寫服務描述")
+                  .css("color","red");
+          addRefresh = true;
+          return;
+        }
+        if ($('#servicePrice-modal-add').val() === null || $('#servicePrice-modal-add').val().trim() === ""){
+          $("#addModalMessage").html("請填寫服務價格")
+                  .css("color","red");
+          addRefresh = true;
+          return;
+        }
+        if ($('#serviceCategory-modal-add').val() === null){
+          $("#addModalMessage").html("請選擇服務類別")
+                  .css("color","red");
+          addRefresh = true;
+          return;
+        }
+        if ($('div.servicePetSize input:checked').val() === null){
+          $("#addModalMessage").html("請選擇寵物大小")
+                  .css("color","red");
+          addRefresh = true;
+          return;
+        }
+        if (petTypeIds.size === 0){
+          $("#addModalMessage").html("請選擇寵物品種")
+                  .css("color","red");
+          addRefresh = true;
+          return;
+        }
+        <!-- /. 確認資料是否完整 -->
 
-        if ($('#serviceCategory-modal-add').val() != null &&
-                $('#serviceName-modal-add').val() != null &&
-                $('div.servicePetSize input:checked').val() != null &&
-                petTypeIds.size !== 0 &&
-                $('#servicePrice-modal-add').val().trim() !== ""
-        ) {
-          axios({
-            method: "post",
-            url: addUrl,
-            data: addData,
-            headers:{
-              "X-CSRF-TOKEN": token
-            }
-          }).then((resp) => {
-            if (resp !== ""){
-              if (resp.data === "success"){
-                $("#addModalMessage").html("新增成功")
-                        .css("color","green");
-                $(".btn-add-confirm").addClass("disabled")
-                        .attr("disabled");
-                addRefresh = true;
-              }else{
-                $("#addModalMessage").html(resp)
-                        .css("color","red");
-                $(".btn-add-confirm").addClass("disabled")
-                        .attr("disabled");
-                addRefresh = false;
+        $(".btn-add-confirm").addClass("disabled")
+                .attr("disabled");
+        $("body:hover").css("cursor","wait");
 
-              }
+        axios({
+          method: "post",
+          url: addUrl,
+          data: addData,
+          headers:{
+            "X-CSRF-TOKEN": token
+          }
+        })
+        .then(resp => {
+          if (resp !== ""){
+            if (resp.data === "success"){
+              $("#addModalMessage").html("新增成功")
+                      .css("color","green");
+              addRefresh = true;
             }else{
-              $("#addModalMessage").html("錯誤:伺服器無回傳結果")
+              $("#addModalMessage").html(resp)
                       .css("color","red");
-              $(".btn-add-confirm").addClass("disabled")
-                      .attr("disabled");
               addRefresh = false;
 
             }
-
-          }).catch((err) => {
-            console.log(err);
-            $("#addModalMessage").text("新增失敗，其他原因")
+          }
+          else{
+            $("#addModalMessage").html("錯誤:伺服器無回傳結果")
                     .css("color","red");
             addRefresh = false;
-
-          })
-        } else {
-          $("#addModalMessage").html("請填寫完整資料")
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          $("#addModalMessage").text("新增失敗，其他原因")
                   .css("color","red");
           addRefresh = false;
-
-        }
+        })
+        .finally(() => {
+          $("body:hover").css("cursor","default");
+        });
       })
 
       $('#AddModal').on("hidden.bs.modal", function (){
         // clean the previous data
-        $('#serviceCategory-modal-add').val("");
-        $('#serviceName-modal-add').val("");
-        $('#serviceContent-modal-add').val("");
-        $('#servicePrice-modal-add').val("");
-        $('#serviceStatus-modal-add').val("0");
+        $("input.serviceAdd").val();
+        $("select.serviceAdd").val();
+        $("textarea.serviceAdd").val();
         $("div.servicePetSize input").prop("checked", false);
         $("div.servicePetVar input").attr("hidden","hidden")
                 .prop("checked", false);

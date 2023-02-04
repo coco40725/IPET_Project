@@ -49,12 +49,6 @@
                                 <p>員工列表</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a th:href="@{/ipet-back/staffs}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>員工權限</p>
-                            </a>
-                        </li>
                     </ul>
                 </li>
                 <li class="nav-header" sec:authorize="hasAnyRole('ROLE_boss','ROLE_memberAdmin')">

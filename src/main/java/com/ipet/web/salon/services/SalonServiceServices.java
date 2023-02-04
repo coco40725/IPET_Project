@@ -105,7 +105,8 @@ public class SalonServiceServices {
             return "查不到該服務類型";
         }
 
-        if (salonServiceRepository.findAllBySvcCategoryId(id) != null){
+        System.out.println(salonServiceRepository.findAllBySvcCategoryId(id));
+        if (salonServiceRepository.findAllBySvcCategoryId(id) != null && salonServiceRepository.findAllBySvcCategoryId(id).size() != 0){
             return "該服務類型含有服務細項，不可刪除";
         }
 
@@ -120,7 +121,7 @@ public class SalonServiceServices {
         }
 
         salonServiceRepository.deleteById(id);
-        return null;
+        return "success";
     }
 
     // edit service

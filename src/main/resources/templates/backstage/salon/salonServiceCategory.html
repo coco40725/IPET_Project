@@ -112,12 +112,12 @@
                       <!-- text input -->
                       <div class="form-group">
                         <label>服務類別編號</label>
-                        <input type="text" class="form-control column_filter" id="col0-search"  data-column="0" placeholder="Enter ...">
+                        <input type="text" class="form-control column_filter" id="col1-search"  data-column="1" placeholder="Enter ...">
                       </div>
                       <!-- text input -->
                       <div class="form-group">
                         <label>服務類別名稱</label>
-                        <input type="text" class="form-control column_filter" id="col1-search" data-column="1" placeholder="Enter ...">
+                        <input type="text" class="form-control column_filter" id="col2-search" data-column="2" placeholder="Enter ...">
                       </div>
                     </div>
                     <div class="col-sm-3">
@@ -158,7 +158,8 @@
               <!-- /.card-header -->
               <div class="card-body">
                 <div>
-                  <button sec:authorize="hasAnyAuthority('editSalonServices')" type="submit" data-toggle="modal" data-target="#AddModal" class="btn btn-outline-secondary row-add">
+                  <button sec:authorize="hasAnyAuthority('editSalonServices')" type="submit" data-toggle="modal" data-target="#AddModal" class="btn btn-outline-secondary row-add"
+                          th:attr="addUrl=@{/ipet-back/category}">
                     <i class="fas fa-solid fa-plus"></i>
                     新增
                   </button>
@@ -167,9 +168,9 @@
                 <table id="categoryTable" class="table table-bordered table-striped  display">
                   <thead>
                   <tr>
+                    <th>圖片</th>
                     <th>服務類別編號</th>
                     <th>服務類別名稱</th>
-                    <th>圖片</th>
                     <th>寵物大小</th>
                     <th>寵物種類</th>
                     <th>服務項目</th>
@@ -180,13 +181,11 @@
                   </thead>
                   <tbody>
                       <tr th:each="category : ${categories}">
-                        <td th:text="${category.id}"></td>
-                        <td th:text="${category.svcCategoryName}"></td>
-                        <td>
+                        <td style="width: 200px;">
                           <div class="w3-container">
                             <img th:src="${category.svcCategoryImgSignedUrl}" style="width:25%;cursor:zoom-in"
                                  th:onclick="document.getElementById([[${category.id}]]).style.display='block'"
-                            alt="image">
+                                 alt="image">
                             <div th:id="${category.id}" class="w3-modal" onclick="this.style.display='none'">
                               <span class="w3-button w3-hover-red w3-xlarge w3-display-topright">&times;</span>
                               <div class="w3-modal-content w3-animate-zoom" style="background: rgb(0,0,0,0)">
@@ -195,6 +194,8 @@
                             </div>
                           </div>
                         </td>
+                        <td th:text="${category.id}"></td>
+                        <td th:text="${category.svcCategoryName}"></td>
                         <td>
                           <select class="form-control">
                             <option th:value="全部">全部</option>
@@ -346,9 +347,9 @@
 
     //  填寫直接顯示的欄位，需要與thead tfoot 對應
     "columns":[
-      {responsivePriority: 1, className: "svcCategoryId dt-center"},
-      {responsivePriority: 2, className: "svcCategoryName dt-center"},
-      {responsivePriority: 3, className: "svcCategoryImgBase64 dt-center"},
+      {responsivePriority: 1, className: "svcCategoryImgBase64 dt-center"},
+      {responsivePriority: 2, className: "svcCategoryId dt-center"},
+      {responsivePriority: 3, className: "svcCategoryName dt-center"},
       {responsivePriority: 4, className: "petSize dt-center"},
       {responsivePriority: 5, className: "typeName dt-center"},
       {
@@ -367,58 +368,61 @@
     },
     order: [0, 'desc'],
     fnDrawCallback: function (){
+      <!-- common variable -->
+      let token  = $("meta[name='_csrf']").attr("content");
+      let categoryeUrl;
 
       <!-- Delete data from modal -->
-      let token  = $("meta[name='_csrf']").attr("content");
       let targetDataDelete;
       let deleteRefresh;
-      let categoryeUrl;
       $('td.row-remove').on('click', 'button',function (){
         // get the selected tr
         categoryeUrl = $(this).attr("categoryeUrl");
         targetDataDelete = $(this).closest("tr")[0];
       });
 
+      // send the request to server, and use delete service
       $('.modal-footer').on('click', '.btn-remove-confirm', function (){
-        // send the request to server, and use delete service
+        $(".btn-remove-confirm").addClass("disabled")
+                .attr("disabled");
+        $("body:hover").css("cursor","wait");
+
         axios({
           method: "delete",
           url: categoryeUrl,
           headers: {
             "X-CSRF-TOKEN": token
           }
-        }).then((resp) => {
-            if (resp !== ""){
-              if (resp.data === "success"){
-                $("#deleteModalMessage").html("成功刪除")
-                        .css("color","green");
-                $(".btn-remove-confirm").addClass("disabled")
-                        .attr("disabled");
-                deleteRefresh = true;
-              }else {
-                $("#deleteModalMessage").html("刪除失敗" + resp.data)
-                        .css("color","red");
-                $(".btn-remove-confirm").addClass("disabled")
-                        .attr("disabled");
-                deleteRefresh = false;
-              }
-            }else{
-              $("#deleteModalMessage").html("刪除失敗;" +
-                      "<br> 錯誤: 伺服器無回傳結果")
+        })
+        .then(resp => {
+          if (resp !== ""){
+            if (resp.data === "success"){
+              $("#deleteModalMessage").html("成功刪除")
+                      .css("color","green");
+              deleteRefresh = true;
+            }else {
+              $("#deleteModalMessage").html("刪除失敗" + resp.data)
                       .css("color","red");
-              $(".btn-remove-confirm").addClass("disabled")
-                      .attr("disabled");
               deleteRefresh = false;
             }
-          })
-          .catch((err) => {
-            $("#deleteModalMessage").text("刪除失敗，其他原因")
+          }else{
+            $("#deleteModalMessage").html("刪除失敗;" +
+                    "<br> 錯誤: 伺服器無回傳結果")
                     .css("color","red");
-            $(".btn-remove-confirm").addClass("disabled")
-                    .attr("disabled");
-            deleteRefresh = true;
-            console.log(err)
-          })
+            deleteRefresh = false;
+          }
+        })
+        .catch(err => {
+          $("#deleteModalMessage").text("刪除失敗，其他原因")
+                  .css("color","red");
+          $(".btn-remove-confirm").addClass("disabled")
+                  .attr("disabled");
+          deleteRefresh = true;
+          console.log(err)
+        })
+        .finally(() => {
+          $("body:hover").css("cursor","default");
+        })
       });
 
       $('#RemoveModal').on('hidden.bs.modal', function (){
@@ -446,7 +450,8 @@
         axios({
           method:"get",
           url: categoryeUrl
-        }).then((resp) => {
+        })
+        .then(resp => {
           if (resp !== "" ){
             categoryObjectEdit = resp.data;
 
@@ -471,7 +476,10 @@
                     .css("color","red");
             editRefresh = false;
           }
-        }).catch((err) => {console.log(err)})
+        })
+        .catch(err => {
+          console.log(err);
+        })
       });
 
 
@@ -529,7 +537,9 @@
 
       //確認編輯
       $(".btn-edit-confirm").on("click", function (){
-        let token = $("meta[name='_csrf']").attr("content");
+        $(".btn-edit-confirm").addClass("disabled")
+                .attr("disabled");
+        $("body:hover").css("cursor", "wait");
         let formData = new FormData();
 
         let editData = {
@@ -555,13 +565,12 @@
             "X-CSRF-TOKEN": token,
             'content-type': 'multipart/form-data'
           }
-        }).then((resp) => {
+        })
+        .then(resp => {
           if (resp !== ""){
             if (resp.data === "success"){
               $("#editModalMessage").text("修改成功")
                       .css("color","green");
-              $(".btn-edit-confirm").addClass("disabled")
-                      .attr("disabled");
               editRefresh = true;
 
             } else {
@@ -573,13 +582,17 @@
                     .css("color","red");
           }
 
-        }).catch((err) => {
+        })
+        .catch(err => {
           $("#editModalMessage").text("修改失敗，其他原因")
                   .css("color","red");
           editRefresh = false;
+          console.log(err);
+        })
+        .finally(() => {
+          $("body:hover").css("cursor", "default");
         })
       })
-
 
 
       $('#EditModal').on('hidden.bs.modal', function (){
@@ -595,6 +608,11 @@
       // send the request to server, and get the emp
       // 當上傳了圖片，svcCategoryImgPreview-modal-edit 要改變成上傳的圖
       let imageAdd;
+      let addUrl;
+      $("button.row-add").on("click", function (){
+        addUrl = $(this).attr("addUrl");
+      });
+
       $("#svcCategoryImg-modal-add").on("change", function (){
         let file = this.files[0];
         let reader = new FileReader();
@@ -615,8 +633,9 @@
 
       // 確認新增
       $('.btn-add-confirm').on('click',  function (){
-        let addUrl = $(this).attr("addUrl");
-        let token = $("meta[name='_csrf']").attr("content");
+        $(".btn-add-confirm").addClass("disabled")
+                .attr("disabled")
+        $("body:hover").css("cursor", "wait");
         let formData = new FormData();
         let addData = {
           svcCategoryName: $('#svcCategoryName-modal-add').val(),
@@ -627,10 +646,9 @@
         formData.append("imageFile", imageAdd)
         formData.append("jsonFile", blob);
 
-        console.log(addUrl);
-        if ($('#svcCategoryName-modal-add').val() != null && $('#svcCategoryStatus-modal-add').val() != null
-        ) {
-          console.log("post addUrl");
+
+        if ($('#svcCategoryName-modal-add').val() != null && $('#svcCategoryStatus-modal-add').val() != null)
+        {
           axios({
             method: "post",
             url: addUrl,
@@ -639,31 +657,31 @@
               "X-CSRF-TOKEN": token,
               'content-type': 'multipart/form-data'
             }
-          }).then((resp) => {
+          })
+          .then(resp => {
             if (resp !== ""){
               if (resp.data === "success"){
                 $("#addModalMessage").html("新增成功")
                         .css("color","green");
-                $(".btn-add-confirm").addClass("disabled")
-                        .attr("disabled")
               }else{
                 $("#addModalMessage").html(resp)
                         .css("color","red");
-                $(".btn-add-confirm").addClass("disabled")
-                        .attr("disabled")
               }
             }else{
               $("#addModalMessage").html("錯誤:伺服器無回傳結果")
                       .css("color","red");
-              $(".btn-add-confirm").addClass("disabled")
-                      .attr("disabled")
             }
 
-          }).catch((err) => {
+          })
+          .catch(err => {
             console.log(err);
             $("#addModalMessage").text("新增失敗，其他原因")
                     .css("color","red");
           })
+          .finally(() =>{
+            $("body:hover").css("cursor", "default");
+          });
+
         } else {
           $("#addModalMessage").html("請填寫完整資料")
                   .css("color","red");

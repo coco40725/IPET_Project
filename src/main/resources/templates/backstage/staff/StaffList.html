@@ -197,7 +197,6 @@
                       <th>員工職稱</th>
                       <th>員工角色與權限</th>
                       <th>員工狀態</th>
-                      <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -244,12 +243,6 @@
                           </button>
                         </td>
                       </th:block>
-                      <td>
-                        <button sec:authorize="hasAnyAuthority('editEmps')" type="submit" class="btn btn-light" data-toggle="modal" data-target="#EditModal" data-whatever="@mdo"
-                                th:attr="staffUrl=@{/ipet-back/staff/{id}(id=${staff.id})}">
-                          <i class="fas fa-solid fa-pen"></i>
-                        </button>
-                      </td>
                     </tr>
                     </tbody>
                   </table>
@@ -339,7 +332,6 @@
         defaultContent: '',
         responsivePriority: 7},
       {className: "empStatus dt-center"},
-      {className: 'row-edit dt-center', orderable: false, responsivePriority: 8},
     ],
     select: {
       style: 'single',
@@ -347,162 +339,6 @@
     },
     order: [0, 'desc'],
     fnDrawCallback: function (){
-
-
-      <!-- Edit data from modal -->
-      let targetDataEdit;
-      let memberObjectEdit;
-      let editRefresh;
-
-      // 從資料庫抓資料並呈現在 modal 上
-      $('td.row-edit').on('click','button',function (){
-        // get the selected tr
-        targetDataEdit = $(event.target).closest("tr")[0];
-        let getMemberUrl = $(this).attr("getMemberUrl");
-        // send the request to server, and response the data on the modal
-        axios({
-          method:"get",
-          url:getMemberUrl,
-        }).then((resp) => {
-          if (resp !== ""){
-            memberObjectEdit = resp.data;
-            $("#memAc-modal-edit").val(memberObjectEdit.memAc);
-            $("#memUid-modal-edit").val(memberObjectEdit.memUid);
-            $("#memBirth-modal-edit").val(memberObjectEdit.memBth);
-            $("#memName-modal-edit").val(memberObjectEdit.memName);
-            $("#memSex-modal-edit").val(memberObjectEdit.memSex);
-            $("#memEmail-modal-edit").val(memberObjectEdit.memEmail);
-            $("#memPhone-modal-edit").val(memberObjectEdit.memPhone);
-            $("#memTel-modal-edit").val(memberObjectEdit.memTel);
-            $("#memAdd-modal-edit").val(memberObjectEdit.memAdd);
-            $("#memPw-modal-edit").val(memberObjectEdit.memPw);
-            $("#memStatus-modal-edit").val(memberObjectEdit.memStatus);
-          }else{
-            $("#editModalMessage").html("錯誤: 無法從伺服器抓取該筆資料")
-                    .css("color","red");
-            editRefresh = false;
-          }
-        }).catch((err) => {console.log(err)})
-      });
-
-      // 建立 EditModalForm 規則
-      $("#EditModalForm").validate({
-        onkeyup:function(element, event) {
-          //去除左側空白
-          var value = this.elementValue(element).replace(/^\s+/g, "");
-          $(element).val(value);
-        },
-        rules:{
-          memAc:{
-            required: true,
-          },
-          memUid:{
-            required: true,
-          },
-          memBirth:{
-            required: true,
-          },
-          memName:{
-            required: true,
-          },
-          memSex: {
-            required: true,
-          },
-          memEmail:{
-            required: true,
-            email: true
-          },
-          memPhone:{
-            required: true,
-            number: true
-          },
-          memTel:{
-            number: true
-          },
-          memAdd:{
-            required: true,
-          },
-          memPw:{
-            required: true,
-          },
-          memStatus:{
-            required: true,
-          }
-        }
-      })
-
-      $('#EditModalForm').on("submit", function (e){
-        e.preventDefault();
-      })
-
-      // 送出編輯
-      $('.btn-edit-confirm').on("click" ,function(e){
-        let editUrl = $(this).attr('editUrl');
-        let EditData = {
-          id: memberObjectEdit.id,
-          memName: $("#memName-modal-edit").val(),
-          memUid: $("#memUid-modal-edit").val(),
-          memBth: $('#memBirth-modal-edit').val(),
-          memSex: $('#memSex-modal-edit').val(),
-          memEmail: $('#memEmail-modal-edit').val(),
-          memPhone: $('#memPhone-modal-edit').val(),
-          memTel: $('#memTel-modal-edit').val(),
-          memAdd: $('#memAdd-modal-edit').val(),
-          memAc: $('#memAc-modal-edit').val(),
-          memPw: $('#memPw-modal-edit').val(),
-          memStatus: $('#memStatus-modal-edit').val(),
-          pet: memberObjectEdit.pet
-        }
-
-        if ($("#EditModalForm").valid()){
-          axios({
-            method:"put",
-            url:editUrl,
-            data:{jsonFile: JSON.stringify(EditData)}
-          })
-            .then((resp) => {
-              if (resp !== "") {
-                if (resp.data === "success"){
-                  $("#editModalMessage").html("修改成功")
-                          .css("color","green");
-                  $(".btn-edit-confirm").addClass("disabled")
-                          .attr("disabled")
-                  editRefresh = true;
-                }else{
-                  $("#editModalMessage").html(resp.data)
-                          .css("color","red");
-                  editRefresh = false;
-                }
-              }else{
-                $("#editModalMessage").html("錯誤:伺服器無回傳結果")
-                        .css("color","red");
-              }
-            })
-            .catch((err) => {
-              $("#editeModalMessage").text("修改失敗，其他原因")
-                      .css("color","red");
-              $(".btn-edit-confirm").addClass("disabled")
-                      .attr("disabled");
-              editRefresh = false;
-            })
-        }else{
-          $("#editModalMessage").text("請填寫完整且正確的資料")
-                  .css("color","red");
-        }
-      });
-
-      $('#EditModal').on('hidden.bs.modal', function (){
-        // clean previous data
-        $("#editModalMessage").text("");
-        $(".error").css("color","black");
-        $("#memTel-modal-edit-error").remove();
-        if (editRefresh) {
-          window.location.reload();
-        }
-      });
-      <!-- /. Edit data from modal -->
-
-
     }
   });
 
@@ -510,6 +346,7 @@
   $('input.column_filter').on('keyup click', function () {
     filterColumn($(this).attr('data-column'));
   });
+
   function filterColumn(i) {
     table.column(i)
             .search($('#col' + i + '-search').val())

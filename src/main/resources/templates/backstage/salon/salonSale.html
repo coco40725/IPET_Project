@@ -124,7 +124,7 @@
             <!-- Filter -->
             <div class="card card-info">
               <div class="card-header">
-                <h3 class="card-title">服務類別 Filter</h3>
+                <h3 class="card-title">優惠 Filter</h3>
               </div>
               <div class="card-body">
                 <form>
@@ -132,35 +132,42 @@
                     <div class="col-sm-3">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>服務類別編號</label>
+                        <label>優惠編號</label>
                         <input type="text" class="form-control column_filter" id="col0-search"  data-column="0" placeholder="Enter ...">
                       </div>
                       <!-- text input -->
                       <div class="form-group">
-                        <label>服務類別名稱</label>
+                        <label>優惠名稱</label>
                         <input type="text" class="form-control column_filter" id="col1-search" data-column="1" placeholder="Enter ...">
                       </div>
                     </div>
                     <div class="col-sm-3">
                       <!-- text input -->
-                      <div class="form-group" hidden="hidden">
-                        <label>寵物大小</label>
-                        <input type="text" class="form-control column_filter" id="col3-search" data-column="3" placeholder="Enter ...">
+                      <div class="form-group">
+                        <label>優惠內容</label>
+                        <input type="text" class="form-control column_filter" id="col2-search" data-column="2" placeholder="Enter ...">
                       </div>
                       <!-- text input -->
-                      <div class="form-group" hidden="hidden">
-                        <label>寵物種類</label>
-                        <input type="text" class="form-control column_filter" id="col4-search" data-column="4" placeholder="Enter ...">
+                      <div class="form-group">
+                        <label>開始時間</label>
+                        <input type="text" class="form-control column_filter" id="col3-search" data-column="3" placeholder="Enter ...">
                       </div>
                     </div>
                     <div class="col-sm-3">
                       <!-- text input -->
                       <div class="form-group" >
-                        <label>服務項目</label>
-                        <input type="text" class="form-control column_filter" id="col5-search" data-column="5" placeholder="Enter ...">
+                        <label>結束時間</label>
+                        <input type="text" class="form-control column_filter" id="col4-search" data-column="4" placeholder="Enter ...">
                       </div>
                       <!-- text input -->
                       <div class="form-group">
+                        <label>優惠項目</label>
+                        <input type="text" class="form-control column_filter" id="col5-search" data-column="5" placeholder="Enter ...">
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <!-- text input -->
+                      <div class="form-group" >
                         <label>狀態</label>
                         <input type="text" class="form-control column_filter" id="col6-search" data-column="6" placeholder="Enter ...">
                       </div>
@@ -179,7 +186,8 @@
               <!-- /.card-header -->
               <div class="card-body">
                 <div>
-                  <button sec:authorize="hasAnyAuthority('editSalonServices')" type="submit" data-toggle="modal" data-target="#AddModal" class="btn btn-outline-secondary row-add">
+                  <button sec:authorize="hasAnyAuthority('editSalonServices')" type="submit" data-toggle="modal" data-target="#AddModal" class="btn btn-outline-secondary row-add"
+                  th:attr="addUrl=@{/ipet-back/sale}">
                     <i class="fas fa-solid fa-plus"></i>
                     新增
                   </button>
@@ -381,51 +389,50 @@
 
       $('.modal-footer').on('click', '.btn-remove-confirm', function (){
         // send the request to server, and use delete service
+        $(".btn-remove-confirm").addClass("disabled")
+                .attr("disabled");
+        $("body:hover").css("cursor","wait");
+
         axios({
           method: "delete",
           url: saleUrl,
           headers: {
             "X-CSRF-TOKEN": token
           }
-        }).then((resp) => {
-            if (resp !== ""){
-              if (resp.data === "success"){
-                $("#deleteModalMessage").html("成功刪除")
-                        .css("color","green");
-                $(".btn-remove-confirm").addClass("disabled")
-                        .attr("disabled");
-                deleteRefresh = true;
-              }else {
-                $("#deleteModalMessage").html("刪除失敗" + resp.data)
-                        .css("color","red");
-                $(".btn-remove-confirm").addClass("disabled")
-                        .attr("disabled");
-                deleteRefresh = false;
-              }
-            }else{
-              $("#deleteModalMessage").html("刪除失敗;" +
-                      "<br> 錯誤: 伺服器無回傳結果")
+        })
+        .then(resp => {
+          if (resp !== ""){
+            if (resp.data === "success"){
+              $("#deleteModalMessage").html("成功刪除")
+                      .css("color","green");
+              deleteRefresh = true;
+            }else {
+              $("#deleteModalMessage").html("刪除失敗" + resp.data)
                       .css("color","red");
-              $(".btn-remove-confirm").addClass("disabled")
-                      .attr("disabled");
               deleteRefresh = false;
             }
-          })
-          .catch((err) => {
-            $("#deleteModalMessage").text("刪除失敗，其他原因")
+          }else{
+            $("#deleteModalMessage").html("刪除失敗;" +
+                    "<br> 錯誤: 伺服器無回傳結果")
                     .css("color","red");
-            $(".btn-remove-confirm").addClass("disabled")
-                    .attr("disabled");
-            deleteRefresh = true;
-            console.log(err)
-          })
+            deleteRefresh = false;
+          }
+        })
+        .catch(err => {
+          $("#deleteModalMessage").text("刪除失敗，其他原因")
+                  .css("color","red");
+          deleteRefresh = true;
+          console.log(err)
+        })
+        .finally(() => {
+          $("body:hover").css("cursor","default");
+        })
       });
 
       $('#RemoveModal').on('hidden.bs.modal', function (){
         // clean the value
         $("#deleteModalMessage").text("");
-        $(".btn-remove-confirm").removeAttr("disabled");
-        $(".btn-remove-confirm").removeClass("disabled");
+        $(".btn-remove-confirm").removeAttr("disabled").removeClass("disabled");
         if (deleteRefresh === true) {
           window.location.reload();
         }
@@ -436,8 +443,9 @@
       <!-- Edit data from modal -->
       let targetDataEdit;
       let saleObjectEdit;
-      let editData;
-      let saleStrategy;
+      let editData = {};
+      let saleStrategyEdit;
+      let salePriceEdit = null;
       let editRefresh;
 
       $('button.row-edit').on('click',function (){
@@ -450,7 +458,8 @@
         axios({
           method:"get",
           url: saleUrl
-        }).then((resp) => {
+        })
+        .then(resp => {
           if (resp !== "" ){
             saleObjectEdit = resp.data;
 
@@ -486,65 +495,112 @@
             editRefresh = false;
           }
 
-        }).catch((err) => {console.log(err)})
+        })
+        .catch(err => {
+          console.log(err)
+        })
       });
 
       // 當選擇了優惠方式
       $("#saleStrategy-modal-edit").on("change", function (){
-        $("label[name='saleStrategy-edit-percent']").attr("hidden","hidden");
-        $("input[name='saleStrategy-edit-percent']").attr("hidden","hidden");
-        $("label[name='saleStrategy-edit-dollars']").attr("hidden","hidden");
-        $("input[name='saleStrategy-edit-dollars']").attr("hidden","hidden");
+        $("input[name='salePrice']").siblings().attr("hidden","hidden");
 
         // 採用打折
-        if ($("#saleStrategy-modal-edit").val() === "0"){
-          $("label[name='saleStrategy-edit-percent']").removeAttr("hidden");
-          $("input[name='saleStrategy-edit-percent']").removeAttr("hidden");
+        if ($(this).val() === "0"){
+          $("label[saleType='0']").removeAttr("hidden")
+                  .next("input[name='salePrice']").removeAttr("hidden");
 
           // 採用折扣
-        }else if ($("#saleStrategy-modal-edit").val() === "1"){
-          $("label[name='saleStrategy-edit-dollars']").removeAttr("hidden");
-          $("input[name='saleStrategy-edit-dollars']").removeAttr("hidden");
+        }else if ($(this).val() === "1"){
+          $("label[saleType='1']").removeAttr("hidden")
+                  .next("input[name='salePrice']").removeAttr("hidden");
         }
-
       })
-      saleStrategy = $("#saleStrategy-modal-edit").val();
+
+
+      // 當你更改資料時 EditData 會更動
+      $("input").filter(".saleEdit").on("change", function (){
+        editData[$(this).attr("name").toString()] = {};
+        editData[$(this).attr("name").toString()] = $(this).val();
+      });
+      $("select").filter(".saleEdit").on("change", function (){
+        editData[$(this).attr("name").toString()] = {};
+        editData[$(this).attr("name").toString()] = $(this).val();
+      });
+      $("textarea").filter(".saleEdit").on("change", function (){
+        editData[$(this).attr("name").toString()] = {};
+        editData[$(this).attr("name").toString()] = $(this).val();
+      });
+
+      // 當你有更動優惠項目，則必然要重新指定優惠方式
+      $("#saleItemEdit").on("change", function (){
+        $("#saleStrategy-modal-edit").val("default");
+        $("#saleStrategy-modal-edit option[value='-99']").prop("hidden", true);
+        $("input[name='salePrice']").siblings().attr("hidden","hidden").val();
+      });
 
 
       //確認編輯
       $(".btn-edit-confirm").on("click", function (){
-        saleStrategy = $("#saleStrategy-modal-edit").val();
+        <!-- 確認資料的完整性 -->
+        // 確認saleStrategy 並選擇正確的salePrice
+        saleStrategyEdit = $("#saleStrategy-modal-edit").val();
+        editData['saleStrategy'] = saleStrategyEdit;
+        if (saleStrategyEdit === "0") {
+          salePriceEdit = $("input.saleEdit[saleType='0']").val();
+          if (salePriceEdit == null || salePriceEdit < 1 || salePriceEdit > 10){
+            $("#editModalMessage").text("錯誤的打折數，請輸入 1 - 10 的數字")
+                    .css("color","red");
+            return;
+          }
+        }
+        else if (saleStrategyEdit === "1"){
+          salePriceEdit = $("input.saleEdit[saleType='1']").val();
+          if (salePriceEdit == null || salePriceEdit < 0){
+            $("#editModalMessage").text("錯誤的折扣數，請輸入 0 以上的數字")
+                    .css("color","red");
+            return;
+          }
+        }
+        else if (saleStrategyEdit === null){
+          $("#editModalMessage").text("請選擇優惠方式")
+                  .css("color","red");
+          return;
+        }
 
-
-        let token = $("meta[name='_csrf']").attr("content");
-
-        // 確認有多少的 service Id 被選到
+        // 若 優惠項目數量 或 優惠價 有更新到，則要回傳 svcDetailIds
         let svcDetailIds = [];
-        let salePrice;
-        if (saleStrategy === "0") {
-          salePrice = $("input[name='saleStrategy-edit-percent']").val();
-        }else if (saleStrategy === "1"){
-          salePrice = $("input[name='saleStrategy-edit-dollars']").val();
-        }
-
-        for (let svcItem of $("#saleItemEdit").val()){
-          console.log(salePrice);
-          svcDetailIds.push({
-            id: svcItem,
-            saleStrategy: saleStrategy,
-            salePrice: salePrice
+        if (editData['svcDetailIds'] !== undefined || salePriceEdit != null){
+          $("#saleItemEdit").first().find("option[selected='selected']").each(function (){
+            svcDetailIds.push({
+              id: $(this).attr("value"),
+              salePrice: salePriceEdit
+            });
           });
+          editData['svcDetailIds'] = svcDetailIds;
         }
 
-
-        editData = {
-          saleName: $("#saleName-modal-edit").val(),
-          saleContent: $("#saleContent-modal-edit").val(),
-          startTime: $("#saleStartTime-modal-edit").val(),
-          endTime: $("#saleEndTime-modal-edit").val(),
-          svcDetailIds: svcDetailIds
+        if ($("#saleName-modal-edit").val() === null || $("#saleName-modal-edit").val().trim() === ""){
+          $("#editModalMessage").text("請填寫優惠名稱").css("color","red");
+          return;
         }
+        if ($("#saleContent-modal-edit").val() === null || $("#saleContent-modal-edit").val().trim() === ""){
+          $("#editModalMessage").text("請填寫優惠名內容").css("color","red");
+          return;
+        }
+        if ($("#saleStartTime-modal-edit").val() === null || $("#saleStartTime-modal-edit").val().trim() === ""){
+          $("#editModalMessage").text("請填寫開始時間").css("color","red");
+          return;
+        }
+        if ($("#saleEndTime-modal-edit").val() === null || $("#saleEndTime-modal-edit").val().trim() === ""){
+          $("#editModalMessage").text("請填寫結束時間").css("color","red");
+          return;
+        }
+        <!-- /. 確認資料的完整性 -->
 
+        $(".btn-edit-confirm").addClass("disabled")
+                .attr("disabled");
+        $("body:hover").css("cursor","wait");
 
         axios({
           method: "patch",
@@ -553,13 +609,12 @@
           headers: {
             "X-CSRF-TOKEN": token,
           }
-        }).then((resp) => {
+        })
+        .then(resp => {
           if (resp !== ""){
             if (resp.data === "success"){
               $("#editModalMessage").text("修改成功")
                       .css("color","green");
-              $(".btn-edit-confirm").addClass("disabled")
-                      .attr("disabled");
               editRefresh = true;
 
             } else {
@@ -570,19 +625,24 @@
             $("#editModalMessage").text("修改失敗:" + "伺服器無回傳數值")
                     .css("color","red");
           }
-
-        }).catch((err) => {
+        })
+        .catch(err => {
           $("#editModalMessage").text("修改失敗，其他原因")
                   .css("color","red");
+          console.log(err);
           editRefresh = false;
-        });
-
-      })
+        })
+        .finally(() => {
+          $("body:hover").css("cursor","default");
+        })
+      });
 
 
 
       $('#EditModal').on('hidden.bs.modal', function (){
         // clean the previous data
+        $(".btn-edit-confirm").removeClass("disabled").removeAttr("disabled");
+        $("#editModalMessage").text("");
         $("#saleItemEdit option").prop("selected", false);
         $("#saleItemEdit").multiSelect('refresh');
         if (editRefresh) {
@@ -594,90 +654,163 @@
 
 
       <!-- Add data from modal -->
-      // send the request to server
-      // 當上傳了圖片，svcCategoryImgPreview-modal-edit 要改變成上傳的圖
-      let imageAdd;
-      $("#svcCategoryImg-modal-add").on("change", function (){
-        let file = this.files[0];
-        let reader = new FileReader();
+      let addData = {};
+      let addUrl;
+      let saleStrategyAdd;
+      let salePriceAdd;
+      let addRefresh;
+      $("button.row-add").on("click", function (){
+         addUrl = $(this).attr("addUrl");
+        $('#saleItemAdd').multiSelect({
+          selectableOptgroup: true,
+          selectableHeader: "<span style='color: darkblue'>未挑選之項目</span>",
+          selectionHeader: "<span style='color: darkblue'>已挑選之項目</span>",
+        });
+      });
 
-        reader.onloadend = function (){
-          $("#svcCategoryImgPreview-modal-add").attr("src", reader.result)
+      // 當選擇了優惠方式
+      $("#saleStrategy-modal-add").on("change", function (){
+        $("input[name='salePrice']").siblings().attr("hidden","hidden");
+
+        // 採用打折
+        if ($(this).val() === "0"){
+          $("label[saleType='0']").removeAttr("hidden")
+                  .next("input[name='salePrice']").removeAttr("hidden");
+
+          // 採用折扣
+        }else if ($(this).val() === "1"){
+          $("label[saleType='1']").removeAttr("hidden")
+                  .next("input[name='salePrice']").removeAttr("hidden");
         }
-        reader.readAsDataURL(file);
-        imageAdd = document.getElementById("svcCategoryImg-modal-add").files[0];
-        if (imageAdd.size > 1048576){
-          $("#addModalMessage").text("圖片太大，無法上傳")
-                  .css("color", "red");
-        }else {
-          $("#addModalMessage").text("");
-        }
+      });
+
+      // 當你更改資料時 AddData 會更動
+      $("input").filter(".saleAdd").on("change", function (){
+        addData[$(this).attr("name").toString()] = {};
+        addData[$(this).attr("name").toString()] = $(this).val();
+      });
+      $("select").filter(".saleAdd").on("change", function (){
+        addData[$(this).attr("name").toString()] = {};
+        addData[$(this).attr("name").toString()] = $(this).val();
+      });
+      $("textarea").filter(".saleAdd").on("change", function (){
+        addData[$(this).attr("name").toString()] = {};
+        addData[$(this).attr("name").toString()] = $(this).val();
       });
 
 
       // 確認新增
       $('.btn-add-confirm').on('click',  function (){
-        let addUrl = $(this).attr("addUrl");
-        let token = $("meta[name='_csrf']").attr("content");
-        let formData = new FormData();
-        let addData = {
-          svcCategoryName: $('#svcCategoryName-modal-add').val(),
-          svcCategoryStatus: $('#svcCategoryStatus-modal-add').val()
-        }
-        const jsonFile = JSON.stringify(addData);
-        const  blob = new Blob([jsonFile], {type: 'application/json'});
-        formData.append("imageFile", imageAdd)
-        formData.append("jsonFile", blob);
-
-        console.log(addUrl);
-        if ($('#svcCategoryName-modal-add').val() != null && $('#svcCategoryStatus-modal-add').val() != null
-        ) {
-          console.log("post addUrl");
-          axios({
-            method: "post",
-            url: addUrl,
-            data: formData,
-            headers: {
-              "X-CSRF-TOKEN": token,
-              'content-type': 'multipart/form-data'
-            }
-          }).then((resp) => {
-            if (resp !== ""){
-              if (resp.data === "success"){
-                $("#addModalMessage").html("新增成功")
-                        .css("color","green");
-                $(".btn-add-confirm").addClass("disabled")
-                        .attr("disabled")
-              }else{
-                $("#addModalMessage").html(resp)
-                        .css("color","red");
-                $(".btn-add-confirm").addClass("disabled")
-                        .attr("disabled")
-              }
-            }else{
-              $("#addModalMessage").html("錯誤:伺服器無回傳結果")
-                      .css("color","red");
-              $(".btn-add-confirm").addClass("disabled")
-                      .attr("disabled")
-            }
-
-          }).catch((err) => {
-            console.log(err);
-            $("#addModalMessage").text("新增失敗，其他原因")
+        <!-- 確認資料的完整性 -->
+        // 確認saleStrategy 並選擇正確的salePrice
+        saleStrategyAdd = $("#saleStrategy-modal-add").val();
+        addData['saleStrategy'] = saleStrategyAdd;
+        if (saleStrategyAdd === "0") {
+          salePriceAdd = $("input.saleAdd[saleType='0']").val();
+          if (salePriceAdd == null || salePriceAdd < 1 || salePriceAdd > 10){
+            $("#addModalMessage").text("錯誤的打折數，請輸入 1 - 10 的數字")
                     .css("color","red");
-          })
-        } else {
-          $("#addModalMessage").html("請填寫完整資料")
-                  .css("color","red");
+            return;
+          }
         }
+        else if (saleStrategyAdd === "1"){
+          salePriceAdd = $("input.saleAdd[saleType='1']").val();
+          if (salePriceAdd == null || salePriceAdd < 0){
+            $("#addModalMessage").text("錯誤的折扣數，請輸入 0 以上的數字")
+                    .css("color","red");
+            return;
+          }
+        }
+        else if (saleStrategyAdd === null){
+          $("#addModalMessage").text("請選擇優惠方式")
+                  .css("color","red");
+          return;
+        }
+
+        // 若 優惠項目數量 或 優惠價 有更新到，則要回傳 svcDetailIds
+        let svcDetailIds = [];
+        if (addData['svcDetailIds'] !== undefined || salePriceAdd != null){
+          $("#saleItemAdd").first().find("option[selected='selected']").each(function (){
+            svcDetailIds.push({
+              id: $(this).attr("value"),
+              salePrice: salePriceAdd
+            });
+          });
+          addData['svcDetailIds'] = svcDetailIds;
+        }
+
+        if ($("#saleName-modal-add").val() === null || $("#saleName-modal-add").val().trim() === ""){
+          $("#addModalMessage").text("請填寫優惠名稱").css("color","red");
+          return;
+        }
+        if ($("#saleContent-modal-add").val() === null || $("#saleContent-modal-add").val().trim() === ""){
+          $("#addModalMessage").text("請填寫優惠名內容").css("color","red");
+          return;
+        }
+        if ($("#saleStartTime-modal-add").val() === null || $("#saleStartTime-modal-add").val().trim() === ""){
+          $("#addModalMessage").text("請填寫開始時間").css("color","red");
+          return;
+        }
+        if ($("#saleEndTime-modal-add").val() === null || $("#saleEndTime-modal-add").val().trim() === ""){
+          $("#addModalMessage").text("請填寫結束時間").css("color","red");
+          return;
+        }
+        <!-- /. 確認資料的完整性 -->
+
+        $(".btn-add-confirm").addClass("disabled")
+                .attr("disabled");
+        $("body:hover").css("cursor","wait");
+        console.log(addData);
+
+        axios({
+          method: "patch",
+          url: addUrl,
+          data: addData,
+          headers: {
+            "X-CSRF-TOKEN": token,
+          }
+        })
+        .then(resp => {
+          if (resp !== ""){
+            if (resp.data === "success"){
+              $("#addModalMessage").text("新增成功")
+                      .css("color","green");
+              addRefresh = true;
+
+            }else{
+              $("#addModalMessage").text(resp.data)
+                      .css("color","red");
+            }
+          }
+          else{
+            $("#addModalMessage").text("錯誤:伺服器無回傳結果")
+                    .css("color","red");
+
+          }
+
+        })
+        .catch(err => {
+          console.log(err);
+          $("#addModalMessage").text("新增失敗，其他原因")
+                  .css("color","red");
+        })
+        .finally(() => {
+          $("body:hover").css("cursor","default");
+        })
       })
 
       $('#AddModal').on("hidden.bs.modal", function (){
         // clean the previous data
-        $('#svcCategoryName-modal-add').val("");
-        $('#svcCategoryImg-modal-add').val("");
-        $('#svcCategoryStatus-modal-add').val("");
-        window.location.reload();
+        $("input.saleAdd").val();
+        $("select.saleAdd").val();
+        $("textarea.saleAdd").val();
+        $(".btn-add-confirm").removeClass("disabled").removeAttr("disabled");
+        $("#addModalMessage").text("");
+        $("#saleItemAdd option").prop("selected", false);
+        $("#saleItemAdd").multiSelect('refresh');
+        if (addRefresh) {
+          window.location.reload();
+        }
       });
       <!-- /.Add data from modal -->
     }
@@ -699,7 +832,6 @@
       tr.addClass('shown');
     }
   });
-
 
   $('input.column_filter').on('keyup click', function () {
     filterColumn($(this).attr('data-column'));
