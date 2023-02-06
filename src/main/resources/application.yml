@@ -1,7 +1,7 @@
 spring:
 #  datasource:
 #    # 如果有使用 Atomikos，則要加 pinGlobalTxToPhysicalConnection=true，否則會出現 XAER_INVAL: Invalid arguments (or unsupported command)
-#    url: jdbc:mysql://34.125.184.71/IPETDB?pinGlobalTxToPhysicalConnection=true
+#    url: jdbc:mysql://34.81.9.0/IPETDB?pinGlobalTxToPhysicalConnection=true
 #    username: root
 #    password: Coco40725eee.S1225.abc
 #    driver-class-name: com.mysql.cj.jdbc.Driver
@@ -15,7 +15,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://root:abc123Coco@34.125.184.71:27017/ipetdb?authSource=admin
+      uri: mongodb://root:abc123Coco@34.81.9.0:27017/ipetdb?authSource=admin
       username: root
       password: abc123Coco
   thymeleaf:
