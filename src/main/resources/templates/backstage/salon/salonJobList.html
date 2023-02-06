@@ -292,6 +292,7 @@
       let asstsList;
       let scheduleUrl;
       let token = $("meta[name='_csrf']").attr("content");
+      <!-- 用於修正 multdatepicker 會出現 missing instance data for this datepicker -->
       let tempDatepicker = {
         datepicker_fun: $.datepicker._selectDate
       };
