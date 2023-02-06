@@ -292,6 +292,9 @@
       let asstsList;
       let scheduleUrl;
       let token = $("meta[name='_csrf']").attr("content");
+      let tempDatepicker = {
+        datepicker_fun: $.datepicker._selectDate
+      };
 
 
       <!-- Delete data from modal -->
@@ -608,7 +611,6 @@
       // 查詢可以新增的班表日期
       $("#searchAvailableDatesAdd").on("click", function (){
         let getIllegalDateUrl = $(this).attr("getIllegalDateUrl");
-        let token = $("meta[name='_csrf']").attr("content");
         // check which period is selected
         periods = [];
         for (let p of $('input.jobPeriod-add:checked')){
@@ -639,7 +641,9 @@
               illegalDates = resp.data;
               // 移除舊 日曆
               $('#schDate-modal-add').multiDatesPicker("destroy");
+
               if (illegalDates.length !== 0) {
+
                 // 將不能使用的date鎖起來
                 $('#schDate-modal-add').multiDatesPicker({
                   dateFormat: 'yy-mm-dd',
@@ -656,17 +660,26 @@
 
               // https://github.com/dubrox/Multiple-Dates-Picker-for-jQuery-UI/issues/67
               <!-- 解決 MultiDatePicker 閃爍問題並處理需點兩次才可關閉的問題 -->
-              $.datepicker._selectDateOverload = $.datepicker._selectDate;
-              $.datepicker._selectDate = function(id, dateStr) {
+              $.datepicker._selectDateOverload = tempDatepicker.datepicker_fun;
+
+              $.datepicker._selectDate = function (id, dateStr) {
                 var target = $(id);
                 var inst = this._getInst(target[0]);
-                inst.inline = true;
-                $.datepicker._selectDateOverload(id, dateStr);
-                inst.inline = false;
-                target[0].multiDatesPicker.changed = false;
+                if (target[0].multiDatesPicker != null) {
+                  inst.inline = true;
+                  $.datepicker._selectDateOverload(id, dateStr);
+                  inst.inline = false;
+                  target[0].multiDatesPicker.changed = false;
+                } else {
+                  $.datepicker._selectDateOverload(id, dateStr);
+                  target.multiDatesPicker.changed = false;
+                }
                 this._updateDatepicker(inst);
               };
+              console.log($.datepicker._selectDate);
+
               <!-- /.解決 MultiDatePicker 閃爍問題並處理需點兩次才可關閉的問題 -->
+
 
               $('#schDate-modal-add').removeAttr("disabled");
             }else{
@@ -684,23 +697,24 @@
 
       // 美容師與助理的欄位若是變動 需要再按一次 查詢日期
       $('#ASST_name_2-modal-add').on("change", function (){
-        $('#schDate-modal-add').prop("disabled", true);
-      })
+        $('#schDate-modal-add').val("").prop("disabled", true);
+
+      });
+
       $('#GROOMER_name-modal-add').on("change", function (){
-        $('#schDate-modal-add').prop("disabled", true);
-      })
+        $('#schDate-modal-add').val("").prop("disabled", true);
+      });
 
       // 時段欄位若是變動 需要再按一次查詢日期
       $(".jobPeriod-add").on("change", function (){
-        $('#schDate-modal-add').prop("disabled", true);
-      })
+        $('#schDate-modal-add').val("").prop("disabled", true);
+      });
 
 
 
       // 送出新增
       $('.btn-add-confirm').on('click',  function (){
         let addUrl = $(this).attr("addUrl");
-        let token = $("meta[name='_csrf']").attr("content");
         $(".btn-add-confirm").addClass("disabled")
                 .attr("disabled")
         $("body:hover").css("cursor","wait");
