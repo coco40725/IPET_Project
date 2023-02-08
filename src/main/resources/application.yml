@@ -15,7 +15,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://root:abc123Coco@34.81.9.0:27017/ipetdb?authSource=admin
+      uri: mongodb://root:abc123Coco@35.234.54.71:27017/ipetdb?authSource=admin
       username: root
       password: abc123Coco
   thymeleaf:

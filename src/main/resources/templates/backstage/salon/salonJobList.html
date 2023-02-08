@@ -662,7 +662,6 @@
               // https://github.com/dubrox/Multiple-Dates-Picker-for-jQuery-UI/issues/67
               <!-- 解決 MultiDatePicker 閃爍問題並處理需點兩次才可關閉的問題 -->
               $.datepicker._selectDateOverload = tempDatepicker.datepicker_fun;
-
               $.datepicker._selectDate = function (id, dateStr) {
                 var target = $(id);
                 var inst = this._getInst(target[0]);
@@ -677,8 +676,6 @@
                 }
                 this._updateDatepicker(inst);
               };
-              console.log($.datepicker._selectDate);
-
               <!-- /.解決 MultiDatePicker 閃爍問題並處理需點兩次才可關閉的問題 -->
 
 
